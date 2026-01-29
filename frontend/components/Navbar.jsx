@@ -1,0 +1,47 @@
+import Link from 'next/link';
+import { ShieldCheck } from 'lucide-react';
+import Button from './Button';
+
+export default function Navbar() {
+    const navLinks = [
+        { name: 'Health Dashboard', href: '#' },
+        { name: 'Testing', href: '#' },
+        { name: 'Consultation', href: '#' },
+        { name: 'Resources', href: '#' },
+    ];
+
+    return (
+        <nav className="w-full bg-white border-b border-gray-100 py-4">
+            <div className="container mx-auto flex items-center justify-between px-4 md:px-6">
+                {/* Logo */}
+                <Link href="/" className="flex items-center gap-2">
+                    <div className="relative">
+                        <ShieldCheck className="h-8 w-8 text-veri5-teal fill-transparent" strokeWidth={2.5} />
+                        {/* Small checkmark simulation if needed, but standard icon is close enough */}
+                    </div>
+                    <span className="text-2xl font-bold text-veri5-navy tracking-tight">Veri5</span>
+                </Link>
+
+                {/* Desktop Links */}
+                <div className="hidden md:flex items-center gap-8">
+                    {navLinks.map((link) => (
+                        <Link
+                            key={link.name}
+                            href={link.href}
+                            className="text-sm font-medium text-gray-500 hover:text-veri5-teal transition-colors"
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                </div>
+
+                {/* Action */}
+                <div>
+                    <Button className="bg-veri5-teal hover:bg-veri5-teal/90 text-white rounded-full px-8 font-semibold">
+                        Login
+                    </Button>
+                </div>
+            </div>
+        </nav>
+    );
+}

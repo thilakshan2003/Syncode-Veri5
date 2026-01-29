@@ -1,8 +1,9 @@
 import { Star, Clock, ShieldCheck, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-export default function SpecialistCard({ name, role, experience, rating, availability, image, verifiedLints }) {
+export default function SpecialistCard({ name, role, experience, rating, availability, image, verifiedLints, id }) {
     return (
         <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
             <div className="flex flex-col items-center text-center mb-6">
@@ -36,9 +37,11 @@ export default function SpecialistCard({ name, role, experience, rating, availab
                 ))}
             </div>
 
-            <Button className="w-full rounded-xl bg-slate-100 hover:bg-veri5-teal text-slate-700 hover:text-white font-bold transition-all h-12">
-                Book Now <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+            <Link href={`/consultation/${id || '1'}/book`} className="block w-full">
+                <Button className="w-full rounded-xl bg-slate-100 hover:bg-veri5-teal text-slate-700 hover:text-white font-bold transition-all h-12">
+                    Book Now <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+            </Link>
         </div>
     );
 }

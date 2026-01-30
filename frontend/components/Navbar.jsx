@@ -37,9 +37,11 @@ export default function Navbar() {
 
                 {/* Action */}
                 <div>
-                    <Button className="bg-veri5-teal hover:bg-veri5-teal/90 text-white rounded-full px-8 font-semibold">
-                        Login
-                    </Button>
+                    <Link href="/login">
+                        <Button className="bg-veri5-teal hover:bg-veri5-teal/90 text-white rounded-full px-8 font-semibold">
+                            Login
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </nav>

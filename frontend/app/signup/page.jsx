@@ -7,12 +7,16 @@ import * as z from "zod";
 import { Mail, Lock, MoveRight, ShieldCheck, EyeOff, LockKeyhole } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const loginSchema = z.object({
+const signupSchema = z.object({
     email: z.string().email("Please enter a valid email address"),
-    password: z.string().min(1, "Password is required"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(8, "Password must be at least 8 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
 });
 
-export default function LoginPage() {
+export default function SignupPage() {
     const [mounted, setMounted] = useState(false);
 
     const {
@@ -20,7 +24,7 @@ export default function LoginPage() {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: zodResolver(loginSchema),
+        resolver: zodResolver(signupSchema),
     });
 
     // Prevent hydration mismatch
@@ -29,8 +33,8 @@ export default function LoginPage() {
     }, []);
 
     const onSubmit = (data) => {
-        console.log(data);
-        // Handle login logic here
+        console.log("Signup Data:", data);
+        // Handle signup logic here
     };
 
     if (!mounted) return null;
@@ -39,22 +43,21 @@ export default function LoginPage() {
         <main className="min-h-screen flex flex-col items-center justify-center p-4 bg-white">
             {/* Header */}
             <div className="text-center mb-10 space-y-3">
-                {/* Logo Placeholder - Assuming it exists or using text for now if not provided */}
                 <div className="flex items-center justify-center gap-2 mb-6">
                     <ShieldCheck className="w-8 h-8 text-veri5-teal" />
                     <span className="text-2xl font-bold tracking-tight text-veri5-navy">Veri5</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl font-bold text-veri5-navy tracking-tight">
-                    Welcome back.
+                    Create Your Veri5 Account.
                 </h1>
                 <p className="text-gray-500 text-lg">
-                    Privacy-first verification.{" "}
-                    <span className="text-veri5-teal font-medium">Safe & anonymous.</span>
+                    Join the privacy-first network.{" "}
+                    <span className="text-veri5-teal font-medium">Secure & verified.</span>
                 </p>
             </div>
 
-            {/* Login Card */}
+            {/* Signup Card */}
             <div className="w-full max-w-[480px] bg-white rounded-[2rem] border border-veri5-teal/30 p-8 md:p-12 shadow-[0_0_40px_-10px_rgba(40,169,158,0.1)]">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Email Field */}
@@ -86,7 +89,7 @@ export default function LoginPage() {
                             <input
                                 {...register("password")}
                                 type="password"
-                                placeholder="Enter password"
+                                placeholder="Create a password"
                                 className="w-full bg-red-50/30 border border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-veri5-teal/50 focus:ring-4 focus:ring-veri5-teal/10 transition-all placeholder:text-gray-300 text-gray-700"
                             />
                         </div>
@@ -95,30 +98,49 @@ export default function LoginPage() {
                         )}
                     </div>
 
-                    {/* Sign In Button */}
+                    {/* Confirm Password Field */}
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
+                            Confirm Password
+                        </label>
+                        <div className="relative group">
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-veri5-teal transition-colors" />
+                            <input
+                                {...register("confirmPassword")}
+                                type="password"
+                                placeholder="Confirm your password"
+                                className="w-full bg-red-50/30 border border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-veri5-teal/50 focus:ring-4 focus:ring-veri5-teal/10 transition-all placeholder:text-gray-300 text-gray-700"
+                            />
+                        </div>
+                        {errors.confirmPassword && (
+                            <p className="text-red-500 text-sm ml-1">{errors.confirmPassword.message}</p>
+                        )}
+                    </div>
+
+                    {/* Create Account Button */}
                     <button
                         type="submit"
                         className="w-full bg-veri5-teal hover:bg-[#23968c] active:scale-[0.98] text-white font-semibold py-4 rounded-full transition-all flex items-center justify-center gap-2 group mt-4 shadow-lg shadow-veri5-teal/20"
                     >
-                        Sign In
+                        Create Account
                         <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
 
-                    {/* Create Account Link */}
+                    {/* Login Link */}
                     <div className="text-center">
                         <p className="text-gray-500">
-                            New to Veri5?{" "}
+                            Already have an account?{" "}
                             <Link
-                                href="/signup"
+                                href="/login"
                                 className="text-veri5-teal hover:underline font-medium"
                             >
-                                Create Account
+                                Sign In
                             </Link>
                         </p>
                     </div>
                 </form>
 
-                {/* Google Auth - Expanded Option */}
+                {/* Google Auth */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
                     <button className="w-full bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium py-3.5 rounded-full transition-all flex items-center justify-center gap-3">
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -139,7 +161,7 @@ export default function LoginPage() {
                                 fill="#EA4335"
                             />
                         </svg>
-                        Continue with Google
+                        Sign up with Google
                     </button>
                 </div>
             </div>
@@ -186,7 +208,7 @@ export default function LoginPage() {
             {/* Footer Consent */}
             <div className="mt-16 text-center text-xs text-gray-400 max-w-sm mx-auto leading-relaxed">
                 <p>
-                    By signing in, you agree to our{" "}
+                    By creating an account, you agree to our{" "}
                     <Link href="/privacy" className="text-veri5-teal hover:underline">
                         Privacy Charter
                     </Link>

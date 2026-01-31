@@ -1,49 +1,153 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+// --- USER MANAGEMENT ---
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  name      String
-  password  String
-  role      Role      @default(USER)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  comments  Comment[]
-  posts     Post[]
-}
+  id         String     @id @default(uuid()) // Automatically generated User ID
+  firstName  String
+  lastName   String
+  email      String     @unique
+  password   String
+  gender     String?
+  age        Int?
+  address    String?
+  status     UserStatus @default(UNVERIFIED)
+  expiryDate DateTime?
 
-model Post {
-  id        Int       @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean   @default(false)
-  authorId  Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  comments  Comment[]
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-}
+  // Relations
+  tests          Test[]
+  purchases      Purchase[]
+  appointments   Appointment[]
+  sentShares     PartnerShare[] @relation("SentShares")
+  receivedShares PartnerShare[] @relation("ReceivedShares")
+  activities     Activity[]
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  postId    Int
-  authorId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
-enum Role {
-  USER
-  ADMIN
-  MODERATOR
+enum UserStatus {
+  VERIFIED
+  UNVERIFIED
+  PENDING
+}
+
+// --- TESTING & RESULTS ---
+model Test {
+  id          String     @id @default(uuid())
+  testId      String     @unique // The Veri5 ID (e.g., v5-7829-ax42)
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  date        DateTime
+  testResults String? // URL to the uploaded image/PDF
+  type        String // e.g., "Standard Screen"
+  category    String // e.g., "Full Panel"
+  status      TestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+}
+
+enum TestStatus {
+  PENDING
+  VALIDATED
+  REJECTED
+}
+
+// --- DOCTORS & CLINICS ---
+model Doctor {
+  id             String @id @default(uuid())
+  name           String
+  specialization String
+  regNo          String @unique // SLMC Reg No
+  paymentRate    Float // e.g., 3600.00
+
+  appointments Appointment[]
+  clinics      Clinic[]
+}
+
+model Clinic {
+  id            String @id @default(uuid())
+  name          String
+  address       String
+  availableTime String // e.g., "Weekdays 09:00 - 17:00"
+
+  doctors      Doctor[]
+  appointments Appointment[]
+}
+
+// --- APPOINTMENTS (Booking Summary) ---
+model Appointment {
+  id       String  @id @default(uuid())
+  userId   String
+  user     User    @relation(fields: [userId], references: [id])
+  doctorId String
+  doctor   Doctor  @relation(fields: [doctorId], references: [id])
+  clinicId String?
+  clinic   Clinic? @relation(fields: [clinicId], references: [id])
+
+  date        DateTime
+  time        String // e.g., "10:30 AM"
+  sessionType SessionType @default(ONLINE)
+  cost        Float       @default(3600.00)
+
+  createdAt DateTime @default(now())
+}
+
+enum SessionType {
+  ONLINE
+  PHYSICAL
+}
+
+// --- COMMERCE (Test Kits) ---
+model Purchase {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  testKitId       String
+  testKit         TestKit  @relation(fields: [testKitId], references: [id])
+  date            DateTime @default(now())
+  deliveryAddress String
+}
+
+model TestKit {
+  id          String @id @default(uuid())
+  name        String // e.g., "Full Panel"
+  price       Float // e.g., 3600.00
+  description String
+
+  purchases Purchase[]
+}
+
+// --- PRIVACY & SHARING (Partners) ---
+model PartnerShare {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("SentShares", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User     @relation("ReceivedShares", fields: [receiverId], references: [id])
+  date       DateTime @default(now())
+  expiryDate DateTime // Auto-expiry logic
+}
+
+// --- ACTIVITY LOG (Unified History) ---
+model Activity {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  type        ActivityType
+  description String // e.g., "Shared status with @user123"
+  createdAt   DateTime     @default(now())
+}
+
+enum ActivityType {
+  SHARE
+  CONSULTATION
+  ORDER
+  UPLOAD
 }

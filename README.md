@@ -71,6 +71,11 @@ Seed data (optional):
 ```bash
 npx prisma db seed
 ```
+Prisma Studio (for visually editing the DB)
+
+```bash
+npx prisma studio --config ./prisma.config.ts
+```
 
 Start the backend (once `src/index.ts` is implemented):
 

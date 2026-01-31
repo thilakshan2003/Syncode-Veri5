@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 export default function PathSelectionCard({ icon: Icon, title, description, benefits, buttonText, buttonLink, badge }) {
     return (
-        <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300 h-full flex flex-col items-start relative overflow-hidden group">
+        <div className="bg-white rounded-3xl p-8 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all duration-300 h-full flex flex-col items-start relative overflow-hidden group">
 
             <div className='w-full flex justify-between items-start mb-6'>
                 <div className="w-14 h-14 bg-cyan-50 rounded-2xl flex items-center justify-center text-veri5-teal group-hover:bg-veri5-teal group-hover:text-white transition-colors duration-300">

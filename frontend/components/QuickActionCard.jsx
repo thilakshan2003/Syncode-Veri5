@@ -10,7 +10,7 @@ export default function QuickActionCard({ icon: Icon, title, description, action
 
     return (
         <Link href={href} className="group block h-full">
-            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-3xl p-6 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all duration-300 h-full flex flex-col">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-colors duration-300 ${colorStyles[color]}`}>
                     <Icon className="w-6 h-6" strokeWidth={2.5} />
                 </div>

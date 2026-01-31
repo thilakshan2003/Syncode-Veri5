@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 export default function BookingSummary({ doctor, selectedDate, selectedTime, cost }) {
     return (
-        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xl shadow-slate-200/50 sticky top-24">
+        <div className="bg-white rounded-3xl p-6 border border-slate-300 hover:border-emerald-500 shadow-xl shadow-slate-200/50 transition-all sticky top-24">
             <h2 className="text-xl font-bold text-slate-900 mb-6">Booking Summary</h2>
 
             {/* Doctor Info */}

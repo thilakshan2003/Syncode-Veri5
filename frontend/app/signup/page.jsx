@@ -71,7 +71,7 @@ export default function SignupPage() {
                                 {...register("email")}
                                 type="email"
                                 placeholder="Enter your email"
-                                className="w-full bg-red-50/30 border border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-veri5-teal/50 focus:ring-4 focus:ring-veri5-teal/10 transition-all placeholder:text-gray-300 text-gray-700"
+                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
                             />
                         </div>
                         {errors.email && (
@@ -90,7 +90,7 @@ export default function SignupPage() {
                                 {...register("password")}
                                 type="password"
                                 placeholder="Create a password"
-                                className="w-full bg-red-50/30 border border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-veri5-teal/50 focus:ring-4 focus:ring-veri5-teal/10 transition-all placeholder:text-gray-300 text-gray-700"
+                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
                             />
                         </div>
                         {errors.password && (
@@ -109,7 +109,7 @@ export default function SignupPage() {
                                 {...register("confirmPassword")}
                                 type="password"
                                 placeholder="Confirm your password"
-                                className="w-full bg-red-50/30 border border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-veri5-teal/50 focus:ring-4 focus:ring-veri5-teal/10 transition-all placeholder:text-gray-300 text-gray-700"
+                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
                             />
                         </div>
                         {errors.confirmPassword && (

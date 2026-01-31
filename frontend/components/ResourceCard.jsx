@@ -13,7 +13,7 @@ export default function ResourceCard({ title, excerpt, category, readTime, image
     };
 
     return (
-        <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all group flex flex-col h-full">
+        <div className="bg-white rounded-3xl overflow-hidden border border-slate-300 hover:border-emerald-500 shadow-lg transition-all group flex flex-col h-full">
             <div className="h-48 bg-slate-200 relative overflow-hidden">
                 {/* Placeholder for image */}
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300"></div>

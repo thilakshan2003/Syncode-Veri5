@@ -29,7 +29,7 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
     const currentMonth = "January 2026";
 
     return (
-        <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+        <div className="bg-white rounded-3xl p-8 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all">
 
             {/* Header */}
             <div className="flex items-center justify-between mb-8">

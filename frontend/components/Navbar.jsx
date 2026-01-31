@@ -11,7 +11,7 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="w-full bg-white border-b border-gray-100 py-4">
+        <nav className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 py-6 shadow-sm">
             <div className="container mx-auto flex items-center justify-between px-4 md:px-6">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
@@ -37,9 +37,11 @@ export default function Navbar() {
 
                 {/* Action */}
                 <div>
-                    <Button className="bg-veri5-teal hover:bg-veri5-teal/90 text-white rounded-full px-8 font-semibold">
-                        Login
-                    </Button>
+                    <Link href="/login">
+                        <Button className="bg-veri5-teal hover:bg-veri5-teal/90 text-white rounded-full px-8 font-semibold">
+                            Login
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </nav>

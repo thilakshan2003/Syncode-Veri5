@@ -61,7 +61,7 @@ export default function ShareStatusModal({ open, onOpenChange }) {
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         placeholder="Enter Username (e.g. alexj22)"
-                                        className="w-full h-12 pl-10 pr-4 rounded-xl border border-slate-200 focus:border-veri5-teal focus:ring-1 focus:ring-veri5-teal outline-none transition-all text-sm font-medium"
+                                        className="w-full h-12 pl-10 pr-4 rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all text-sm font-medium"
                                         autoFocus
                                     />
                                 </div>

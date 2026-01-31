@@ -17,7 +17,7 @@ export default function ClinicSearch({ onToggleView, viewMode }) {
                     </div>
                     <input
                         type="text"
-                        className="pl-10 pr-4 py-3 w-full bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-veri5-teal/20 focus:border-veri5-teal outline-none transition-all text-sm font-medium shadow-sm text-slate-700 placeholder:text-slate-400"
+                        className="pl-10 pr-4 py-3 w-full bg-white border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all text-sm font-medium shadow-sm text-slate-700 placeholder:text-slate-400"
                         placeholder="Wellawatte, Colombo"
                         defaultValue="Wellawatte, Colombo"
                     />

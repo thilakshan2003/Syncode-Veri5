@@ -8,9 +8,10 @@ datasource db {
 }
 
 enum UserStatus {
-  active
-  suspended
-  deleted
+  verified
+  unverified
+  pending
+  
 }
 
 enum ClinicStaffRole {
@@ -68,7 +69,7 @@ model User {
   username         String             @unique @db.VarChar(50)
   email            String?            @unique @db.VarChar(255)
   passwordHash     String             @map("password_hash") @db.VarChar(255)
-  status           UserStatus         @default(active)
+  status           UserStatus         @default(verified)
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   profile          UserProfile?

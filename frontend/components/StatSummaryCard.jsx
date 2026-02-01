@@ -1,6 +1,6 @@
 export default function StatSummaryCard({ label, value, subtext, indicatorColor }) {
     return (
-        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between h-full">
+        <div className="bg-white rounded-3xl p-6 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all group flex flex-col justify-between h-full">
             <div>
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{label}</p>
                 <div className="flex items-center gap-3">

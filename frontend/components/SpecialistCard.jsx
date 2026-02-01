@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function SpecialistCard({ name, role, experience, rating, availability, image, verifiedLints, id }) {
     return (
-        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
+        <div className="bg-white rounded-3xl p-6 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all group">
             <div className="flex flex-col items-center text-center mb-6">
                 <div className="w-24 h-24 rounded-full bg-slate-100 mb-4 overflow-hidden relative border-4 border-white shadow-md">
                     {/* Placeholder for real image, using UI avatar for now if no image provided */}

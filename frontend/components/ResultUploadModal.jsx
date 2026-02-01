@@ -60,12 +60,7 @@ export default function ResultUploadModal({ open, onOpenChange }) {
 
                     {/* Right/Bottom: Form */}
                     <div className="p-8 md:p-10 md:w-7/12 relative">
-                        <button
-                            onClick={() => onOpenChange(false)}
-                            className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
+
 
                         <DialogHeader className="mb-6 text-left">
                             <DialogTitle className="text-xl font-bold text-teal-700 hidden">Submit Result</DialogTitle>
@@ -83,7 +78,7 @@ export default function ResultUploadModal({ open, onOpenChange }) {
                                     <input
                                         placeholder="v5-7829-ax42"
                                         {...register("veri5Id")}
-                                        className="w-full h-12 px-4 rounded-xl bg-red-50/0 border border-slate-200 focus:border-veri5-teal focus:ring-1 focus:ring-veri5-teal outline-none transition-all text-sm font-medium text-slate-700 placeholder:text-slate-300"
+                                        className="w-full h-12 px-4 rounded-xl bg-white border-2 border-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all text-sm font-medium text-slate-700 placeholder:text-slate-300"
                                     />
                                     {errors.veri5Id && <span className="text-xs text-red-500 font-medium">{errors.veri5Id.message}</span>}
                                 </div>
@@ -94,7 +89,7 @@ export default function ResultUploadModal({ open, onOpenChange }) {
                                         type="text"
                                         placeholder="January 18, 2026"
                                         {...register("date")}
-                                        className="w-full h-12 px-4 rounded-xl bg-red-50/0 border border-slate-200 focus:border-veri5-teal focus:ring-1 focus:ring-veri5-teal outline-none transition-all text-sm font-medium text-slate-700 placeholder:text-slate-300"
+                                        className="w-full h-12 px-4 rounded-xl bg-white border-2 border-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all text-sm font-medium text-slate-700 placeholder:text-slate-300"
                                     />
                                     {errors.date && <span className="text-xs text-red-500 font-medium">{errors.date.message}</span>}
                                 </div>
@@ -105,7 +100,7 @@ export default function ResultUploadModal({ open, onOpenChange }) {
                                 <div className="relative">
                                     <select
                                         {...register("testType")}
-                                        className="w-full h-12 px-4 rounded-xl bg-slate-100/50 border border-slate-200 focus:border-veri5-teal outline-none appearance-none text-sm font-medium text-slate-500"
+                                        className="w-full h-12 px-4 rounded-xl bg-slate-100/50 border-2 border-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none appearance-none text-sm font-medium text-slate-500"
                                     >
                                         <option value="">Select Test Type</option>
                                         <option value="standard">Standard Screen</option>

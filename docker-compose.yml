@@ -25,6 +25,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -40,7 +42,7 @@ services:
         condition: service_healthy
     networks:
       - syncode-network
-    command: sh -c "npx prisma migrate deploy && npx nodemon --watch src --exec ts-node src/index.ts"
+    command: sh -c "npx prisma migrate deploy && npx nodemon --watch src --exec tsx src/index.ts"
 
   # Frontend Service
   frontend:

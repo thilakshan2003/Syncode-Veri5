@@ -2,7 +2,6 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:latest
-    container_name: syncode-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -25,7 +24,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: syncode-backend
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -48,7 +46,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: syncode-frontend
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_URL: http://backend:5000

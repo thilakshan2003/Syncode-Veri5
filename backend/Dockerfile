@@ -18,4 +18,4 @@ RUN npx prisma generate
 EXPOSE 5000
 
 # Run with nodemon for auto-reload
-CMD ["npx", "nodemon", "--watch", "src", "--exec", "ts-node", "src/index.ts"]
+CMD ["npm", "run", "dev"]

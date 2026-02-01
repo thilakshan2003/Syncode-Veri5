@@ -42,7 +42,7 @@ services:
         condition: service_healthy
     networks:
       - syncode-network
-    command: sh -c "npx prisma migrate deploy && npx nodemon --watch src --exec ts-node src/index.ts"
+    command: sh -c "npx prisma migrate deploy && npm run dev"
 
   # Frontend Service
   frontend:

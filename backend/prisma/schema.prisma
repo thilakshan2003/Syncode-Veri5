@@ -8,9 +8,8 @@ datasource db {
 }
 
 enum UserStatus {
-  active
-  suspended
-  deleted
+  Verified
+  Not_Verified
 }
 
 enum ClinicStaffRole {
@@ -64,39 +63,30 @@ enum ShipmentStatus {
 }
 
 model User {
-  id               BigInt             @id @default(autoincrement()) @db.BigInt
-  username         String             @unique @db.VarChar(50)
-  email            String?            @unique @db.VarChar(255)
-  passwordHash     String             @map("password_hash") @db.VarChar(255)
-  status           UserStatus         @default(active)
-  createdAt        DateTime           @default(now()) @map("created_at")
-  updatedAt        DateTime           @updatedAt @map("updated_at")
-  profile          UserProfile?
-  clinicStaff      ClinicStaff[]
-  practitioner     Practitioner?
-  appointments     Appointment[]
-  verifications    UserVerification[] @relation("UserVerifications")
-  verifiedBy       UserVerification[] @relation("VerifiedByUser")
-  currentStatus    UserCurrentStatus?
-  partnerShares    Partner[]          @relation("PartnerSharedBy")
-  partnerReceipts  Partner[]          @relation("PartnerReceivedBy")
-  statusSharesSent StatusShare[]      @relation("StatusShareSender")
-  statusSharesTo   StatusShare[]      @relation("StatusShareRecipient")
-  orders           Order[]
+  id                     BigInt             @id @default(autoincrement()) @db.BigInt
+  username               String             @unique @db.VarChar(50)
+  email                  String?            @unique @db.VarChar(255)
+  passwordHash           String             @map("password_hash") @db.VarChar(255)
+  status                 UserStatus         @default(Not_Verified)
+  gender                 String?            @db.VarChar
+  ageRange               String?            @map("age_range") @db.VarChar
+  preferredPartnerGender String?            @map("preferred_partner_gender") @db.VarChar
+  address                String?            @db.Text
+  createdAt              DateTime           @default(now()) @map("created_at")
+  updatedAt              DateTime           @updatedAt @map("updated_at")
+  clinicStaff            ClinicStaff[]
+  practitioner           Practitioner?
+  appointments           Appointment[]
+  verifications          UserVerification[] @relation("UserVerifications")
+  verifiedBy             UserVerification[] @relation("VerifiedByUser")
+  currentStatus          UserCurrentStatus?
+  partnerShares          Partner[]          @relation("PartnerSharedBy")
+  partnerReceipts        Partner[]          @relation("PartnerReceivedBy")
+  statusSharesSent       StatusShare[]      @relation("StatusShareSender")
+  statusSharesTo         StatusShare[]      @relation("StatusShareRecipient")
+  orders                 Order[]
 
   @@map("users")
-}
-
-model UserProfile {
-  userId                 BigInt   @id @map("user_id") @db.BigInt
-  gender                 String?  @db.VarChar
-  ageRange               String?  @map("age_range") @db.VarChar
-  preferredPartnerGender String?  @map("preferred_partner_gender") @db.VarChar
-  address                String?  @db.Text
-  updatedAt              DateTime @updatedAt @map("updated_at")
-  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("user_profile")
 }
 
 model Clinic {

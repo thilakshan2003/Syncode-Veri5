@@ -42,7 +42,8 @@ services:
         condition: service_healthy
     networks:
       - syncode-network
-    command: sh -c "npx prisma migrate deploy && npm run dev"
+    # allow migrate to fail without stopping the container, then start dev server
+    command: sh -c "npx prisma migrate deploy || true && npm run dev"
 
   # Frontend Service
   frontend:

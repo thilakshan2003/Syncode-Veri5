@@ -2,7 +2,7 @@
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import dotenv from 'dotenv';
-import { PrismaClient, UserStatus, AppointmentSlotMode, AppointmentStatus, OrderStatus, PaymentStatus, ShipmentStatus } from '../generated/prisma/client.js';
+import { PrismaClient, UserStatus, AppointmentSlotMode, AppointmentStatus, OrderStatus, PaymentStatus, ShipmentStatus } from '../generated/prisma/client';
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ async function main() {
     await prisma.userCurrentStatus.deleteMany();
     await prisma.partner.deleteMany();
     await prisma.statusShare.deleteMany();
-    // await prisma.userProfile.deleteMany(); // Removed as model is deleted
+    await prisma.userProfile.deleteMany();
     await prisma.clinic.deleteMany();
     await prisma.testKit.deleteMany();
     await prisma.testType.deleteMany();
@@ -102,10 +102,14 @@ async function main() {
             username: 'alice_w',
             email: 'alice@example.com',
             passwordHash: 'hashed_password_placeholder',
-            status: UserStatus.Verified,
-            gender: 'Female',
-            ageRange: '25-30',
-            address: '123 Mushroom Lane',
+            status: UserStatus.verified,
+            profile: {
+                create: {
+                    gender: 'Female',
+                    ageRange: '25-30',
+                    address: '123 Mushroom Lane',
+                }
+            }
         },
     });
 
@@ -115,10 +119,14 @@ async function main() {
             username: 'bob_b',
             email: 'bob@example.com',
             passwordHash: 'hashed_password_placeholder',
-            status: UserStatus.Verified,
-            gender: 'Male',
-            ageRange: '30-35',
-            address: '456 Construction Rd',
+            status: UserStatus.verified,
+            profile: {
+                create: {
+                    gender: 'Male',
+                    ageRange: '30-35',
+                    address: '456 Construction Rd',
+                }
+            },
             currentStatus: {
                 create: {
                     status: 'unverified'
@@ -133,7 +141,7 @@ async function main() {
             username: 'dr_sarah',
             email: 'sarah@example.com',
             passwordHash: 'hashed_password_placeholder',
-            status: UserStatus.Verified,
+            status: UserStatus.verified,
         },
     });
 
@@ -157,7 +165,7 @@ async function main() {
             username: 'dr_john',
             email: 'john@example.com',
             passwordHash: 'hashed_password_placeholder',
-            status: UserStatus.Verified,
+            status: UserStatus.verified,
         },
     });
 

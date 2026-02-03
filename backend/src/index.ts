@@ -22,7 +22,9 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    //This is the frontend URL 
+    // Used to set the Access-Control-Allow-Origin CORS header
+    origin: 'http://localhost:3000', 
     credentials: true,
 }));
 app.use(express.json());
@@ -33,6 +35,7 @@ app.set('json replacer', (key: string, value: any) => {
     return typeof value === 'bigint' ? value.toString() : value;
 });
 
+// Mount auth routes
 log('Mounting auth routes at /api/auth');
 app.use('/api/auth', authRoutes);
 

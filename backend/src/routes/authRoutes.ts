@@ -8,7 +8,10 @@ import fs from 'fs';
 const router = Router();
 fs.appendFileSync('DEBUG.log', `${new Date().toISOString()} - AuthRoutes loading...\n`);
 
-router.post('/signup', validate(signupSchema), signup);
+//These are all the auth routes
+//All requests to these routes will be prefixed with /auth
+//They are validated using the validation schemas defined in ../utils/validationSchemas.ts
+router.post('/signup', validate(signupSchema), signup); //
 router.post('/login', validate(loginSchema), login);
 router.post('/google', validate(googleLoginSchema), googleCallback);
 router.post('/logout', logout);

@@ -36,7 +36,7 @@ export default function Dashboard() {
                             <div>
                                 <div className="flex items-center gap-3 mb-1">
                                     <h2 className="text-2xl md:text-3xl font-bold">Status: Verified</h2>
-                                    <span className="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2 py-1 rounded border border-emerald-500/30 uppercase tracking-widest">Verified</span>
+                                    <span className="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2 py-1 rounded border border-emerald-500/30 uppercase tracking-widest">Active</span>
                                 </div>
                                 <p className="text-slate-300 text-sm">Last Verified: Jan 15, 2026 &bull; Expires in 28 Days</p>
                             </div>

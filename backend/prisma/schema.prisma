@@ -1,10 +1,13 @@
+
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
+
+// prisma/schema.prisma
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
 }
 
 enum UserStatus {
@@ -230,8 +233,8 @@ model Partner {
   status           PartnerStatus @default(pending)
   createdAt        DateTime      @default(now()) @map("created_at")
   acceptedAt       DateTime?     @map("accepted_at")
-  userLow          BigInt        @default(dbgenerated("LEAST(\"shared_by_user_id\", \"received_by_user_id\")")) @map("user_low") @db.BigInt
-  userHigh         BigInt        @default(dbgenerated("GREATEST(\"shared_by_user_id\", \"received_by_user_id\")")) @map("user_high") @db.BigInt
+  userLow          BigInt        @map("user_low") @db.BigInt
+  userHigh         BigInt        @map("user_high") @db.BigInt
   sharedByUser     User          @relation("PartnerSharedBy", fields: [sharedByUserId], references: [id], onDelete: Cascade)
   receivedByUser   User          @relation("PartnerReceivedBy", fields: [receivedByUserId], references: [id], onDelete: Cascade)
 

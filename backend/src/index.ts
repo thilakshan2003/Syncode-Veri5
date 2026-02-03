@@ -3,8 +3,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import clinicRouter from './routers/clinicRouter.js';
 import dotenv from 'dotenv';
-// import authRoutes from './routes/authRoutes.js';
-// import { serializeBigInt } from './utils/serialization.js';
+import authRoutes from './routes/authRoutes.js';
+import { serializeBigInt } from './utils/serialization.js';
 import fs from 'fs';
 
 const log = (msg: string) => fs.appendFileSync('DEBUG.log', `${new Date().toISOString()} - ${msg}\n`);

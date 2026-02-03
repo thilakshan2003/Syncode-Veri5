@@ -13,8 +13,12 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // Redirect to login if unauthorized
-            if (typeof window !== 'undefined') {
+            // Define public paths that shouldn't trigger an automatic redirect to login
+            const publicPaths = ['/login', '/signup', '/'];
+            const isPublicPath = typeof window !== 'undefined' && publicPaths.includes(window.location.pathname);
+
+            // Redirect to login if unauthorized and not on a public page
+            if (typeof window !== 'undefined' && !isPublicPath) {
                 // Clear local storage if any
                 localStorage.removeItem('user');
                 window.location.href = '/login';

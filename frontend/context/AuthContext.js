@@ -69,9 +69,14 @@ export const AuthProvider = ({ children }) => {
         setUser(updatedUser);
     };
 
-    const googleLogin = () => {
-        // Redirect to the backend Google OAuth URL
-        window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/google`;
+    const googleLogin = async (tokenId) => {
+        try {
+            await api.post('/api/auth/google', { tokenId });
+            await fetchMe();
+            router.push('/dashboard');
+        } catch (err) {
+            throw err.response?.data?.error || 'Google login failed';
+        }
     };
 
     return (

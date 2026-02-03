@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Script from "next/script";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -43,6 +44,30 @@ export default function SignupPage() {
             await signup(data);
         } catch (err) {
             setError(err);
+        }
+    };
+
+    const handleGoogleResponse = async (response) => {
+        try {
+            setError("");
+            await googleLogin(response.credential);
+        } catch (err) {
+            setError(err);
+        }
+    };
+
+    const initializeGoogle = () => {
+        if (window.google) {
+            window.google.accounts.id.initialize({
+                client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+                callback: handleGoogleResponse,
+            });
+        }
+    };
+
+    const triggerGoogleLogin = () => {
+        if (window.google) {
+            window.google.accounts.id.prompt();
         }
     };
 
@@ -176,8 +201,13 @@ export default function SignupPage() {
 
                 {/* Google Auth */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
+                    <Script
+                        src="https://accounts.google.com/gsi/client"
+                        onLoad={initializeGoogle}
+                    />
                     <button
-                        onClick={() => googleLogin()}
+                        type="button"
+                        onClick={() => triggerGoogleLogin()}
                         className="w-full bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium py-3.5 rounded-full transition-all flex items-center justify-center gap-3"
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">

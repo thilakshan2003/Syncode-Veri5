@@ -15,6 +15,17 @@ export const updateProfile = async (req: Request, res: Response) => {
                 ageRange: ageRange || null,
                 address: address || null,
             },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                status: true,
+                gender: true,
+                ageRange: true,
+                address: true,
+                createdAt: true,
+                updatedAt: true,
+            }
         });
 
         res.status(200).json({

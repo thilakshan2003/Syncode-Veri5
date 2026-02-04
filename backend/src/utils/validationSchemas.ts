@@ -18,3 +18,10 @@ export const loginSchema = z.object({
 export const googleLoginSchema = z.object({
     tokenId: z.string().min(1, 'Token ID is required'),
 });
+
+export const updateProfileSchema = z.object({
+    username: z.string().min(3, 'Username must be at least 3 characters'),
+    gender: z.enum(['Male', 'Female', 'Non-binary', 'Prefer not to say']).optional().nullable(),
+    ageRange: z.string().optional().nullable(),
+    address: z.string().optional().nullable(),
+});

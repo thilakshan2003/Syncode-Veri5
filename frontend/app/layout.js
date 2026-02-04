@@ -13,14 +13,18 @@ export const metadata = {
   description: "Verified sexual health testing and sharing.",
 };
 
+import { AuthProvider } from "@/context/AuthContext";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
         className={`${inter.className} antialiased`}
       >
-        {children}
-        <Footer />
+        <AuthProvider>
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

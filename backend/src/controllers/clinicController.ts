@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import * as clinicService from '../service/clinicService.js';
+import * as clinicService from '../services/clinicService.js';
 
 export const getClinics = async (req: Request, res: Response) => {
   try {

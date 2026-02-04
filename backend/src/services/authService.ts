@@ -10,6 +10,9 @@ const client = new OAuth2Client(config.google.clientId);
 
 // Token generation helpers
 const generateTokens = (userId: bigint) => {
+    // Generate JWT access and refresh tokens
+    // Access token is short-lived and used for authentication
+    // Refresh token is long-lived and used to obtain new access tokens
     const accessToken = jwt.sign({ userId: userId.toString() }, config.jwt.accessSecret, {
         expiresIn: config.jwt.accessExpiresIn,
     } as jwt.SignOptions);
@@ -21,29 +24,34 @@ const generateTokens = (userId: bigint) => {
 
 export class AuthService {
     async signup(data: z.infer<typeof signupSchema>) {
+        // check if user already exists
         const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
         if (existingUser) {
             throw new Error('User already exists');
         }
 
+        // check if username is taken
         const existingUsername = await prisma.user.findUnique({ where: { username: data.username } });
         if (existingUsername) {
             throw new Error('Username already taken');
         }
-
+        // generate password hash
         const passwordHash = await bcrypt.hash(data.password, 10);
 
+        // create new user
         const newUser = await prisma.user.create({
             data: {
                 username: data.username,
                 email: data.email,
                 passwordHash,
+                status: 'Not_Verified',
                 gender: data.gender ?? null,
                 ageRange: data.ageRange ?? null,
                 address: data.address ?? null,
             },
         });
-
+        // generate jwt tokens
+        // the tokens will be used for authentication and they store the user id in their payload
         return generateTokens(newUser.id);
     }
 
@@ -62,6 +70,8 @@ export class AuthService {
     }
 
     async googleLogin(tokenId: string) {
+        // Verify the token with Google
+        // If valid, get user info from payload
         const ticket = await client.verifyIdToken({
             idToken: tokenId,
             audience: config.google.clientId,
@@ -72,6 +82,7 @@ export class AuthService {
             throw new Error('Invalid Google token');
         }
 
+        // Check if user exists in our database
         let user = await prisma.user.findUnique({ where: { email: payload.email } });
 
         if (!user) {
@@ -84,8 +95,8 @@ export class AuthService {
                 data: {
                     username,
                     email: payload.email,
-                    passwordHash: 'GOOGLE_AUTH_NO_PASSWORD',
-                    status: 'Verified', // Assuming Google verified emails are verified
+                    passwordHash: 'GOOGLE_AUTH_NO_PASSWORD', // Placeholder password
+                    status: 'Not_Verified', // Cuz the default user status is unverified
                 },
             });
         }

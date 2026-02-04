@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import Script from "next/script";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Mail, Lock, MoveRight, ShieldCheck, EyeOff, LockKeyhole } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { User } from "lucide-react";
 
 const signupSchema = z.object({
+    username: z.string().min(3, "Username must be at least 3 characters"),
     email: z.string().email("Please enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Password must be at least 8 characters"),
@@ -18,11 +22,13 @@ const signupSchema = z.object({
 
 export default function SignupPage() {
     const [mounted, setMounted] = useState(false);
+    const { signup, googleLogin } = useAuth();
+    const [error, setError] = useState("");
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm({
         resolver: zodResolver(signupSchema),
     });
@@ -32,9 +38,37 @@ export default function SignupPage() {
         setMounted(true);
     }, []);
 
-    const onSubmit = (data) => {
-        console.log("Signup Data:", data);
-        // Handle signup logic here
+    const onSubmit = async (data) => {
+        try {
+            setError("");
+            await signup(data);
+        } catch (err) {
+            setError(err);
+        }
+    };
+
+    const handleGoogleResponse = async (response) => {
+        try {
+            setError("");
+            await googleLogin(response.credential);
+        } catch (err) {
+            setError(err);
+        }
+    };
+
+    const initializeGoogle = () => {
+        if (window.google) {
+            window.google.accounts.id.initialize({
+                client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+                callback: handleGoogleResponse,
+            });
+        }
+    };
+
+    const triggerGoogleLogin = () => {
+        if (window.google) {
+            window.google.accounts.id.prompt();
+        }
     };
 
     if (!mounted) return null;
@@ -59,7 +93,31 @@ export default function SignupPage() {
 
             {/* Signup Card */}
             <div className="w-full max-w-[480px] bg-white rounded-[2rem] border border-veri5-teal/30 p-8 md:p-12 shadow-[0_0_40px_-10px_rgba(40,169,158,0.1)]">
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-sm">
+                        {error}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    {/* Username Field */}
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
+                            Username
+                        </label>
+                        <div className="relative group">
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-veri5-teal transition-colors" />
+                            <input
+                                {...register("username")}
+                                type="text"
+                                placeholder="Choose a username"
+                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
+                            />
+                        </div>
+                        {errors.username && (
+                            <p className="text-red-500 text-sm ml-1">{errors.username.message}</p>
+                        )}
+                    </div>
+
                     {/* Email Field */}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
@@ -120,9 +178,10 @@ export default function SignupPage() {
                     {/* Create Account Button */}
                     <button
                         type="submit"
-                        className="w-full bg-veri5-teal hover:bg-[#23968c] active:scale-[0.98] text-white font-semibold py-4 rounded-full transition-all flex items-center justify-center gap-2 group mt-4 shadow-lg shadow-veri5-teal/20"
+                        disabled={isSubmitting}
+                        className="w-full bg-veri5-teal hover:bg-[#23968c] active:scale-[0.98] text-white font-semibold py-4 rounded-full transition-all flex items-center justify-center gap-2 group mt-4 shadow-lg shadow-veri5-teal/20 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Create Account
+                        {isSubmitting ? "Creating Account..." : "Create Account"}
                         <MoveRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
 
@@ -142,7 +201,15 @@ export default function SignupPage() {
 
                 {/* Google Auth */}
                 <div className="mt-8 pt-6 border-t border-gray-100">
-                    <button className="w-full bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium py-3.5 rounded-full transition-all flex items-center justify-center gap-3">
+                    <Script
+                        src="https://accounts.google.com/gsi/client"
+                        onLoad={initializeGoogle}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => triggerGoogleLogin()}
+                        className="w-full bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium py-3.5 rounded-full transition-all flex items-center justify-center gap-3"
+                    >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
                                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

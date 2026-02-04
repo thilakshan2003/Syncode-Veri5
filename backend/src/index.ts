@@ -1,9 +1,10 @@
 import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import clinicRouter from './routers/clinicRouter.js';
+import clinicRouter from './routes/clinicRouter.js';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { serializeBigInt } from './utils/serialization.js';
 import fs from 'fs';
 
@@ -14,7 +15,7 @@ dotenv.config();
 
 // Fix BigInt serialization
 (BigInt.prototype as any).toJSON = function () {
-  return this.toString();
+    return this.toString();
 };
 
 const app = express();
@@ -22,6 +23,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
+    //This is the frontend URL 
+    // Used to set the Access-Control-Allow-Origin CORS header
     origin: 'http://localhost:3000',
     credentials: true,
 }));
@@ -33,8 +36,10 @@ app.set('json replacer', (key: string, value: any) => {
     return typeof value === 'bigint' ? value.toString() : value;
 });
 
+// Mount auth routes
 log('Mounting auth routes at /api/auth');
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 // basic health endpoint
 app.get('/health', (req: Request, res: Response) => {

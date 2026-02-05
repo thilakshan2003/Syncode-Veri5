@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import QuickActionCard from '@/components/QuickActionCard';
 import StatSummaryCard from '@/components/StatSummaryCard';
@@ -10,10 +10,79 @@ import ActivityLog from '@/components/ActivityLog';
 import { Share2, FileUp, ClipboardList, ShieldCheck, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { dashboardApi } from '@/lib/api';
 
 export default function Dashboard() {
     const [shareModalOpen, setShareModalOpen] = useState(false);
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
+    const [userStatus, setUserStatus] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch user status from database
+    useEffect(() => {
+        fetchUserStatus();
+    }, []);
+
+    const fetchUserStatus = async () => {
+        try {
+            setLoading(true);
+            // TODO: Replace with actual user ID from auth context
+            const userId = 10; // Change this to your user ID
+            const response = await dashboardApi.getUserStatus(userId);
+            
+            console.log('API Response:', response); // Debug log
+            
+            if (response.success) {
+                // Backend is returning old format with nested data
+                // Check both response.status and response.data.status
+                const status = response.status || response.data?.status;
+                setUserStatus(status);
+                console.log('Set userStatus to:', status); // Debug log
+            }
+        } catch (err) {
+            console.error('Error fetching user status:', err);
+            setError('Failed to load status');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Determine status display
+    const getStatusDisplay = () => {
+        console.log('Current userStatus:', userStatus); // Debug log
+        console.log('Loading:', loading, 'Error:', error); // Debug log
+        
+        if (loading) return { label: 'Loading...', color: 'bg-gray-500', textColor: 'text-gray-300', badgeText: '...' };
+        if (error || !userStatus) return { label: 'Unknown', color: 'bg-gray-500', textColor: 'text-gray-300', badgeText: 'Unknown' };
+        
+        // Handle both "Verified" and "Not_Verified" from database
+        if (userStatus === 'Verified') {
+            return {
+                label: 'Verified',
+                color: 'bg-emerald-500',
+                textColor: 'text-emerald-300',
+                badgeText: 'Active'
+            };
+        } else if (userStatus === 'Not_Verified') {
+            return {
+                label: 'Not Verified',
+                color: 'bg-yellow-500',
+                textColor: 'text-yellow-300',
+                badgeText: 'Inactive'
+            };
+        } else {
+            console.log('Status did not match - got:', userStatus); // Debug log
+            return {
+                label: 'Unknown',
+                color: 'bg-gray-500',
+                textColor: 'text-gray-300',
+                badgeText: 'Unknown'
+            };
+        }
+    };
+
+    const statusDisplay = getStatusDisplay();
 
     return (
         <main className="min-h-screen bg-slate-50/50 pb-20">
@@ -30,15 +99,16 @@ export default function Dashboard() {
                         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
                         <div className="flex items-center gap-6 z-10">
-                            <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-900/20 animate-pulse-slow">
+                            <div className={`w-20 h-20 ${statusDisplay.color} rounded-full flex items-center justify-center shadow-lg shadow-emerald-900/20 animate-pulse-slow`}>
                                 <ShieldCheck className="w-10 h-10 text-white" strokeWidth={2.5} />
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-1">
-                                    <h2 className="text-2xl md:text-3xl font-bold">Status: Verified</h2>
-                                    <span className="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2 py-1 rounded border border-emerald-500/30 uppercase tracking-widest">Active</span>
+                                    <h2 className="text-2xl md:text-3xl font-bold">Status: {statusDisplay.label}</h2>
+                                    <span className={`${statusDisplay.color}/20 ${statusDisplay.textColor} text-xs font-bold px-2 py-1 rounded border ${statusDisplay.color}/30 uppercase tracking-widest`}>
+                                        {statusDisplay.badgeText}
+                                    </span>
                                 </div>
-                                <p className="text-slate-300 text-sm">Last Verified: Jan 15, 2026 &bull; Expires in 28 Days</p>
                             </div>
                         </div>
 

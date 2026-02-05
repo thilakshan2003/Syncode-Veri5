@@ -28,4 +28,17 @@ api.interceptors.response.use(
     }
 );
 
+// Dashboard API functions
+export const dashboardApi = {
+    /**
+     * Get user status from User table
+     * @param {string|number} userId - User ID
+     * @returns {Promise} Response with status
+     */
+    getUserStatus: async (userId) => {
+        const response = await api.get(`/api/dashboard/status/${userId}`);
+        return response.data;
+    }
+};
+
 export default api;

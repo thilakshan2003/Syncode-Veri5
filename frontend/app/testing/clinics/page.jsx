@@ -1,37 +1,97 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import ClinicSearch from '@/components/ClinicSearch';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock } from 'lucide-react';
+import api from '@/lib/api';
 
-const mockClinics = [
-    {
-        name: "Sexual Health Clinic - SafeZone",
-        distance: "2.4 kilometers",
-        status: "Open until 6 PM",
-        tags: ["Accepts Veri5 ID"],
-        action: "Book Now"
-    },
-    {
-        name: "Colombo South Teaching Hospital",
-        distance: "2.8 kilometers",
-        status: "Open 24/7",
-        tags: ["Walk-ins Welcome"],
-        action: "Book Now"
-    },
-    {
-        name: "Sexual Health Clinic, Kalubowila",
-        distance: "3.1 kilometers",
-        status: "Closed",
-        tags: ["Available Tomorrow"],
-        action: "Book Now"
-    }
-];
+// Haversine formula to calculate distance between two coordinates
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance.toFixed(1); // Return distance with 1 decimal place
+};
 
 export default function ClinicsPage() {
     const [viewMode, setViewMode] = useState('map'); // 'map' or 'list'
+    const [clinics, setClinics] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [userLocation, setUserLocation] = useState(null);
+
+    // Get user's current location
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setUserLocation({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    // Continue without user location
+                }
+            );
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchClinics = async () => {
+            try {
+                setLoading(true);
+                const response = await api.get('/clinics');
+                // Transform clinic data to match our display format
+                const transformedClinics = response.data.map(clinic => {
+                    let distance = "TBD";
+                    // Calculate distance if we have user location and clinic coordinates
+                    if (userLocation && clinic.lat && clinic.lng) {
+                        const distanceKm = calculateDistance(
+                            userLocation.lat,
+                            userLocation.lng,
+                            parseFloat(clinic.lat),
+                            parseFloat(clinic.lng)
+                        );
+                        distance = `${distanceKm} km`;
+                    }
+                    
+                    return {
+                        id: clinic.id,
+                        name: clinic.name,
+                        address: clinic.address,
+                        availableTime: clinic.availableTime,
+                        distance: distance,
+                        status: clinic.isOpen ? "Open Now" : "Closed",
+                        tags: clinic.isOpen ? ["Open Now"] : ["Closed"],
+                        action: "Book Now",
+                        isOpen: clinic.isOpen,
+                        lat: clinic.lat,
+                        lng: clinic.lng
+                    };
+                });
+                setClinics(transformedClinics);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching clinics:', err);
+                setError('Failed to load clinics');
+                setClinics([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClinics();
+    }, [userLocation]); // Re-fetch when user location is available
 
     return (
         <main className="min-h-screen bg-white pb-20">
@@ -54,27 +114,48 @@ export default function ClinicsPage() {
                             <Button variant="ghost" size="sm" className="text-xs text-veri5-teal">Change</Button>
                         </div>
 
-                        {mockClinics.map((clinic, idx) => (
-                            <div key={idx} className="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
-                                <h3 className="font-bold text-slate-900 mb-1 group-hover:text-veri5-teal transition-colors">{clinic.name}</h3>
-                                <div className="flex items-center text-xs text-slate-500 mb-4 space-x-3">
-                                    <span>{clinic.distance} away</span>
-                                    <span>&bull;</span>
-                                    <span className={clinic.status.includes('Closed') ? 'text-red-500' : 'text-emerald-600'}>{clinic.status}</span>
-                                </div>
-
-                                <div className="flex items-center justify-between mt-4">
-                                    <div className="flex gap-2">
-                                        {clinic.tags.map((tag, tIdx) => (
-                                            <span key={tIdx} className="bg-cyan-50 text-veri5-teal text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
-                                                {tag}
-                                            </span>
-                                        ))}
+                        {loading ? (
+                            <div className="text-center py-8 text-slate-500">Loading clinics...</div>
+                        ) : error ? (
+                            <div className="text-center py-8 text-red-500">{error}</div>
+                        ) : clinics.length === 0 ? (
+                            <div className="text-center py-8 text-slate-500">No clinics found</div>
+                        ) : (
+                            clinics.map((clinic) => (
+                                <div key={clinic.id} className="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+                                    <h3 className="font-bold text-slate-900 mb-1 group-hover:text-veri5-teal transition-colors">{clinic.name}</h3>
+                                    <div className="flex items-center text-xs text-slate-500 mb-2">
+                                        <span>{clinic.address}</span>
                                     </div>
-                                    <Button variant="ghost" className="text-veri5-teal font-bold hover:bg-cyan-50 h-8 px-4 text-xs">{clinic.action}</Button>
+                                    <div className="flex items-center text-xs text-slate-500 mb-4 space-x-3">
+                                        <span>{clinic.distance} away</span>
+                                        <span>&bull;</span>
+                                        <span className={clinic.isOpen ? 'text-emerald-600 font-semibold' : 'text-red-500 font-semibold'}>
+                                            {clinic.status}
+                                        </span>
+                                        {clinic.availableTime && (
+                                            <>
+                                                <span>&bull;</span>
+                                                <span className="text-slate-400">{clinic.availableTime}</span>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    <div className="flex items-center justify-between mt-4">
+                                        <div className="flex gap-2">
+                                            {clinic.tags.map((tag, tIdx) => (
+                                                <span key={tIdx} className={`text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${
+                                                    clinic.isOpen ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'
+                                                }`}>
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <Button variant="ghost" className="text-veri5-teal font-bold hover:bg-cyan-50 h-8 px-4 text-xs">{clinic.action}</Button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
 
                     {/* Right: Map Placeholder */}

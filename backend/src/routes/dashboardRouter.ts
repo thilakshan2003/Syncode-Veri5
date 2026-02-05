@@ -1,5 +1,5 @@
 import express from 'express';
-import { getStatus } from '../controllers/dashboardController.js';
+import { getStatus, getTestCount } from '../controllers/dashboardController.js';
 
 const router = express.Router();
 
@@ -8,5 +8,11 @@ const router = express.Router();
  * Get user status from User table
  */
 router.get('/status/:userId', getStatus);
+
+/**
+ * GET /api/dashboard/tests/:userId
+ * Get number of tests taken by user
+ */
+router.get('/tests/:userId', getTestCount);
 
 export default router;

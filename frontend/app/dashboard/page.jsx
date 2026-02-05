@@ -16,12 +16,14 @@ export default function Dashboard() {
     const [shareModalOpen, setShareModalOpen] = useState(false);
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [userStatus, setUserStatus] = useState(null);
+    const [testCount, setTestCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fetch user status from database
+    // Fetch user status and test count from database
     useEffect(() => {
         fetchUserStatus();
+        fetchTestCount();
     }, []);
 
     const fetchUserStatus = async () => {
@@ -82,6 +84,29 @@ export default function Dashboard() {
         }
     };
 
+    const fetchTestCount = async () => {
+        try {
+            // TODO: Replace with actual user ID from auth context
+            const userId = 10; // Change this to your user ID
+            const response = await dashboardApi.getUserTestCount(userId);
+            
+            console.log('Test Count API Response:', response); // Debug log
+            
+            if (response.success) {
+                const count = response.testCount || 0;
+                setTestCount(count);
+                console.log('Set testCount to:', count); // Debug log
+            }
+        } catch (err) {
+            console.error('Error fetching test count:', err);
+            // Don't set error, just keep testCount as 0
+        }
+    };
+
+    
+
+
+
     const statusDisplay = getStatusDisplay();
 
     return (
@@ -131,8 +156,8 @@ export default function Dashboard() {
                         <div className="grid grid-cols-2 gap-4">
                             <StatSummaryCard
                                 label="Tests Taken"
-                                value="4"
-                                subtext="Last: Jan 15"
+                                value={loading ? "..." : testCount.toString()}
+                                subtext={testCount === 0 ? "No tests yet" : `Total: ${testCount} test${testCount > 1 ? 's' : ''}`}
                             />
                             <StatSummaryCard
                                 label="Next Encrypt"
@@ -191,3 +216,5 @@ export default function Dashboard() {
         </main>
     );
 }
+
+

@@ -38,6 +38,16 @@ export const dashboardApi = {
     getUserStatus: async (userId) => {
         const response = await api.get(`/api/dashboard/status/${userId}`);
         return response.data;
+    },
+
+    /**
+     * Get number of tests taken by user
+     * @param {string|number} userId - User ID
+     * @returns {Promise} Response with test count
+     */
+    getUserTestCount: async (userId) => {
+        const response = await api.get(`/api/dashboard/tests/${userId}`);
+        return response.data;
     }
 };
 

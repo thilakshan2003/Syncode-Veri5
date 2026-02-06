@@ -7,6 +7,7 @@ import StatSummaryCard from '@/components/StatSummaryCard';
 import ShareStatusModal from '@/components/ShareStatusModal';
 import ResultUploadModal from '@/components/ResultUploadModal';
 import ActivityLog from '@/components/ActivityLog';
+import StatusWatchCard from '@/components/StatusWatchCard';
 import { Share2, FileUp, ClipboardList, ShieldCheck, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -17,21 +18,21 @@ export default function Dashboard() {
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [userStatus, setUserStatus] = useState(null);
     const [testCount, setTestCount] = useState(0);
+    const [nextTestDate, setNextTestDate] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fetch user status and test count from database
+    // Fetch user status, test count, and next test date from database
     useEffect(() => {
         fetchUserStatus();
         fetchTestCount();
+        fetchNextTestDate();
     }, []);
 
     const fetchUserStatus = async () => {
         try {
             setLoading(true);
-            // TODO: Replace with actual user ID from auth context
-            const userId = 10; // Change this to your user ID
-            const response = await dashboardApi.getUserStatus(userId);
+            const response = await dashboardApi.getUserStatus();
             
             console.log('API Response:', response); // Debug log
             
@@ -86,9 +87,7 @@ export default function Dashboard() {
 
     const fetchTestCount = async () => {
         try {
-            // TODO: Replace with actual user ID from auth context
-            const userId = 10; // Change this to your user ID
-            const response = await dashboardApi.getUserTestCount(userId);
+            const response = await dashboardApi.getUserTestCount();
             
             console.log('Test Count API Response:', response); // Debug log
             
@@ -103,11 +102,34 @@ export default function Dashboard() {
         }
     };
 
-    
+    const fetchNextTestDate = async () => {
+        try {
+            const response = await dashboardApi.getNextTestDate();
+            
+            console.log('Next Test Date API Response:', response); // Debug log
+            
+            if (response.success && response.nextTestDate) {
+                setNextTestDate(new Date(response.nextTestDate));
+                console.log('Set nextTestDate to:', response.nextTestDate); // Debug log
+            } else {
+                // No test history found
+                setNextTestDate(null);
+                console.log('No test history found'); // Debug log
+            }
+        } catch (err) {
+            console.error('Error fetching next test date:', err);
+            // Don't set error, just keep nextTestDate as null
+        }
+    };
 
+    // Format date for display (e.g., "Feb 12" or "Mar 5")
+    const formatDate = (date) => {
+        if (!date) return 'Not scheduled';
+        const options = { month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    };
 
-
-    const statusDisplay = getStatusDisplay();
+        const statusDisplay = getStatusDisplay();
 
     return (
         <main className="min-h-screen bg-slate-50/50 pb-20">
@@ -160,9 +182,9 @@ export default function Dashboard() {
                                 subtext={testCount === 0 ? "No tests yet" : `Total: ${testCount} test${testCount > 1 ? 's' : ''}`}
                             />
                             <StatSummaryCard
-                                label="Next Encrypt"
-                                value="Feb 12"
-                                subtext="Auto-scheduled"
+                                label="The Next Test Day"
+                                value={loading ? "..." : formatDate(nextTestDate)}
+                                subtext={nextTestDate ? "Auto-scheduled" : "Schedule first test"}
                             />
                         </div>
 
@@ -193,8 +215,12 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Right Column: Activity Log */}
-                    <div className="h-full">
+                    {/* Right Column: Activity Log & Status Watch */}
+                    <div className="h-full space-y-6">
+                        {/* Status Watch Card */}
+                        <StatusWatchCard />
+                        
+                        {/* Activity Log */}
                         <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm h-full flex flex-col">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-lg font-bold text-slate-800">Recent Activity</h3>

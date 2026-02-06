@@ -1,28 +1,64 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Shield, Check, Loader2, Link as LinkIcon, Lock } from "lucide-react";
+import { User, Shield, Check, Loader2, Link as LinkIcon, Lock, Copy, CheckCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { dashboardApi } from "@/lib/api";
 
 export default function ShareStatusModal({ open, onOpenChange }) {
     const [step, setStep] = useState('search'); // search, verifying, ready
     const [searchTerm, setSearchTerm] = useState('');
+    const [shareLink, setShareLink] = useState('');
+    const [expiryHours, setExpiryHours] = useState(24);
+    const [copied, setCopied] = useState(false);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
         if (!searchTerm) return;
+        
         setStep('verifying');
+        setError(null);
+        setLoading(true);
 
-        // Simulate API verification delay
-        setTimeout(() => {
-            setStep('ready');
-        }, 1500);
+        try {
+            // Create status share
+            const response = await dashboardApi.createStatusShare({
+                recipientUsername: searchTerm,
+                expiryHours: expiryHours,
+                maxViews: 1
+            });
+
+            if (response.success) {
+                // Generate the share link with token
+                const baseUrl = window.location.origin;
+                const link = `${baseUrl}/status-view/${response.data.token}`;
+                setShareLink(link);
+                setStep('ready');
+            }
+        } catch (err) {
+            console.error('Error creating status share:', err);
+            setError(err.response?.data?.error || 'Failed to create status share');
+            setStep('search');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(shareLink);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
     };
 
     const reset = () => {
         setStep('search');
         setSearchTerm('');
+        setShareLink('');
+        setError(null);
+        setCopied(false);
         onOpenChange(false);
     }
 
@@ -32,6 +68,9 @@ export default function ShareStatusModal({ open, onOpenChange }) {
             setTimeout(() => {
                 setStep('search');
                 setSearchTerm('');
+                setShareLink('');
+                setError(null);
+                setCopied(false);
             }, 300);
         }
     }, [open]);
@@ -54,6 +93,13 @@ export default function ShareStatusModal({ open, onOpenChange }) {
                     {step === 'search' && (
                         <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
                             <p className="text-center text-slate-500 mb-6 text-sm">Enter a username to establish a secure, temporary connection for status verification.</p>
+                            
+                            {error && (
+                                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <p className="text-xs text-red-600 text-center">{error}</p>
+                                </div>
+                            )}
+                            
                             <form onSubmit={handleSearch} className="space-y-4">
                                 <div className="relative">
                                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -65,8 +111,23 @@ export default function ShareStatusModal({ open, onOpenChange }) {
                                         autoFocus
                                     />
                                 </div>
-                                <Button type="submit" disabled={!searchTerm} className="w-full h-12 rounded-xl bg-veri5-navy hover:bg-navy-900 text-white font-bold">
-                                    Verify Recipient
+                                
+                                <div className="space-y-2">
+                                    <label className="text-xs text-slate-600 font-medium">Link Expiry</label>
+                                    <select
+                                        value={expiryHours}
+                                        onChange={(e) => setExpiryHours(Number(e.target.value))}
+                                        className="w-full h-10 px-3 rounded-lg border-2 border-slate-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all text-sm"
+                                    >
+                                        <option value={1}>1 hour</option>
+                                        <option value={6}>6 hours</option>
+                                        <option value={24}>24 hours</option>
+                                        <option value={72}>3 days</option>
+                                    </select>
+                                </div>
+                                
+                                <Button type="submit" disabled={!searchTerm || loading} className="w-full h-12 rounded-xl bg-veri5-navy hover:bg-navy-900 text-white font-bold">
+                                    {loading ? 'Creating...' : 'Create Share Link'}
                                 </Button>
                             </form>
                         </div>
@@ -111,14 +172,37 @@ export default function ShareStatusModal({ open, onOpenChange }) {
 
                             <h3 className="text-lg font-bold text-slate-900 mb-2">Secure Link Ready</h3>
                             <p className="text-sm text-slate-500 mb-6 px-4">
-                                <span className="font-bold text-slate-900">{searchTerm}</span> will be able to view your verified status for <span className="text-veri5-teal font-bold">15 minutes</span>. No detailed medical data is shared.
+                                <span className="font-bold text-slate-900">{searchTerm}</span> will be able to view your verified status for <span className="text-veri5-teal font-bold">{expiryHours} {expiryHours === 1 ? 'hour' : 'hours'}</span>. No detailed medical data is shared.
                             </p>
 
-                            <Button onClick={() => alert("Shared!")} className="w-full h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold shadow-lg shadow-emerald-500/20 mb-3">
-                                Confirm Share
+                            {/* Share Link Box */}
+                            <div className="mb-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                <p className="text-xs text-slate-500 mb-2">Share this link:</p>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        value={shareLink}
+                                        readOnly
+                                        className="flex-1 px-3 py-2 text-xs bg-white border border-slate-200 rounded-lg font-mono"
+                                    />
+                                    <Button
+                                        onClick={copyToClipboard}
+                                        size="sm"
+                                        className="bg-veri5-teal hover:bg-teal-600"
+                                    >
+                                        {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                    </Button>
+                                </div>
+                                {copied && (
+                                    <p className="text-xs text-emerald-600 mt-2">✓ Copied to clipboard!</p>
+                                )}
+                            </div>
+
+                            <Button onClick={reset} className="w-full h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold shadow-lg shadow-emerald-500/20 mb-3">
+                                Done
                             </Button>
                             <Button variant="ghost" onClick={reset} className="text-slate-400 hover:text-slate-600 text-xs">
-                                Cancel Connection
+                                Create Another
                             </Button>
                         </div>
                     )}

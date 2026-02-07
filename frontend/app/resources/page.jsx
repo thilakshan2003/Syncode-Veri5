@@ -31,7 +31,7 @@ export default async function ResourcesPage({ searchParams }) {
     const activeCategory = params.category || "";
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-background pb-20 transition-colors duration-300">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-12">
@@ -39,7 +39,7 @@ export default async function ResourcesPage({ searchParams }) {
                     {/* Sidebar */}
                     <aside className="w-full md:w-64 flex-shrink-0">
                         <div className="sticky top-24 space-y-2">
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 px-5">Categories</h3>
+                            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-4 px-5">Categories</h3>
                             {categories.map((cat) => (
                                 <Link
                                     key={cat.value}
@@ -47,17 +47,17 @@ export default async function ResourcesPage({ searchParams }) {
                                     className={`block w-full text-left px-5 py-3 rounded-full text-sm font-bold transition-all
                                 ${activeCategory === cat.value
                                             ? 'bg-veri5-teal text-white shadow-md'
-                                            : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                                            : 'bg-card text-muted-foreground hover:bg-muted'}`}
                                 >
                                     {cat.name}
                                 </Link>
                             ))}
 
-                            <div className="mt-8 bg-veri5-navy rounded-3xl p-6 text-center text-white relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-veri5-teal/20 rounded-full blur-2xl"></div>
+                            <div className="mt-8 bg-card border border-border rounded-3xl p-6 text-center relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-veri5-teal/10 rounded-full blur-2xl"></div>
                                 <div className="relative z-10">
-                                    <h4 className="font-bold mb-2">Need Help?</h4>
-                                    <p className="text-xs text-slate-300 mb-4 opacity-90">Access professional counseling and support services.</p>
+                                    <h4 className="font-bold mb-2 text-foreground">Need Help?</h4>
+                                    <p className="text-xs text-muted-foreground mb-4 opacity-90">Access professional counseling and support services.</p>
                                     <Link href="/consultation" className="block w-full py-2 bg-veri5-teal text-white rounded-xl text-xs font-bold hover:bg-teal-600 transition-colors">Book Consultation</Link>
                                 </div>
                             </div>
@@ -68,16 +68,16 @@ export default async function ResourcesPage({ searchParams }) {
                     <div className="flex-grow">
                         <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
-                                <h1 className="text-3xl font-extrabold text-veri5-navy">Veri5 Resource Library</h1>
-                                <p className="text-slate-500 text-sm mt-1">Professional healthcare guides for university students.</p>
+                                <h1 className="text-3xl font-extrabold text-foreground">Veri5 Resource Library</h1>
+                                <p className="text-muted-foreground text-sm mt-1">Professional healthcare guides for university students.</p>
                             </div>
-                            <div className="flex items-center gap-4 text-slate-400">
+                            <div className="flex items-center gap-4 text-muted-foreground">
                                 <div className="relative">
-                                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" />
+                                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
                                     <input
                                         type="text"
                                         placeholder="Search guides..."
-                                        className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-full text-xs focus:outline-none focus:border-veri5-teal w-48 md:w-64"
+                                        className="pl-10 pr-4 py-2 bg-card border border-border rounded-full text-xs focus:outline-none focus:border-veri5-teal w-48 md:w-64"
                                     />
                                 </div>
                             </div>
@@ -98,8 +98,8 @@ async function ResourceGrid({ category }) {
 
     if (resources.length === 0) {
         return (
-            <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
-                <p className="text-slate-400 font-medium">No resources found for this category.</p>
+            <div className="text-center py-20 bg-card rounded-3xl border border-dashed border-border">
+                <p className="text-muted-foreground font-medium">No resources found for this category.</p>
             </div>
         );
     }

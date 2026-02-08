@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import ClinicSearch from '@/components/ClinicSearch';
+import ClinicMap from '@/components/ClinicMap';
 import { Button } from '@/components/ui/button';
 import api from '@/lib/api';
 import { MapPin, Clock } from 'lucide-react';
@@ -251,19 +252,8 @@ export default function ClinicsPage() {
                     </div>
 
                     {/* Right: Map Placeholder */}
-                    <div className="w-full lg:w-2/3 min-h-[500px] bg-slate-100 rounded-3xl relative overflow-hidden flex items-center justify-center border border-slate-200">
-                        {/* This would be an interactive map in production */}
-                        <div className="absolute inset-0 grayscale opacity-40 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Colombo&zoom=13&size=800x600&sensor=false')] bg-cover bg-center"></div>
-
-                        <div className="relative bg-white/90 backdrop-blur-md p-8 rounded-2xl text-center max-w-sm border border-white shadow-xl">
-                            <div className="w-12 h-12 bg-veri5-teal text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-teal-500/30">
-                                <MapPin className="w-6 h-6" />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-800 mb-2">Interactive Map Area</h3>
-                            <p className="text-slate-500 text-sm">
-                                This area is reserved for the Maps API integration to show real-time clinic locations.
-                            </p>
-                        </div>
+                    <div className="w-full lg:w-2/3 h-[500px] bg-slate-100 rounded-3xl relative overflow-hidden border border-slate-200">
+                        <ClinicMap clinics={clinicsWithMeta} />
                     </div>
                 </div>
             </div>

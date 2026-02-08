@@ -13,7 +13,10 @@ export const getClinicById = async (id: bigint) => {
 export const searchClinicsByName = async (name: string) => {
   return prisma.clinic.findMany({
     where: {
-      name: { contains: name, mode: 'insensitive' },
+      OR: [
+        { name: { contains: name, mode: 'insensitive' } },
+        { address: { contains: name, mode: 'insensitive' } },
+      ],
     },
   });
 };

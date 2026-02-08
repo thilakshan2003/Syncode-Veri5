@@ -2,6 +2,7 @@ import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import clinicRouter from './routes/clinicRouter.js';
+import dashboardRouter from './routes/dashboardRouter.js';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -41,7 +42,6 @@ app.set('json replacer', (key: string, value: any) => {
 log('Mounting auth routes at /api/auth');
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/resources', resourceRoutes);
 
 // basic health endpoint
 app.get('/health', (req: Request, res: Response) => {

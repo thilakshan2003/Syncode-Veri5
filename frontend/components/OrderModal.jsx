@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { ShoppingBag, MapPin, Loader2, CheckCircle, Minus, Plus, Banknote } from "lucide-react";
+import { ShoppingBag, MapPin, Loader2, CheckCircle, Minus, Plus, Banknote, AlertCircle } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { orderApi } from "@/lib/api";
 
 // Schema Validation
 const formSchema = z.object({
@@ -22,9 +23,11 @@ const formSchema = z.object({
 });
 
 export default function OrderModal({ open, onOpenChange, testKit }) {
-    const [step, setStep] = useState('form'); // form, processing, success
+    const [step, setStep] = useState('form'); // form, processing, success, error
     const [loading, setLoading] = useState(false);
     const [quantity, setQuantity] = useState(1);
+    const [error, setError] = useState(null);
+    const [orderResult, setOrderResult] = useState(null);
 
     const {
         register,
@@ -47,20 +50,46 @@ export default function OrderModal({ open, onOpenChange, testKit }) {
     const onSubmit = async (data) => {
         setLoading(true);
         setStep('processing');
+        setError(null);
         
-        // Simulate order processing
-        setTimeout(() => {
-            console.log("Order Data:", { ...data, quantity, testKit, totalPrice: calculateTotal() });
+        try {
+            // Call the API to create the order
+            const response = await orderApi.createOrder({
+                deliveryAddress: data.address,
+                items: [{
+                    testKitId: testKit.id,
+                    qty: quantity,
+                    unitPriceCents: testKit.priceCents,
+                }],
+            });
+
+            if (response.success) {
+                setOrderResult(response.data);
+                setStep('success');
+            } else {
+                throw new Error(response.error || 'Failed to place order');
+            }
+        } catch (err) {
+            console.error('Error placing order:', err);
+            setError(err.response?.data?.error || err.message || 'Failed to place order. Please try again.');
+            setStep('error');
+        } finally {
             setLoading(false);
-            setStep('success');
-        }, 2000);
+        }
     };
 
     const handleClose = () => {
         reset();
         setStep('form');
         setQuantity(1);
+        setError(null);
+        setOrderResult(null);
         onOpenChange(false);
+    };
+
+    const handleRetry = () => {
+        setStep('form');
+        setError(null);
     };
 
     const formatPrice = (priceCents) => {
@@ -229,6 +258,9 @@ export default function OrderModal({ open, onOpenChange, testKit }) {
                                 </div>
                                 <h3 className="text-xl font-bold text-slate-800 mb-2">Order Placed!</h3>
                                 <p className="text-sm text-slate-500 text-center mb-2">Your {quantity} test kit{quantity > 1 ? 's' : ''} will be delivered within 2-3 business days.</p>
+                                {orderResult?.id && (
+                                    <p className="text-xs text-slate-400 mb-2">Order ID: #{orderResult.id.slice(0, 8)}</p>
+                                )}
                                 <p className="text-lg font-bold text-slate-800 mb-6">Total: Rs. {calculateTotal()}</p>
                                 <p className="text-xs text-slate-400 text-center mb-8">You will receive an SMS confirmation shortly.</p>
                                 <Button 
@@ -237,6 +269,31 @@ export default function OrderModal({ open, onOpenChange, testKit }) {
                                 >
                                     Done
                                 </Button>
+                            </div>
+                        )}
+
+                        {step === 'error' && (
+                            <div className="flex flex-col items-center justify-center h-full py-12 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
+                                    <AlertCircle className="w-8 h-8 text-red-600" />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800 mb-2">Order Failed</h3>
+                                <p className="text-sm text-red-500 text-center mb-6">{error}</p>
+                                <div className="flex gap-3">
+                                    <Button 
+                                        onClick={handleRetry}
+                                        className="bg-veri5-teal hover:bg-teal-600 text-white rounded-xl h-12 px-8 font-bold"
+                                    >
+                                        Try Again
+                                    </Button>
+                                    <Button 
+                                        onClick={handleClose}
+                                        variant="outline"
+                                        className="rounded-xl h-12 px-8 font-bold border-2"
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
                             </div>
                         )}
                     </div>

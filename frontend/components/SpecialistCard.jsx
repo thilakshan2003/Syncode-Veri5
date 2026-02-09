@@ -37,9 +37,9 @@ export default function SpecialistCard({ name, role, experience, rating, availab
                 ))}
             </div>
 
-            <Link href={`/consultation/${id || '1'}/book`} className="block w-full">
-                <Button className="w-full rounded-xl bg-slate-100 hover:bg-veri5-teal text-slate-700 hover:text-white font-bold transition-all h-12">
-                    Book Now <ArrowRight className="w-4 h-4 ml-1" />
+            <Link href={`/consultation/${id}/book`} className="block w-full">
+                <Button className="w-full rounded-xl bg-slate-100 hover:bg-veri5-teal text-slate-700 hover:text-white font-bold transition-all h-12" onClick={() => console.log("Booking ID:", id)}>
+                    Book Session <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
             </Link>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import BookingCalendar from '@/components/BookingCalendar';
 import BookingSummary from '@/components/BookingSummary';
@@ -8,26 +8,47 @@ import { Button } from '@/components/ui/button'; // Assuming we keep using UI bu
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-// Mock data lookup (in real app, fetch by ID)
-const getDoctorById = (id) => {
-    // Return mock data regardless of ID for prototype
-    return {
-        id: id,
-        name: "Dr. Ajay Rasiah",
-        role: "Venereologist",
-        image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80", // Placeholder
-        cost: "3,600"
-    };
-};
 
 export default function BookingPage(props) {
-    // Unwrap params using React.use()
     const params = use(props.params);
-    const [selectedDate, setSelectedDate] = useState("Jan 5, 2026");
+    const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
     const [mode, setMode] = useState("Online"); // Online, Physical
+    const [doctor, setDoctor] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const doctor = getDoctorById(params.id);
+    useEffect(() => {
+        const fetchDoctor = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/api/practitioners/${params.id}`);
+                if (!response.ok) throw new Error('Failed to fetch doctor details');
+                const data = await response.json();
+
+                // Transform data for UI
+                setDoctor({
+                    id: data.id,
+                    name: data.name,
+                    role: data.specialization,
+                    image: data.imageUrl || "",
+                    defaultCost: "3,600", // Fallback or derived
+                    appointmentSlots: data.appointmentSlots || []
+                });
+            } catch (err) {
+                console.error(err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (params.id) {
+            fetchDoctor();
+        }
+    }, [params.id]);
+
+    if (loading) return <div className="text-center py-20">Loading...</div>;
+    if (error || !doctor) return <div className="text-center py-20 text-red-500">Error: {error || 'Doctor not found'}</div>;
 
     return (
         <main className="min-h-screen bg-slate-50/50 pb-20">
@@ -70,6 +91,8 @@ export default function BookingPage(props) {
                                 onDateSelect={setSelectedDate}
                                 selectedTime={selectedTime}
                                 onTimeSelect={setSelectedTime}
+                                availableSlots={doctor.appointmentSlots}
+                                mode={mode}
                             />
                         </div>
 
@@ -78,8 +101,14 @@ export default function BookingPage(props) {
                             <BookingSummary
                                 doctor={doctor}
                                 selectedDate={selectedDate}
-                                selectedTime={selectedTime ? `${selectedTime} (IST)` : null}
-                                cost={doctor.cost}
+                                selectedTime={selectedTime}
+                                mode={mode}
+                                cost={selectedTime ? doctor.appointmentSlots.find(s => {
+                                    const d = new Date(s.startsAt);
+                                    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                    const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                                    return dateStr === selectedDate && timeStr === selectedTime && s.mode === mode.toLowerCase();
+                                })?.priceCents / 100 : "—"}
                             />
                         </div>
 

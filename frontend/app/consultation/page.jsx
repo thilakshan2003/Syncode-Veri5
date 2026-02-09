@@ -18,9 +18,11 @@ export default function ConsultationPage() {
             try {
                 const response = await fetch('http://localhost:5000/api/practitioners');
                 const data = await response.json();
+                console.log("Fetched practitioners:", data); // Debug log
 
                 // Map backend data to frontend format
                 const mappedData = data.map(p => ({
+                    id: p.id,
                     name: p.name,
                     role: p.specialization,
                     experience: `${p.experience} years exp`,
@@ -81,8 +83,8 @@ export default function ConsultationPage() {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredSpecialists.map((specialist, idx) => (
-                        <SpecialistCard key={idx} {...specialist} />
+                    {filteredSpecialists.map((specialist) => (
+                        <SpecialistCard key={specialist.id} {...specialist} />
                     ))}
                 </div>
             </div>

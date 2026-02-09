@@ -1,7 +1,7 @@
 import { ShieldCheck, Video, Calendar, Clock, Lock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function BookingSummary({ doctor, selectedDate, selectedTime, cost }) {
+export default function BookingSummary({ doctor, selectedDate, selectedTime, cost, mode = "Online" }) {
     return (
         <div className="bg-white rounded-3xl p-6 border border-slate-300 hover:border-emerald-500 shadow-xl shadow-slate-200/50 transition-all sticky top-24">
             <h2 className="text-xl font-bold text-slate-900 mb-6">Booking Summary</h2>
@@ -37,7 +37,11 @@ export default function BookingSummary({ doctor, selectedDate, selectedTime, cos
                 <div className="flex justify-between items-center text-sm">
                     <span className="text-slate-500 font-medium">Session Type</span>
                     <div className="flex items-center font-bold text-slate-900">
-                        <Video className="w-4 h-4 mr-2 text-veri5-teal" /> Video Call
+                        {mode === 'Online' ? (
+                            <><Video className="w-4 h-4 mr-2 text-veri5-teal" /> Video Call</>
+                        ) : (
+                            <><ShieldCheck className="w-4 h-4 mr-2 text-veri5-teal" /> Physical Visit</>
+                        )}
                     </div>
                 </div>
             </div>

@@ -45,9 +45,6 @@ log('Mounting auth routes at /api/auth');
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/practitioners', practitionerRouter);
-app.use('/api/resources', resourceRoutes);
-
-// basic health endpoint
 app.get('/health', (req: Request, res: Response) => {
     res.status(200).json({ status: 'ok', message: 'Backend is running' });
 });
@@ -55,6 +52,7 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/clinics', clinicRouter);
 app.use('/test-kits', testKitRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/resources', resourceRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

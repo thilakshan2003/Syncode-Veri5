@@ -4,14 +4,14 @@ import { Building2, Package } from 'lucide-react';
 
 export default function TestingPage() {
     return (
-        <main className="min-h-screen bg-slate-50 pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-16 text-center">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-veri5-navy mb-4 tracking-tight">
+                <h1 className="text-4xl md:text-5xl font-extrabold text-foreground dark:text-emerald-500 mb-4 tracking-tight">
                     Choose how you'd like to get tested.
                 </h1>
-                <p className="text-slate-500 text-lg max-w-2xl mx-auto mb-16">
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-16">
                     Select a local clinic for professional testing or order a kit for total privacy at home. Both paths securely sync results to your Veri5 profile.
                 </p>
 

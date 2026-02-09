@@ -24,8 +24,8 @@ export default function ClinicSearch({ onSearch }) {
     return (
         <div className="space-y-6">
             <div className="text-center md:text-left">
-                <h2 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight">Partnered Clinics Nearby</h2>
-                <p className="text-slate-500">Find professional help in your current area.</p>
+                <h2 className="text-3xl font-bold text-foreground mb-2 tracking-tight">Partnered Clinics Nearby</h2>
+                <p className="text-muted-foreground">Find professional help in your current area.</p>
             </div>
 
             {/* Search Bar */}
@@ -41,7 +41,7 @@ export default function ClinicSearch({ onSearch }) {
                     className="pl-10 pr-12 py-3 w-full bg-white border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all text-sm font-medium shadow-sm text-slate-700 placeholder:text-slate-400"
                     placeholder="Search clinics by name..."
                 />
-                <button 
+                <button
                     onClick={handleSearchClick}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-veri5-teal transition-colors"
                 >

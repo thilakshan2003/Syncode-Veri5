@@ -14,11 +14,19 @@ const categories = [
 ];
 
 async function getResources(category) {
-    const url = `http://localhost:5000/api/resources${category ? `?category=${category}` : ''}`;
     try {
-        const res = await fetch(url, { cache: 'no-store' }); // Ensure fresh data
-        if (!res.ok) throw new Error('Failed to fetch resources');
-        return res.json();
+        const query = category ? `?category=${encodeURIComponent(category)}` : '';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        const response = await fetch(`${baseUrl}/api/resources${query}`, { 
+            cache: 'no-store' 
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch resources');
+        }
+        
+        const data = await response.json();
+        return data || [];
     } catch (error) {
         console.error("Error fetching resources:", error);
         return [];

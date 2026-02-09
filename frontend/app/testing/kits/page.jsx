@@ -54,14 +54,14 @@ export default function TestKitsPage() {
     };
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-12">
 
                 <div className="text-center max-w-2xl mx-auto mb-16">
-                    <h1 className="text-4xl font-extrabold text-veri5-navy mb-4">Available Test Kits</h1>
-                    <p className="text-slate-500 text-lg">Select the screening that meets your needs.</p>
+                    <h1 className="text-4xl font-extrabold text-foreground mb-4">Available Test Kits</h1>
+                    <p className="text-muted-foreground text-lg">Select the screening that meets your needs.</p>
                 </div>
 
                 {loading ? (
@@ -117,7 +117,7 @@ export default function TestKitsPage() {
 
                         <Button
                             onClick={() => setModalOpen(true)}
-                            className="bg-white hover:bg-slate-50 text-veri5-navy font-bold rounded-full px-10 h-14 text-base shadow-xl active:scale-95 transition-all"
+                            className="bg-white dark:bg-primary hover:bg-slate-50 dark:hover:bg-primary/90 text-veri5-navy dark:text-white font-bold rounded-full px-10 h-14 text-base shadow-xl active:scale-95 transition-all"
                         >
                             Submit Now <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>

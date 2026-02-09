@@ -208,4 +208,28 @@ export const orderApi = {
     }
 };
 
+// Resource API functions
+export const resourceApi = {
+    /**
+     * Get all resources or filter by category
+     * @param {string} category - Optional category filter
+     * @returns {Promise} Response with resources array
+     */
+    getResources: async (category = '') => {
+        const query = category ? `?category=${encodeURIComponent(category)}` : '';
+        const response = await api.get(`/api/resources${query}`);
+        return response.data;
+    },
+
+    /**
+     * Get a specific article by ID
+     * @param {string} id - Article ID
+     * @returns {Promise} Response with article data
+     */
+    getArticleById: async (id) => {
+        const response = await api.get(`/api/resources/${id}`);
+        return response.data;
+    }
+};
+
 export default api;

@@ -29,17 +29,17 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
     const currentMonth = "January 2026";
 
     return (
-        <div className="bg-white rounded-3xl p-8 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all">
+        <div className="bg-card rounded-3xl p-8 border border-border hover:border-primary shadow-lg transition-all">
 
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-bold text-slate-900">{currentMonth}</h2>
+                <h2 className="text-xl font-bold text-foreground">{currentMonth}</h2>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-slate-200">
-                        <ChevronLeft className="w-4 h-4 text-slate-400" />
+                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                        <ChevronLeft className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-slate-200">
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     </Button>
                 </div>
             </div>
@@ -49,7 +49,7 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                 <div>
                     <div className="grid grid-cols-7 mb-4">
                         {days.map(d => (
-                            <div key={d} className="text-center text-[10px] font-bold text-slate-400 tracking-wider">
+                            <div key={d} className="text-center text-[10px] font-bold text-muted-foreground tracking-wider">
                                 {d}
                             </div>
                         ))}
@@ -61,8 +61,8 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                                     disabled={d.month === 'prev'} // Just for visual placeholder logic
                                     onClick={() => onDateSelect(`Jan ${d.day}, 2026`)}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all
-                                    ${d.month === 'prev' ? 'text-slate-200' : 'text-slate-700 hover:bg-slate-50'}
-                                    ${selectedDate === `Jan ${d.day}, 2026` || (d.active && !selectedDate) ? 'bg-veri5-teal text-white shadow-md hover:bg-veri5-teal' : ''}
+                                    ${d.month === 'prev' ? 'text-muted-foreground/30' : 'text-foreground hover:bg-muted'}
+                                    ${selectedDate === `Jan ${d.day}, 2026` || (d.active && !selectedDate) ? 'bg-primary text-white shadow-md hover:bg-primary' : ''}
                                 `}
                                 >
                                     {d.day}
@@ -73,8 +73,8 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                 </div>
 
                 {/* Time Slots */}
-                <div className="border-t lg:border-t-0 lg:border-l border-slate-100 pt-8 lg:pt-0 lg:pl-12">
-                    <h3 className="text-sm font-bold text-slate-900 mb-6">Available Times (IST)</h3>
+                <div className="border-t lg:border-t-0 lg:border-l border-border pt-8 lg:pt-0 lg:pl-12">
+                    <h3 className="text-sm font-bold text-foreground mb-6">Available Times (IST)</h3>
                     <div className="grid grid-cols-2 gap-4 mb-8">
                         {timeSlots.map(time => (
                             <button
@@ -82,8 +82,8 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                                 onClick={() => onTimeSelect(time)}
                                 className={`py-3 rounded-xl text-sm font-bold border transition-all
                                 ${selectedTime === time
-                                        ? 'bg-emerald-50 border-emerald-500 text-emerald-700 ring-2 ring-emerald-500/20'
-                                        : 'bg-slate-50 border-transparent text-slate-600 hover:bg-slate-100 hover:border-slate-200'}`
+                                        ? 'bg-primary/20 border-primary text-primary ring-2 ring-primary/20'
+                                        : 'bg-muted/50 border-transparent text-muted-foreground hover:bg-muted hover:border-border'}`
                                 }
                             >
                                 {time}
@@ -91,9 +91,9 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                         ))}
                     </div>
 
-                    <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-xl">
-                        <Info className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-xs text-slate-500 leading-relaxed">
+                    <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-xl">
+                        <Info className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <p className="text-xs text-muted-foreground leading-relaxed">
                             Sessions are typically 30 minutes of dedicated private time.
                         </p>
                     </div>

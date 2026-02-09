@@ -99,14 +99,14 @@ export default function ConsultationPage() {
         : mappedPractitioners.filter((s) => s.type === filter);
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-12">
 
                 <div className="text-center max-w-2xl mx-auto mb-12">
-                    <h1 className="text-4xl font-extrabold text-veri5-navy mb-4">Expert & Private Consultations</h1>
-                    <p className="text-slate-500 text-lg">
+                    <h1 className="text-4xl font-extrabold text-foreground dark:text-emerald-500 mb-4">Expert & Private Consultations</h1>
+                    <p className="text-muted-foreground text-lg">
                         Book a consultation at a clinic or online channeling with certified specialists.
                     </p>
                 </div>
@@ -131,14 +131,14 @@ export default function ConsultationPage() {
                     </div>
                     <Button
                         variant="outline"
-                        className="rounded-full border-slate-200 text-slate-700 h-10 px-6 font-bold"
+                        className="rounded-full border-border text-muted-foreground h-10 px-6 font-bold hover:bg-accent hover:text-foreground"
                     // Placeholder filter logic
                     >
                         Filter By Role
                     </Button>
                     <Button
                         variant="outline"
-                        className="rounded-full border-emerald-500 text-emerald-600 bg-emerald-50 h-10 px-6 font-bold hover:bg-emerald-100"
+                        className="rounded-full border-primary/50 text-primary bg-primary/10 h-10 px-6 font-bold hover:bg-primary/20"
                     >
                         Filter by Availability
                     </Button>

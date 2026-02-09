@@ -68,11 +68,10 @@ export default function ClinicsPage() {
     };
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-12">
-
                 <div className="mb-12">
                     <ClinicSearch onSearch={handleSearch} />
                 </div>
@@ -80,85 +79,98 @@ export default function ClinicsPage() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Left: List functionality/Sidebar */}
                     <div className="w-full lg:w-1/3 space-y-4">
-                        {/* <div className="bg-white border boundary-slate-200 p-4 rounded-xl flex items-center justify-between mb-2">
-                            <div className="flex items-center text-sm font-medium text-slate-700">
-                                <MapPin className="w-4 h-4 mr-2 text-slate-400" />
-                                Wellawatte, Colombo
+                        <div className="bg-card dark:bg-card/50 border border-border dark:border-white/5 p-4 rounded-xl flex items-center justify-between mb-6">
+                            <div className="flex items-center text-sm font-medium text-foreground">
+                                <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
+                                <span className="dark:text-emerald-400">Wellawatte, Colombo</span>
                             </div>
-                            <Button variant="ghost" size="sm" className="text-xs text-veri5-teal">Change</Button>
-                        </div> */}
+                            <Button variant="ghost" size="sm" className="text-xs text-veri5-teal hover:bg-veri5-teal/10">Change</Button>
+                        </div>
 
-                        {loading ? (
-                            <div className="flex items-center justify-center py-12">
-                                <Loader2 className="w-8 h-8 animate-spin text-veri5-teal" />
-                            </div>
-                        ) : error ? (
-                            <div className="bg-red-50 border border-red-200 p-6 rounded-2xl text-center">
-                                <p className="text-red-600">{error}</p>
-                                <Button 
-                                    variant="ghost" 
-                                    className="mt-4 text-red-600"
-                                    onClick={() => fetchClinics(searchQuery)}
-                                >
-                                    Try Again
-                                </Button>
-                            </div>
-                        ) : clinics.length === 0 ? (
-                            <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center">
-                                <p className="text-slate-600">No clinics found.</p>
-                            </div>
-                        ) : (
-                            clinics.map((clinic) => {
-                                const hours = getClinicHours(clinic.availableTime);
-                                return (
-                                    <div 
-                                        key={clinic.id} 
-                                        className={`bg-white border p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow group cursor-pointer ${selectedClinic?.id === clinic.id ? 'border-veri5-teal border-2' : 'border-slate-100'}`}
-                                        onClick={() => setSelectedClinic(clinic)}
+                        <div className="space-y-4 h-[calc(100vh-400px)] overflow-y-auto pr-2">
+                            {loading ? (
+                                <div className="flex items-center justify-center py-12">
+                                    <Loader2 className="w-8 h-8 animate-spin text-veri5-teal" />
+                                </div>
+                            ) : error ? (
+                                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-6 rounded-2xl text-center">
+                                    <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="mt-4 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20"
+                                        onClick={() => fetchClinics(searchQuery)}
                                     >
-                                        <h3 className="font-bold text-slate-900 mb-1 group-hover:text-veri5-teal transition-colors">{clinic.name}</h3>
-                                        <p className="text-xs text-slate-500 mb-2">{clinic.address}</p>
-                                        <div className="flex items-center text-xs text-slate-500 mb-4 space-x-3">
-                                            <span className="flex items-center">
-                                                <Clock className="w-3 h-3 mr-1" />
-                                                <span className="text-slate-600">{hours}</span>
-                                            </span>
-                                        </div>
+                                        Try Again
+                                    </Button>
+                                </div>
+                            ) : clinics.length === 0 ? (
+                                <div className="bg-card dark:bg-card/40 border border-border dark:border-white/5 p-8 rounded-2xl text-center">
+                                    <p className="text-muted-foreground">No clinics found matching your search.</p>
+                                    <Button
+                                        variant="link"
+                                        className="mt-2 text-veri5-teal"
+                                        onClick={() => handleSearch('')}
+                                    >
+                                        Clear search
+                                    </Button>
+                                </div>
+                            ) : (
+                                clinics.map((clinic) => {
+                                    const hours = getClinicHours(clinic.availableTime);
+                                    return (
+                                        <div
+                                            key={clinic.id}
+                                            className={`bg-card dark:bg-card/40 border p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group cursor-pointer ${selectedClinic?.id === clinic.id ? 'ring-2 ring-veri5-teal border-transparent' : 'border-border dark:border-white/5 hover:border-veri5-teal/50'}`}
+                                            onClick={() => setSelectedClinic(clinic)}
+                                        >
+                                            <h3 className="font-bold text-foreground mb-1 group-hover:text-veri5-teal transition-colors">{clinic.name}</h3>
+                                            <div className="flex items-start text-xs text-muted-foreground mb-2">
+                                                <MapPin className="w-3 h-3 mr-1 mt-0.5 flex-shrink-0" />
+                                                <span>{clinic.address}</span>
+                                            </div>
+                                            <div className="flex items-center text-xs text-muted-foreground mb-4 space-x-3">
+                                                <span className="flex items-center">
+                                                    <Clock className="w-3 h-3 mr-1" />
+                                                    <span className="text-muted-foreground">{hours}</span>
+                                                </span>
+                                            </div>
 
-                                        <div className="flex items-center justify-between mt-4">
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm"
-                                                className="text-xs h-8 px-3"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    openGoogleMapsDirections(clinic);
-                                                }}
-                                            >
-                                                <Navigation className="w-3 h-3 mr-1" />
-                                                Directions
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                className="text-veri5-teal font-bold hover:bg-cyan-50 h-8 px-4 text-xs"
-                                                onClick={(event) => {
-                                                    event.stopPropagation();
-                                                    router.push(`/consultation?clinicId=${clinic.id}`);
-                                                }}
-                                            >
-                                                Book Now
-                                            </Button>
+                                            <div className="flex items-center justify-between mt-4">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="text-xs h-9 px-4 rounded-full border-border dark:border-white/10 hover:bg-muted"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        openGoogleMapsDirections(clinic);
+                                                    }}
+                                                >
+                                                    <Navigation className="w-3.5 h-3.5 mr-1.5" />
+                                                    Directions
+                                                </Button>
+                                                <Button
+                                                    variant="default"
+                                                    className="bg-veri5-teal hover:bg-veri5-teal/90 text-white font-semibold rounded-full h-9 px-5 text-xs shadow-sm"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/consultation?clinicId=${clinic.id}`);
+                                                    }}
+                                                >
+                                                    Book Now
+                                                </Button>
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            })
-                        )}
+                                    );
+                                })
+                            )}
+                        </div>
                     </div>
 
                     {/* Right: Interactive Map */}
-                    <div className="w-full lg:w-2/3 min-h-[500px] bg-slate-100 rounded-3xl relative overflow-hidden border border-slate-200">
-                        <ClinicMap 
-                            clinics={clinics} 
+                    <div className="w-full lg:w-2/3 min-h-[500px] lg:h-[calc(100vh-250px)] bg-card border border-border dark:border-white/5 rounded-3xl relative overflow-hidden shadow-inner">
+                        <ClinicMap
+                            clinics={clinics}
                             selectedClinic={selectedClinic}
                             onSelectClinic={setSelectedClinic}
                         />

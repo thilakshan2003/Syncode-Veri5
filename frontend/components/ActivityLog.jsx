@@ -31,8 +31,8 @@ export default function ActivityLog({ limit }) {
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-all whitespace-nowrap
                  ${filter === f
-                                    ? 'bg-veri5-navy text-white shadow-md'
-                                    : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                                    ? 'bg-primary text-white shadow-md'
+                                    : 'bg-background border border-border text-muted-foreground hover:bg-accent hover:text-foreground'}`}
                         >
                             {f === 'all' ? 'All Activity' : f + 's'}
                         </button>
@@ -42,19 +42,19 @@ export default function ActivityLog({ limit }) {
 
             <div className="space-y-0 relative">
                 {/* Timeline Line */}
-                <div className="absolute left-[29px] top-4 bottom-4 w-0.5 bg-slate-100 z-0"></div>
+                <div className="absolute left-[29px] top-4 bottom-4 w-0.5 bg-border z-0"></div>
 
                 {displayList.map((item) => (
                     <div key={item.id} className="flex gap-4 p-0 mb-6 relative z-10">
-                        <div className={`w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center border-4 border-white shadow-sm ${item.bg} ${item.color}`}>
+                        <div className={`w-14 h-14 rounded-2xl flex-shrink-0 flex items-center justify-center border-4 border-background shadow-sm ${item.bg.replace('bg-', 'bg-').replace('-50', '-500/10')} ${item.color}`}>
                             <item.icon className="w-6 h-6" />
                         </div>
                         <div className="flex-grow pt-1">
                             <div className="flex justify-between items-start">
-                                <h4 className="text-sm font-bold text-slate-800">{item.title}</h4>
-                                <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded-full">{item.time}</span>
+                                <h4 className="text-sm font-bold text-foreground">{item.title}</h4>
+                                <span className="text-[10px] font-bold text-muted-foreground bg-accent px-2 py-1 rounded-full">{item.time}</span>
                             </div>
-                            <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mt-1">{item.type}</div>
+                            <div className="text-xs font-bold text-muted-foreground/30 uppercase tracking-wider mt-1">{item.type}</div>
                         </div>
                     </div>
                 ))}

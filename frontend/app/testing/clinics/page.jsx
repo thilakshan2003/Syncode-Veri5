@@ -34,7 +34,7 @@ export default function ClinicsPage() {
     const [viewMode, setViewMode] = useState('map'); // 'map' or 'list'
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-12">
@@ -46,48 +46,48 @@ export default function ClinicsPage() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Left: List functionality/Sidebar */}
                     <div className="w-full lg:w-1/3 space-y-4">
-                        <div className="bg-white border boundary-slate-200 p-4 rounded-xl flex items-center justify-between mb-2">
-                            <div className="flex items-center text-sm font-medium text-slate-700">
-                                <MapPin className="w-4 h-4 mr-2 text-slate-400" />
+                        <div className="bg-card border border-border p-4 rounded-xl flex items-center justify-between mb-2">
+                            <div className="flex items-center text-sm font-medium text-foreground">
+                                <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
                                 Wellawatte, Colombo
                             </div>
-                            <Button variant="ghost" size="sm" className="text-xs text-veri5-teal">Change</Button>
+                            <Button variant="ghost" size="sm" className="text-xs text-primary">Change</Button>
                         </div>
 
                         {mockClinics.map((clinic, idx) => (
-                            <div key={idx} className="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
-                                <h3 className="font-bold text-slate-900 mb-1 group-hover:text-veri5-teal transition-colors">{clinic.name}</h3>
-                                <div className="flex items-center text-xs text-slate-500 mb-4 space-x-3">
+                            <div key={idx} className="bg-card border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+                                <h3 className="font-bold text-foreground mb-1 group-hover:text-primary transition-colors">{clinic.name}</h3>
+                                <div className="flex items-center text-xs text-muted-foreground mb-4 space-x-3">
                                     <span>{clinic.distance} away</span>
                                     <span>&bull;</span>
-                                    <span className={clinic.status.includes('Closed') ? 'text-red-500' : 'text-emerald-600'}>{clinic.status}</span>
+                                    <span className={clinic.status.includes('Closed') ? 'text-destructive' : 'text-emerald-500'}>{clinic.status}</span>
                                 </div>
 
                                 <div className="flex items-center justify-between mt-4">
                                     <div className="flex gap-2">
                                         {clinic.tags.map((tag, tIdx) => (
-                                            <span key={tIdx} className="bg-cyan-50 text-veri5-teal text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
+                                            <span key={tIdx} className="bg-primary/10 text-primary text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
                                                 {tag}
                                             </span>
                                         ))}
                                     </div>
-                                    <Button variant="ghost" className="text-veri5-teal font-bold hover:bg-cyan-50 h-8 px-4 text-xs">{clinic.action}</Button>
+                                    <Button variant="ghost" className="text-primary font-bold hover:bg-primary/10 h-8 px-4 text-xs">{clinic.action}</Button>
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Right: Map Placeholder */}
-                    <div className="w-full lg:w-2/3 min-h-[500px] bg-slate-100 rounded-3xl relative overflow-hidden flex items-center justify-center border border-slate-200">
+                    <div className="w-full lg:w-2/3 min-h-[500px] bg-muted/50 rounded-3xl relative overflow-hidden flex items-center justify-center border border-border">
                         {/* This would be an interactive map in production */}
                         <div className="absolute inset-0 grayscale opacity-40 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=Colombo&zoom=13&size=800x600&sensor=false')] bg-cover bg-center"></div>
 
-                        <div className="relative bg-white/90 backdrop-blur-md p-8 rounded-2xl text-center max-w-sm border border-white shadow-xl">
-                            <div className="w-12 h-12 bg-veri5-teal text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-teal-500/30">
+                        <div className="relative bg-background/90 backdrop-blur-md p-8 rounded-2xl text-center max-w-sm border border-border shadow-xl">
+                            <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/30">
                                 <MapPin className="w-6 h-6" />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-800 mb-2">Interactive Map Area</h3>
-                            <p className="text-slate-500 text-sm">
+                            <h3 className="text-xl font-bold text-foreground mb-2">Interactive Map Area</h3>
+                            <p className="text-muted-foreground text-sm">
                                 This area is reserved for the Maps API integration to show real-time clinic locations.
                             </p>
                         </div>

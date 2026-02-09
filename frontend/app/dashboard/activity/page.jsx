@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 export default function ActivityPage() {
     return (
-        <main className="min-h-screen bg-slate-50/50 pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-10 max-w-4xl">
@@ -17,11 +17,11 @@ export default function ActivityPage() {
                             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
                         </Link>
                     </Button>
-                    <h1 className="text-3xl font-bold text-veri5-navy">Activity Log</h1>
-                    <p className="text-slate-500 mt-2">View your complete history of tests, shares, and consultations.</p>
+                    <h1 className="text-3xl font-bold text-foreground">Activity Log</h1>
+                    <p className="text-muted-foreground mt-2">View your complete history of tests, shares, and consultations.</p>
                 </div>
 
-                <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-sm">
+                <div className="bg-card rounded-3xl p-6 md:p-8 border border-border shadow-sm">
                     <ActivityLog />
                 </div>
             </div>

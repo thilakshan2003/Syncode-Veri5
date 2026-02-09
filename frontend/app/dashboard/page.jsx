@@ -16,18 +16,18 @@ export default function Dashboard() {
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
 
     return (
-        <main className="min-h-screen bg-slate-50/50 pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-10">
 
                 {/* Status Header */}
                 <div className="mb-10">
-                    <h1 className="text-3xl font-bold text-veri5-navy mb-6">Health Dashboard</h1>
+                    <h1 className="text-3xl font-bold text-foreground dark:text-emerald-500 mb-6">Health Dashboard</h1>
 
-                    <div className="bg-veri5-navy rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-navy-900/10 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="bg-veri5-navy dark:bg-emerald-900/40 rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-navy-900/10 border border-white/5 dark:border-emerald-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 transition-colors duration-500">
                         {/* Background Pattern */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 dark:bg-emerald-400/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
                         <div className="flex items-center gap-6 z-10">
                             <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-900/20 animate-pulse-slow">
@@ -38,14 +38,14 @@ export default function Dashboard() {
                                     <h2 className="text-2xl md:text-3xl font-bold">Status: Verified</h2>
                                     <span className="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2 py-1 rounded border border-emerald-500/30 uppercase tracking-widest">Active</span>
                                 </div>
-                                <p className="text-slate-300 text-sm">Last Verified: Jan 15, 2026 &bull; Expires in 28 Days</p>
+                                <p className="text-slate-300 dark:text-emerald-200/70 text-sm">Last Verified: Jan 15, 2026 &bull; Expires in 28 Days</p>
                             </div>
                         </div>
 
                         <div className="z-10 w-full md:w-auto">
                             <button
                                 onClick={() => setShareModalOpen(true)}
-                                className="w-full md:w-auto bg-white text-veri5-navy hover:bg-slate-100 font-bold px-8 py-3.5 rounded-xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+                                className="w-full md:w-auto bg-white dark:bg-emerald-500 text-veri5-navy dark:text-white hover:bg-slate-100 dark:hover:bg-emerald-400 font-bold px-8 py-3.5 rounded-xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
                             >
                                 <Share2 className="w-4 h-4" /> Share My Status
                             </button>
@@ -73,7 +73,7 @@ export default function Dashboard() {
 
                         {/* Quick Actions */}
                         <div>
-                            <h3 className="text-lg font-bold text-slate-800 mb-4">Quick Actions</h3>
+                            <h3 className="text-lg font-bold text-foreground mb-4">Quick Actions</h3>
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <div onClick={() => setUploadModalOpen(true)} className="cursor-pointer">
                                     <QuickActionCard
@@ -100,9 +100,9 @@ export default function Dashboard() {
 
                     {/* Right Column: Activity Log */}
                     <div className="h-full">
-                        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm h-full flex flex-col">
+                        <div className="bg-card rounded-3xl p-6 border border-border shadow-sm h-full flex flex-col">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-lg font-bold text-slate-800">Recent Activity</h3>
+                                <h3 className="text-lg font-bold text-foreground">Recent Activity</h3>
                                 <Button variant="link" asChild className="text-veri5-teal font-bold p-0 h-auto hover:no-underline">
                                     <Link href="/dashboard/activity">View All <ChevronRight className="w-4 h-4 ml-1" /></Link>
                                 </Button>

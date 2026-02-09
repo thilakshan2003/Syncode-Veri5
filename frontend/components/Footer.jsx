@@ -3,7 +3,7 @@ import { ShieldCheck, Facebook, Twitter, Instagram, Linkedin } from 'lucide-reac
 
 export default function Footer() {
     return (
-        <footer className="bg-card border-t border-border pt-20 pb-12 mt-20 transition-colors duration-300">
+        <footer className="bg-background border-t border-border pt-20 pb-12 mt-20 transition-colors duration-300">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="grid md:grid-cols-5 gap-12 mb-16">
                     {/* Brand */}

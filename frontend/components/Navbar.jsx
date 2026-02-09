@@ -33,7 +33,7 @@ export default function Navbar() {
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="text-sm font-medium text-gray-500 hover:text-veri5-teal transition-colors"
+                            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                         >
                             {link.name}
                         </Link>
@@ -63,7 +63,7 @@ export default function Navbar() {
                             </ProfileModal>
                             <button
                                 onClick={logout}
-                                className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+                                className="text-xs text-muted-foreground hover:text-destructive transition-colors"
                             >
                                 Logout
                             </button>

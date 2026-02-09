@@ -2,9 +2,9 @@ import Button from './Button';
 
 export default function CTA() {
     return (
-        <section className="w-full bg-[#f8fafc] py-24 border-t border-slate-100">
+        <section className="w-full bg-background py-24 border-t border-border">
             <div className="container mx-auto px-4 text-center">
-                <h2 className="text-3xl md:text-5xl font-extrabold text-veri5-navy mb-6 leading-tight tracking-tight">
+                <h2 className="text-3xl md:text-5xl font-extrabold text-foreground mb-6 leading-tight tracking-tight">
                     Ready to take control of your <br className="hidden md:block" />
                     sexual health privacy?
                 </h2>

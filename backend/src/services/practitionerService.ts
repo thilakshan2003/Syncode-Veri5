@@ -120,3 +120,10 @@ export const getPractitionerById = async (id: string | number) => {
         }))
     };
 };
+
+export const getPractitionersByClinic = async (clinicId: bigint) => {
+  return prisma.practitionerClinic.findMany({
+    where: { clinicId },
+    include: { practitioner: true },
+  });
+};

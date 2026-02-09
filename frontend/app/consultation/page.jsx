@@ -1,47 +1,53 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import SpecialistCard from '@/components/SpecialistCard';
 import PrivacyBanner from '@/components/PrivacyBanner';
 import { Button } from '@/components/ui/button';
 
-const specialists = [
-    {
-        name: "Dr. Sandamali Jayasinghe",
-        role: "Sexual Health Specialist",
-        experience: "12 years exp",
-        rating: "4.9 Rating",
-        verifiedLints: ["Weekdays Online Channeling", "Weekends Clinic consultations"],
-        image: "", // Placeholder or use a real image URL
-        type: "specialist"
-    },
-    {
-        name: "Dr. Chanidu Wijepala",
-        role: "Venereologist",
-        experience: "6 years exp",
-        rating: "4.6 Rating",
-        verifiedLints: ["Weekends Online Channeling", "Free consultations at NHS"],
-        image: "",
-        type: "venereologist"
-    },
-    {
-        name: "Dr. Ajay Rasiah",
-        role: "Venereologist",
-        experience: "15 years exp",
-        rating: "4.8 Rating",
-        verifiedLints: ["Daily Online Channeling"],
-        image: "",
-        type: "venereologist"
-    }
-];
+
 
 export default function ConsultationPage() {
     const [filter, setFilter] = useState('all'); // all, specialist, venereologist
+    const [specialists, setSpecialists] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSpecialists = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/practitioners');
+                const data = await response.json();
+
+                // Map backend data to frontend format
+                const mappedData = data.map(p => ({
+                    name: p.name,
+                    role: p.specialization,
+                    experience: `${p.experience} years exp`,
+                    rating: `${p.rating} Rating`,
+                    verifiedLints: p.availabilityTags || [],
+                    image: p.imageUrl || "",
+                    type: p.specialization.toLowerCase().includes('venereologist') ? 'venereologist' : 'specialist'
+                }));
+
+                setSpecialists(mappedData);
+            } catch (error) {
+                console.error("Failed to fetch specialists:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSpecialists();
+    }, []);
 
     const filteredSpecialists = filter === 'all'
         ? specialists
         : specialists.filter(s => s.type === filter);
+
+    if (loading) {
+        return <div className="text-center py-20">Loading specialists...</div>;
+    }
 
     return (
         <main className="min-h-screen bg-white pb-20">

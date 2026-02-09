@@ -2,13 +2,13 @@ import Button from './Button';
 
 export default function Hero() {
     return (
-        <section className="w-full bg-veri5-navy py-24 md:py-32 relative overflow-hidden">
+        <section className="w-full bg-background py-24 md:py-32 relative overflow-hidden">
             {/* Background gradients or effects could go here */}
 
             <div className="container mx-auto px-4 md:px-6 flex flex-col items-center text-center">
 
                 <div className="mb-8">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-[#1A3B5C] text-veri5-teal text-xs font-bold uppercase tracking-wide border border-[#2E4F73]">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-accent/20 text-veri5-teal text-xs font-bold uppercase tracking-wide border border-accent/30">
                         Secure Verification
                     </span>
                 </div>

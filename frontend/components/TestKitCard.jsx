@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 
-export default function TestKitCard({ title, description, price, features = [], badge, imageSrc }) {
+export default function TestKitCard({ title, description, price, features = [], badge, imageSrc, onOrder }) {
     return (
         <div className="bg-white rounded-3xl p-6 border border-slate-300 hover:border-emerald-500 shadow-lg hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 flex flex-col h-full relative overflow-hidden group">
 
@@ -35,7 +35,10 @@ export default function TestKitCard({ title, description, price, features = [], 
                 </div>
             </div>
 
-            <Button className="w-full bg-veri5-teal hover:bg-teal-600/90 text-white rounded-xl h-10 font-bold shadow-md shadow-teal-500/10 active:scale-[0.98] transition-all">
+            <Button 
+                onClick={onOrder}
+                className="w-full bg-veri5-teal hover:bg-teal-600/90 text-white rounded-xl h-10 font-bold shadow-md shadow-teal-500/10 active:scale-[0.98] transition-all"
+            >
                 Order Now
             </Button>
         </div>

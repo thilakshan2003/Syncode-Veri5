@@ -5,6 +5,7 @@ import clinicRouter from './routes/clinicRouter.js';
 import dashboardRouter from './routes/dashboardRouter.js';
 import practitionerRouter from './routes/practitionerRouter.js';
 import testKitRouter from './routes/testKitRouter.js';
+import orderRouter from './routes/orderRouter.js';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -53,6 +54,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 app.use('/clinics', clinicRouter);
 app.use('/test-kits', testKitRouter);
+app.use('/api/orders', orderRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

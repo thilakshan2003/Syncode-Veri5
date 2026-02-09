@@ -4,15 +4,25 @@ import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import TestKitCard from '@/components/TestKitCard';
 import ResultUploadModal from '@/components/ResultUploadModal';
+import OrderModal from '@/components/OrderModal';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { testKitApi } from '@/lib/api';
 
 export default function TestKitsPage() {
     const [modalOpen, setModalOpen] = useState(false);
+    const [orderModalOpen, setOrderModalOpen] = useState(false);
+    const [selectedKit, setSelectedKit] = useState(null);
     const [testKits, setTestKits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Placeholder images for test kits
+    const placeholderImages = [
+        'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop',
+    ];
 
     useEffect(() => {
         fetchTestKits();
@@ -30,6 +40,11 @@ export default function TestKitsPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleOrderClick = (kit, imageSrc) => {
+        setSelectedKit({ ...kit, imageSrc });
+        setOrderModalOpen(true);
     };
 
     // Convert price from cents to display format
@@ -71,12 +86,7 @@ export default function TestKitsPage() {
                 ) : (
                     <div className="grid md:grid-cols-3 gap-8 mb-24">
                         {testKits.map((kit, index) => {
-                            // Placeholder images for test kits
-                            const placeholderImages = [
-                                'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=400&h=300&fit=crop', // Medical test kit
-                                'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop', // Lab testing
-                                'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop', // Medical supplies
-                            ];
+                            const imageSrc = placeholderImages[index % placeholderImages.length];
                             
                             return (
                                 <TestKitCard
@@ -85,7 +95,8 @@ export default function TestKitsPage() {
                                     features={[kit.description || 'STI screening test']}
                                     price={formatPrice(kit.priceCents)}
                                     badge={kit.name === 'Full Panel' ? 'Best Value' : undefined}
-                                    imageSrc={placeholderImages[index % placeholderImages.length]}
+                                    imageSrc={imageSrc}
+                                    onOrder={() => handleOrderClick(kit, imageSrc)}
                                 />
                             );
                         })}
@@ -115,6 +126,7 @@ export default function TestKitsPage() {
             </div>
 
             <ResultUploadModal open={modalOpen} onOpenChange={setModalOpen} />
+            <OrderModal open={orderModalOpen} onOpenChange={setOrderModalOpen} testKit={selectedKit} />
         </main>
     );
 }

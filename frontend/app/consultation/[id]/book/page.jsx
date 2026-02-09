@@ -7,10 +7,15 @@ import BookingSummary from '@/components/BookingSummary';
 import { Button } from '@/components/ui/button'; // Assuming we keep using UI button elsewhere if needed
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
 
 
 export default function BookingPage(props) {
     const params = use(props.params);
+    const router = useRouter();
+    const { user } = useAuth();
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
     const [mode, setMode] = useState("Online"); // Online, Physical
@@ -109,6 +114,33 @@ export default function BookingPage(props) {
                                     const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                                     return dateStr === selectedDate && timeStr === selectedTime && s.mode === mode.toLowerCase();
                                 })?.priceCents / 100 : "—"}
+                                onBook={async () => {
+                                    if (!user) {
+                                        router.push('/login');
+                                        return;
+                                    }
+
+                                    const slot = doctor.appointmentSlots.find(s => {
+                                        const d = new Date(s.startsAt);
+                                        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                        const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                                        return dateStr === selectedDate && timeStr === selectedTime && s.mode === mode.toLowerCase();
+                                    });
+
+                                    if (!slot) {
+                                        alert("Selected slot is no longer available.");
+                                        return;
+                                    }
+
+                                    try {
+                                        await api.post('/api/appointments', { slotId: slot.id });
+                                        alert("Session Booked Successfully!");
+                                        router.push('/dashboard');
+                                    } catch (err) {
+                                        console.error(err);
+                                        alert(err.response?.data?.error || "Booking failed.");
+                                    }
+                                }}
                             />
                         </div>
 

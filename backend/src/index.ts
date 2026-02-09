@@ -2,10 +2,12 @@ import express, { type Request, type Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import clinicRouter from './routes/clinicRouter.js';
+import dashboardRouter from './routes/dashboardRouter.js';
+import testKitRouter from './routes/testKitRouter.js';
+import orderRouter from './routes/orderRouter.js';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import resourceRoutes from './routes/resourceRoutes.js';
 import { serializeBigInt } from './utils/serialization.js';
 import fs from 'fs';
 
@@ -41,7 +43,7 @@ app.set('json replacer', (key: string, value: any) => {
 log('Mounting auth routes at /api/auth');
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/resources', resourceRoutes);
+app.use('/api/dashboard', dashboardRouter);
 
 // basic health endpoint
 app.get('/health', (req: Request, res: Response) => {
@@ -49,6 +51,8 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 app.use('/clinics', clinicRouter);
+app.use('/test-kits', testKitRouter);
+app.use('/api/orders', orderRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

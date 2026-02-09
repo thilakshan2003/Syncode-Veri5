@@ -1,33 +1,57 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import TestKitCard from '@/components/TestKitCard';
 import ResultUploadModal from '@/components/ResultUploadModal';
+import OrderModal from '@/components/OrderModal';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-
-const products = [
-    {
-        title: "Standard Screen",
-        features: ["Checks for 7 common infections"],
-        price: "2800",
-    },
-    {
-        title: "Full Panel",
-        features: ["Complete 4-marker screening"],
-        price: "3600",
-        badge: "Best Value"
-    },
-    {
-        title: "Express Duo",
-        features: ["Basic STD & HIV Duo"],
-        price: "1600"
-    }
-];
+import { ArrowRight, Loader2 } from 'lucide-react';
+import { testKitApi } from '@/lib/api';
 
 export default function TestKitsPage() {
     const [modalOpen, setModalOpen] = useState(false);
+    const [orderModalOpen, setOrderModalOpen] = useState(false);
+    const [selectedKit, setSelectedKit] = useState(null);
+    const [testKits, setTestKits] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Placeholder images for test kits
+    const placeholderImages = [
+        'https://images.unsplash.com/photo-1579154204601-01588f351e67?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop',
+    ];
+
+    useEffect(() => {
+        fetchTestKits();
+    }, []);
+
+    const fetchTestKits = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await testKitApi.getTestKits();
+            setTestKits(data);
+        } catch (err) {
+            console.error('Error fetching test kits:', err);
+            setError('Failed to load test kits. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleOrderClick = (kit, imageSrc) => {
+        setSelectedKit({ ...kit, imageSrc });
+        setOrderModalOpen(true);
+    };
+
+    // Convert price from cents to display format
+    const formatPrice = (priceCents) => {
+        if (!priceCents || priceCents === 0) return 'Free';
+        return (priceCents / 100).toFixed(0);
+    };
 
     return (
         <main className="min-h-screen bg-background pb-20">
@@ -40,14 +64,44 @@ export default function TestKitsPage() {
                     <p className="text-muted-foreground text-lg">Select the screening that meets your needs.</p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8 mb-24">
-                    {products.map((p, idx) => (
-                        <TestKitCard
-                            key={idx}
-                            {...p}
-                        />
-                    ))}
-                </div>
+                {loading ? (
+                    <div className="flex items-center justify-center py-12">
+                        <Loader2 className="w-8 h-8 animate-spin text-veri5-teal" />
+                    </div>
+                ) : error ? (
+                    <div className="bg-red-50 border border-red-200 p-6 rounded-2xl text-center max-w-md mx-auto mb-24">
+                        <p className="text-red-600">{error}</p>
+                        <Button 
+                            variant="ghost" 
+                            className="mt-4 text-red-600"
+                            onClick={fetchTestKits}
+                        >
+                            Try Again
+                        </Button>
+                    </div>
+                ) : testKits.length === 0 ? (
+                    <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center max-w-md mx-auto mb-24">
+                        <p className="text-slate-600">No test kits available at the moment.</p>
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-3 gap-8 mb-24">
+                        {testKits.map((kit, index) => {
+                            const imageSrc = placeholderImages[index % placeholderImages.length];
+                            
+                            return (
+                                <TestKitCard
+                                    key={kit.id}
+                                    title={kit.name}
+                                    features={[kit.description || 'STI screening test']}
+                                    price={formatPrice(kit.priceCents)}
+                                    badge={kit.name === 'Full Panel' ? 'Best Value' : undefined}
+                                    imageSrc={imageSrc}
+                                    onOrder={() => handleOrderClick(kit, imageSrc)}
+                                />
+                            );
+                        })}
+                    </div>
+                )}
 
                 <div className="bg-gradient-to-r from-[#28a99e] to-[#208a81] rounded-3xl p-12 md:p-16 text-center shadow-2xl shadow-teal-900/20 relative overflow-hidden">
                     {/* Decorative Circles */}
@@ -72,6 +126,7 @@ export default function TestKitsPage() {
             </div>
 
             <ResultUploadModal open={modalOpen} onOpenChange={setModalOpen} />
+            <OrderModal open={orderModalOpen} onOpenChange={setOrderModalOpen} testKit={selectedKit} />
         </main>
     );
 }

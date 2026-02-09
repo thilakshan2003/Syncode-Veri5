@@ -130,4 +130,26 @@ export const clinicApi = {
     }
 };
 
+// Test Kit API functions
+export const testKitApi = {
+    /**
+     * Get all active test kits
+     * @returns {Promise} Response with test kits array
+     */
+    getTestKits: async () => {
+        const response = await api.get('/test-kits');
+        return response.data;
+    },
+
+    /**
+     * Get a specific test kit by ID
+     * @param {number|string} id - Test kit ID
+     * @returns {Promise} Response with test kit data
+     */
+    getTestKitById: async (id) => {
+        const response = await api.get(`/test-kits/${id}`);
+        return response.data;
+    }
+};
+
 export default api;

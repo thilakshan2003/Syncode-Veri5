@@ -13,11 +13,20 @@ const categories = [
     { name: "Sexual Wellbeing", value: "SEXUAL_WELLBEING" }
 ];
 
-import { resourceApi } from '@/lib/api';
-
 async function getResources(category) {
     try {
-        return await resourceApi.getResources(category);
+        const query = category ? `?category=${encodeURIComponent(category)}` : '';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        const response = await fetch(`${baseUrl}/api/resources${query}`, { 
+            cache: 'no-store' 
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch resources');
+        }
+        
+        const data = await response.json();
+        return data || [];
     } catch (error) {
         console.error("Error fetching resources:", error);
         return [];

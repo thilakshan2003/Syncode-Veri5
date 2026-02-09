@@ -171,7 +171,11 @@ export default function ShareStatusModal({ open, onOpenChange }) {
 
                             <h3 className="text-lg font-bold text-foreground mb-2">Secure Link Ready</h3>
                             <p className="text-sm text-muted-foreground mb-6 px-4">
-                                <span className="font-bold text-foreground">{searchTerm}</span> will be able to view your verified status for <span className="text-primary font-bold">15 minutes</span>. No detailed medical data is shared.
+                                <span className="font-bold text-foreground">{searchTerm}</span> will be able to view your verified status for <span className="text-primary font-bold">
+                                    {expiryHours < 1
+                                        ? `${Math.round(expiryHours * 60)} minute${Math.round(expiryHours * 60) === 1 ? '' : 's'}`
+                                        : `${expiryHours} hour${expiryHours === 1 ? '' : 's'}`}
+                                </span>. No detailed medical data is shared.
                             </p>
 
                             {/* Share Link Box */}

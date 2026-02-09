@@ -216,7 +216,7 @@ export const resourceApi = {
      * @returns {Promise} Response with resources array
      */
     getResources: async (category = '') => {
-        const query = category ? `?category=${category}` : '';
+        const query = category ? `?category=${encodeURIComponent(category)}` : '';
         const response = await api.get(`/api/resources${query}`);
         return response.data;
     },

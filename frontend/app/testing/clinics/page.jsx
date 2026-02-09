@@ -87,7 +87,7 @@ export default function ClinicsPage() {
                             <Button variant="ghost" size="sm" className="text-xs text-veri5-teal hover:bg-veri5-teal/10">Change</Button>
                         </div>
 
-                        <div className="space-y-4 h-[calc(100vh-400px)] overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="space-y-4 h-[calc(100vh-400px)] overflow-y-auto pr-2">
                             {loading ? (
                                 <div className="flex items-center justify-center py-12">
                                     <Loader2 className="w-8 h-8 animate-spin text-veri5-teal" />

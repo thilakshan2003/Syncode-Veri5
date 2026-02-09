@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import practitionerRouter from './routes/practitionerRouter.js';
+import appointmentRouter from './routes/appointmentRouter.js';
 import { serializeBigInt } from './utils/serialization.js';
 import fs from 'fs';
 
@@ -44,6 +45,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/practitioners', practitionerRouter);
+app.use('/api/appointments', appointmentRouter);
 
 // basic health endpoint
 app.get('/health', (req: Request, res: Response) => {

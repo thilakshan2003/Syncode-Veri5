@@ -45,9 +45,6 @@ log('Mounting auth routes at /api/auth');
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/practitioners', practitionerRouter);
-app.use('/api/resources', resourceRoutes);
-
-// basic health endpoint
 app.get('/health', (req: Request, res: Response) => {
     res.status(200).json({ status: 'ok', message: 'Backend is running' });
 });

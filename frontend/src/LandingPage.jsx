@@ -31,7 +31,9 @@ function LandingPage() {
         </p>
         <div className="hero-actions">
           <button className="btn-primary">Get Started Now</button>
-          <button className="btn-secondary">Our Privacy Policy</button>
+          <a href="/security">
+            <button className="btn-secondary">Our Privacy Policy</button>
+          </a>
         </div>
       </section>
 

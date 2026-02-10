@@ -10,7 +10,7 @@ export default function PrivacyBanner() {
                 <div>
                     <div className="flex items-center justify-between mb-1">
                         <h3 className="font-bold text-foreground">Privacy Guarantee</h3>
-                        <a href="#" className="text-xs font-bold text-primary hover:underline flex items-center">
+                        <a href="/security" className="text-xs font-bold text-primary hover:underline flex items-center">
                             Security Protocol <ArrowRight className="w-3 h-3 ml-1" />
                         </a>
                     </div>

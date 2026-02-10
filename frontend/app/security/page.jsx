@@ -139,7 +139,7 @@ export default function SecurityProtocolPage() {
                         <Shield className="w-10 h-10 text-veri5-teal" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
-                        Security Protocols
+                        Privacy Policies
                     </h1>
                     <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                         Your privacy and security are our top priorities. We implement industry-leading security measures to protect your sensitive health information.
@@ -280,22 +280,11 @@ export default function SecurityProtocolPage() {
                             Security Concerns?
                         </h3>
                         <p className="text-muted-foreground mb-6">
-                            If you discover a security vulnerability or have concerns about our security practices, please contact our security team immediately.
+                            If you discover a security vulnerability or have concerns about our security practices, please contact our security team at support@veri5.com.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a
-                                href="mailto:security@veri5.com"
-                                className="inline-flex items-center justify-center px-6 py-3 bg-veri5-teal text-white font-semibold rounded-xl hover:bg-teal-600 transition-colors"
-                            >
-                                Report Security Issue
-                            </a>
-                            <a
-                                href="/resources"
-                                className="inline-flex items-center justify-center px-6 py-3 bg-slate-100 dark:bg-slate-800 text-foreground font-semibold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                            >
-                                View Privacy Policy
-                            </a>
-                        </div>
+                        <p className="text-sm text-muted-foreground">
+                            Email: <a className="text-veri5-teal hover:underline" href="mailto:support@veri5.com">support@veri5.com</a>
+                        </p>
                     </div>
                 </div>
 

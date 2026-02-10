@@ -90,7 +90,7 @@ export const getOrdersByUserId = async (userId: bigint) => {
           testKit: true,
         },
       },
-      testKitInstances: {
+      test_kit_instances: {
         select: {
           id: true,
           serial_number: true,
@@ -122,7 +122,7 @@ export const getOrderById = async (orderId: bigint, userId: bigint) => {
           testKit: true,
         },
       },
-      testKitInstances: {
+      test_kit_instances: {
         select: {
           id: true,
           serial_number: true,

@@ -37,21 +37,30 @@ export default function Footer() {
                     <div>
                         <h4 className="font-bold text-foreground mb-6">Company</h4>
                         <ul className="space-y-4 text-sm text-muted-foreground">
-                            <li><Link href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">About Us</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Careers</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Privacy Policy</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Terms of Service</Link></li>
+                            <li><Link href="/us" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">About Us</Link></li>
+                            <li><Link href="/security" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Privacy Policy</Link></li>
                         </ul>
                     </div>
 
                     {/* Support */}
                     <div>
                         <h4 className="font-bold text-foreground mb-6">Support</h4>
-                        <ul className="space-y-4 text-sm text-muted-foreground">
-                            <li><Link href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Help Center</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Contact Us</Link></li>
-                            <li><Link href="#" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Partner with Us</Link></li>
-                        </ul>
+                        <div className="space-y-4 text-sm text-muted-foreground">
+                            <div>
+                                <p className="font-semibold text-foreground/80">Help Center</p>
+                                <p>Support hours: Mon–Fri, 9am–6pm</p>
+                                <p>Help: help@veri5.com</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold text-foreground/80">Contact</p>
+                                <p>Email: support@veri5.com</p>
+                                <p>Phone: +94 11 234 5678</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold text-foreground/80">Partner with Us</p>
+                                <p>partners@veri5.com</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -60,9 +69,7 @@ export default function Footer() {
                         &copy; {new Date().getFullYear()} Veri5 Health Inc. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-xs text-muted-foreground font-medium">
-                        <Link href="#">Privacy</Link>
-                        <Link href="#">Terms</Link>
-                        <Link href="#">Sitemap</Link>
+                        <Link href="/security">Privacy Policy</Link>
                     </div>
                 </div>
             </div>

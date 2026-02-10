@@ -49,7 +49,7 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
         if (startDay === -1) startDay = 6;
 
         // Previous month padding
-        const prevMonthLastDay = new Date(year, month, 0).getDate();
+        const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
         for (let i = 0; i < startDay; i++) {
             daysInMonth.push({ day: prevMonthLastDay - startDay + 1 + i, month: 'prev' });
         }

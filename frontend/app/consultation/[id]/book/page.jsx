@@ -18,7 +18,7 @@ export default function BookingPage(props) {
     const { user } = useAuth();
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
-    const [mode, setMode] = useState("Online"); // Online, Physical
+    const [mode, setMode] = useState("online"); // Changed to lowercase to match database
     const [doctor, setDoctor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -28,6 +28,11 @@ export default function BookingPage(props) {
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
+    // Handle mode change - reset selections when mode changes
+    const handleModeChange = (newMode) => {
+        setMode(newMode);
+        setSelectedDate(null); // Reset date selection
+        setSelectedTime(null); // Reset time selection
     };
 
     useEffect(() => {
@@ -84,14 +89,14 @@ export default function BookingPage(props) {
                                 {/* Mode Toggle */}
                                 <div className="bg-muted p-1 rounded-xl inline-flex">
                                     <button
-                                        onClick={() => setMode("Online")}
-                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'Online' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                                        onClick={() => handleModeChange("online")}
+                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'online' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                                     >
                                         Online
                                     </button>
                                     <button
-                                        onClick={() => setMode("Physical")}
-                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'Physical' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                                        onClick={() => handleModeChange("physical")}
+                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'physical' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                                     >
                                         Physical
                                     </button>
@@ -119,7 +124,7 @@ export default function BookingPage(props) {
                                     const d = new Date(s.startsAt);
                                     const dateStr = toDateKey(d);
                                     const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                                    return dateStr === selectedDate && timeStr === selectedTime && s.mode === mode.toLowerCase();
+                                    return dateStr === selectedDate && timeStr === selectedTime && s.mode === mode;
                                 })?.priceCents / 100 : "—"}
                                 onBook={async () => {
                                     if (!user) {

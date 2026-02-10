@@ -55,14 +55,14 @@ export default function TestKitsPage() {
     };
 
     return (
-        <main className="min-h-screen bg-slate-950 pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-8">
 
                 <div className="text-center max-w-2xl mx-auto mb-12">
-                    <h1 className="text-3xl font-bold text-white mb-3">Available Test Kits</h1>
-                    <p className="text-slate-400 text-base">Select the screening that meets your needs.</p>
+                    <h1 className="text-3xl font-bold text-foreground mb-3">Available Test Kits</h1>
+                    <p className="text-muted-foreground text-base">Select the screening that meets your needs.</p>
                 </div>
 
                 {loading ? (
@@ -70,22 +70,22 @@ export default function TestKitsPage() {
                         <Loader2 className="w-8 h-8 animate-spin text-veri5-teal" />
                     </div>
                 ) : error ? (
-                    <div className="bg-red-50 border border-red-200 p-6 rounded-2xl text-center max-w-md mx-auto mb-24">
-                        <p className="text-red-600">{error}</p>
+                    <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-6 rounded-2xl text-center max-w-md mx-auto mb-24">
+                        <p className="text-red-600 dark:text-red-400">{error}</p>
                         <Button 
                             variant="ghost" 
-                            className="mt-4 text-red-600"
+                            className="mt-4 text-red-600 dark:text-red-400"
                             onClick={fetchTestKits}
                         >
                             Try Again
                         </Button>
                     </div>
                 ) : testKits.length === 0 ? (
-                    <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-center max-w-md mx-auto mb-24">
-                        <p className="text-slate-600">No test kits available at the moment.</p>
+                    <div className="bg-card border border-border p-6 rounded-2xl text-center max-w-md mx-auto mb-24">
+                        <p className="text-muted-foreground">No test kits available at the moment.</p>
                     </div>
                 ) : (
-                    <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-8 mb-16 max-w-7xl mx-auto">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8 mb-16 max-w-6xl mx-auto w-full justify-items-center place-content-center">
                         {testKits.map((kit, index) => {
                             const imageSrc = placeholderImages[index % placeholderImages.length];
                             
@@ -104,14 +104,14 @@ export default function TestKitsPage() {
                     </div>
                 )}
 
-                <div className="relative bg-slate-900/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 text-center border border-cyan-500/30 shadow-lg shadow-cyan-500/10 overflow-hidden max-w-3xl mx-auto">
+                <div className="relative bg-card/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 text-center border border-border shadow-lg shadow-teal-500/10 overflow-hidden max-w-3xl mx-auto">
                     {/* Decorative Background Elements */}
-                    <div className="absolute top-0 left-0 w-48 h-48 bg-cyan-500/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
-                    <div className="absolute bottom-0 right-0 w-48 h-48 bg-cyan-500/5 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl"></div>
+                    <div className="absolute top-0 left-0 w-48 h-48 bg-veri5-teal/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+                    <div className="absolute bottom-0 right-0 w-48 h-48 bg-veri5-teal/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl"></div>
 
                     <div className="relative z-10">
-                        <h2 className="text-xl md:text-2xl font-bold text-white mb-2">Submit your Results</h2>
-                        <p className="text-slate-300 text-xs md:text-sm mb-5 leading-relaxed max-w-xl mx-auto">
+                        <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">Submit your Results</h2>
+                        <p className="text-muted-foreground text-xs md:text-sm mb-5 leading-relaxed max-w-xl mx-auto">
                             Take a clear image of the test kit with the QR code and submit it.<br />
                             We will verify your result and update your status. No test result is stored on our server.
                         </p>

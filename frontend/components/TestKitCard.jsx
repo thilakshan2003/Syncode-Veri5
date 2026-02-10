@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export default function TestKitCard({ title, description, price, features = [], badge, imageSrc, onOrder }) {
     return (
-        <div className="bg-card rounded-3xl p-7 border border-border hover:border-primary shadow-lg hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 flex flex-col h-full relative overflow-hidden group">
+        <div className="bg-card rounded-3xl p-7 border border-border hover:border-primary shadow-lg hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 flex flex-col h-full relative overflow-hidden group w-full max-w-sm">
 
             {/* Product Image Area Placeholder */}
             <div className="w-full aspect-[4/3] bg-muted/30 rounded-2xl mb-7 relative overflow-hidden flex items-center justify-center">

@@ -1,25 +1,31 @@
-# Backend Development Dockerfile
-FROM node:20-alpine
+# Backend Dockerfile
+
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* ./
+COPY package*.json ./
+COPY prisma ./prisma/
 
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application
 COPY . .
 
-# Accept DATABASE_URL as build argument
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
-
-# Generate Prisma Client
 RUN npx prisma generate
+RUN npm run build
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 EXPOSE 5000
 
-# Run with nodemon for auto-reload
-CMD ["npm", "run", "dev"]
+CMD ["node", "dist/src/index.js"]

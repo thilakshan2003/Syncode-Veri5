@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import QuickActionCard from '@/components/QuickActionCard';
 import StatSummaryCard from '@/components/StatSummaryCard';
@@ -14,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { dashboardApi } from '@/lib/api';
 
 export default function Dashboard() {
+    const searchParams = useSearchParams();
     const [shareModalOpen, setShareModalOpen] = useState(false);
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -23,6 +25,14 @@ export default function Dashboard() {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Check URL parameters for auto-opening modals
+    useEffect(() => {
+        const action = searchParams.get('action');
+        if (action === 'share') {
+            setShareModalOpen(true);
+        }
+    }, [searchParams]);
 
     // Fetch user status, test count, and next test date from database
     useEffect(() => {

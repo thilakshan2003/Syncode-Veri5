@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Button from './Button';
 
 export default function Hero() {
@@ -26,9 +27,11 @@ export default function Hero() {
                     <Button className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-full px-8 h-12 text-base font-semibold w-full sm:w-auto shadow-lg shadow-emerald-500/20">
                         Get Started Now
                     </Button>
-                    <Button className="bg-card text-foreground hover:bg-accent rounded-full px-8 h-12 text-base font-bold w-full sm:w-auto border border-border">
-                        Our Privacy Policy
-                    </Button>
+                    <Link href="/security">
+                        <Button className="bg-card text-foreground hover:bg-accent rounded-full px-8 h-12 text-base font-bold w-full sm:w-auto border border-border">
+                            Our Privacy Policy
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>

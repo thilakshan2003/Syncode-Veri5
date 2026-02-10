@@ -32,6 +32,10 @@ const daysFromNow = (days: number) => {
 const hoursFrom = (base: Date, hours: number) => new Date(base.getTime() + hours * 60 * 60 * 1000);
 const tokenHash = (raw: string) => crypto.createHash('sha256').update(raw).digest('hex');
 
+const STAFF_PASSWORD = 'password123';
+const USER_PASSWORD = 'password123';
+
+
 async function main() {
     console.log('Start seeding ...');
 
@@ -236,7 +240,8 @@ async function main() {
     }
 
     // --- GENERATE SLOTS (Next 14 days) ---
-    const [drSandamali, drChanidu, drAjay] = practitioners;
+    const [drSandamaliGen, drChaniduGen, drAjayGen] = practitioners;
+
     const clinic1 = clinics[0];
     const today = new Date();
 
@@ -252,32 +257,36 @@ async function main() {
         // Dr. Sandamali: Weekdays Online, Weekends Physical
         if (!isWeekend) {
             await prisma.appointment_slots.create({
-                data: { practitionerId: drSandamali.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 250000, isAvailable: true }
+                data: { practitionerId: drSandamaliGen.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 250000, isAvailable: true }
             });
         } else {
             await prisma.appointment_slots.create({
-                data: { practitionerId: drSandamali.id, clinicId: clinic1.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 300000, isAvailable: true }
+                data: { practitionerId: drSandamaliGen.id, clinicId: clinic1.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 300000, isAvailable: true }
             });
         }
+
 
         // Dr. Chanidu: Weekends Online, Free at NHS (Anytime/Mixed)
         if (isWeekend) {
             await prisma.appointment_slots.create({
-                data: { practitionerId: drChanidu.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 200000, isAvailable: true }
+                data: { practitionerId: drChaniduGen.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 200000, isAvailable: true }
             });
         }
+
 
         // Add some free NHS slots on random days (including weekdays)
         if (i % 2 === 0) {
             await prisma.appointment_slots.create({
-                data: { practitionerId: drChanidu.id, clinicId: nhsClinic.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 0, isAvailable: true }
+                data: { practitionerId: drChaniduGen.id, clinicId: nhsClinic.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 0, isAvailable: true }
             });
         }
 
+
         // Dr. Ajay: Daily Online
         await prisma.appointment_slots.create({
-            data: { practitionerId: drAjay.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 400000, isAvailable: true }
+            data: { practitionerId: drAjayGen.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 400000, isAvailable: true }
         });
+
     }
 
     console.log('Detailed slots created.');
@@ -341,8 +350,8 @@ async function main() {
     }
 
     // Alice Data (Retained)
-    await prisma.users.create({
     const alice = await prisma.users.create({
+
         data: {
             username: 'alice_w',
             email: 'alice@example.com',

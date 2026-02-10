@@ -101,12 +101,12 @@ function ConsultationContent() {
                         </svg>
                         <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">SLMC Certified Specialists</span>
                     </div>
-                    
+
                     <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 leading-tight">
                         Expert & Private <span className="text-emerald-600 dark:text-emerald-500">Consultations</span>
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
-                        Book a consultation at a clinic or online channeling with certified specialists. 
+                        Book a consultation at a clinic or online channeling with certified specialists.
                         <br className="hidden sm:block" />
                         Your privacy and health are our top priority.
                     </p>
@@ -143,8 +143,6 @@ function ConsultationContent() {
                             ))}
                         </select>
                     </div>
-                </div>
-
                     <div className="flex items-center gap-3">
                         <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Availability</label>
                         <select

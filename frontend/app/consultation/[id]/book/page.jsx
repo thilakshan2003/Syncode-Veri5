@@ -28,6 +28,8 @@ export default function BookingPage(props) {
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
+    };
+
     // Handle mode change - reset selections when mode changes
     const handleModeChange = (newMode) => {
         setMode(newMode);

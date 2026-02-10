@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import * as clinicService from '../services/clinicService.js';
+import * as practitionerService from '../services/practitionerService.js';
 
 export const getClinics = async (req: Request, res: Response) => {
   try {
@@ -25,5 +26,20 @@ export const getClinic = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error fetching clinic:', error);
     res.status(500).json({ error: 'Failed to fetch clinic' });
+  }
+};
+
+export const getClinicPractitioners = async (req: Request, res: Response) => {
+  try {
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+    if (!id) return res.status(400).json({ error: 'Clinic id is required' });
+
+    const practitionerLinks = await practitionerService.getPractitionersByClinic(BigInt(id));
+    const practitioners = practitionerLinks.map((link) => link.practitioner);
+    res.json(practitioners);
+  } catch (error) {
+    console.error('Error fetching clinic practitioners:', error);
+    res.status(500).json({ error: 'Failed to fetch clinic practitioners' });
   }
 };

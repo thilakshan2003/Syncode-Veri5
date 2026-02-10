@@ -85,17 +85,17 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
 
 
     return (
-        <div className="bg-white rounded-3xl p-8 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all">
+        <div className="bg-card rounded-3xl p-8 border border-border hover:border-primary shadow-lg transition-all">
 
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <h2 className="text-xl font-bold text-slate-900">{currentMonthLabel}</h2>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-slate-200">
-                        <ChevronLeft className="w-4 h-4 text-slate-400" />
+                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                        <ChevronLeft className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-slate-200">
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     </Button>
                 </div>
             </div>
@@ -105,7 +105,7 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                 <div>
                     <div className="grid grid-cols-7 mb-4">
                         {days.map(d => (
-                            <div key={d} className="text-center text-[10px] font-bold text-slate-400 tracking-wider">
+                            <div key={d} className="text-center text-[10px] font-bold text-muted-foreground tracking-wider">
                                 {d}
                             </div>
                         ))}
@@ -155,9 +155,9 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                         </div>
                     )}
 
-                    <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-xl">
-                        <Info className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-xs text-slate-500 leading-relaxed">
+                    <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-xl">
+                        <Info className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <p className="text-xs text-muted-foreground leading-relaxed">
                             Sessions are typically 30 minutes of dedicated private time.
                         </p>
                     </div>

@@ -56,14 +56,14 @@ export default function BookingPage(props) {
     if (error || !doctor) return <div className="text-center py-20 text-red-500">Error: {error || 'Doctor not found'}</div>;
 
     return (
-        <main className="min-h-screen bg-slate-50/50 pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-8">
 
                 <div className="max-w-6xl mx-auto">
                     {/* Back Link */}
-                    <Link href="/consultation" className="inline-flex items-center text-slate-500 hover:text-veri5-teal font-medium mb-8 transition-colors">
+                    <Link href="/consultation" className="inline-flex items-center text-muted-foreground hover:text-primary font-medium mb-8 transition-colors">
                         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Specialists
                     </Link>
 
@@ -72,19 +72,19 @@ export default function BookingPage(props) {
                         {/* Left Column: Calendar & Options */}
                         <div className="lg:col-span-2">
                             <div className="flex items-center justify-between mb-8">
-                                <h1 className="text-3xl font-extrabold text-veri5-navy">Select Time</h1>
+                                <h1 className="text-3xl font-extrabold text-foreground">Select Time</h1>
 
                                 {/* Mode Toggle */}
-                                <div className="bg-slate-100 p-1 rounded-xl inline-flex">
+                                <div className="bg-muted p-1 rounded-xl inline-flex">
                                     <button
                                         onClick={() => setMode("Online")}
-                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'Online' ? 'bg-white text-veri5-teal shadow-sm' : 'text-slate-500'}`}
+                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'Online' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                                     >
                                         Online
                                     </button>
                                     <button
                                         onClick={() => setMode("Physical")}
-                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'Physical' ? 'bg-white text-veri5-teal shadow-sm' : 'text-slate-500'}`}
+                                        className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${mode === 'Physical' ? 'bg-background text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                                     >
                                         Physical
                                     </button>

@@ -20,16 +20,16 @@ const statusColors = {
     completed: 'bg-green-100 text-green-700',
     cancelled: 'bg-red-100 text-red-700',
     no_show: 'bg-gray-100 text-gray-700',
-    
+
     // Verification statuses
     verified: 'bg-emerald-100 text-emerald-700',
     unverified: 'bg-orange-100 text-orange-700',
-    
+
     // Share statuses
     viewed: 'bg-green-100 text-green-700',
     active: 'bg-blue-100 text-blue-700',
     revoked: 'bg-red-100 text-red-700',
-    
+
     // Order statuses
     created: 'bg-gray-100 text-gray-700',
     paid: 'bg-blue-100 text-blue-700',
@@ -52,7 +52,7 @@ export default function ActivityLog({ limit }) {
             setLoading(true);
             setError(null);
             const response = await dashboardApi.getActivityLog(limit || 50);
-            
+
             if (response.success) {
                 // Filter out received status shares with 'pending' status
                 const filteredData = response.data.filter(item => {
@@ -105,8 +105,8 @@ export default function ActivityLog({ limit }) {
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide transition-all whitespace-nowrap
                  ${filter === f
-                                    ? 'bg-veri5-navy text-white shadow-md'
-                                    : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'}`}
+                                    ? 'bg-primary text-white shadow-md'
+                                    : 'bg-background border border-border text-muted-foreground hover:bg-accent hover:text-foreground'}`}
                         >
                             {f === 'all' ? 'All Activity' : f.replace('_', ' ')}
                         </button>
@@ -116,7 +116,7 @@ export default function ActivityLog({ limit }) {
 
             <div className="space-y-0 relative">
                 {/* Timeline Line */}
-                <div className="absolute left-[29px] top-4 bottom-4 w-0.5 bg-slate-100 z-0"></div>
+                <div className="absolute left-[29px] top-4 bottom-4 w-0.5 bg-border z-0"></div>
 
                 {displayList.map((item) => {
                     const iconConfig = activityIcons[item.type] || { icon: Clock, color: 'text-slate-500', bg: 'bg-slate-50' };

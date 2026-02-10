@@ -59,15 +59,27 @@ function ConsultationContent() {
                 const data = await response.json();
                 console.log("Fetched practitioners:", data);
 
+                // Placeholder images for healthcare consultants
+                const placeholderImages = [
+                    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face", // Male doctor with stethoscope
+                    "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face", // Female doctor smiling
+                    "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face", // Male doctor in white coat
+                    "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=face", // Female doctor with glasses
+                    "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&h=200&fit=crop&crop=face", // Male doctor professional
+                    "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=face", // Female doctor with stethoscope
+                    "https://images.unsplash.com/photo-1618498082410-b4aa22193b38?w=200&h=200&fit=crop&crop=face", // Male specialist
+                    "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face", // Female healthcare professional
+                ];
+
                 // Map backend data to frontend format
-                const mappedData = data.map(p => ({
+                const mappedData = data.map((p, index) => ({
                     id: p.id,
                     name: p.name,
                     role: p.specialization,
                     experience: `${p.experience} years exp`,
                     rating: `${p.rating} Rating`,
                     verifiedLints: p.availabilityTags || [],
-                    image: p.imageUrl || "",
+                    image: p.imageUrl || placeholderImages[index % placeholderImages.length],
                     type: p.specialization.toLowerCase().includes('venereologist') ? 'venereologist' : 'specialist'
                 }));
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -8,7 +8,32 @@ const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
 export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDate, selectedTime, availableSlots = [], mode = 'Online' }) {
     const today = new Date();
-    const currentMonthLabel = today.toLocaleString('default', { month: 'long', year: 'numeric' });
+    const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+    const [currentYear, setCurrentYear] = useState(today.getFullYear());
+    
+    const currentMonthLabel = new Date(currentYear, currentMonth, 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    const goToPreviousMonth = () => {
+        if (currentMonth === 0) {
+            setCurrentMonth(11);
+            setCurrentYear(currentYear - 1);
+        } else {
+            setCurrentMonth(currentMonth - 1);
+        }
+    };
+
+    const goToNextMonth = () => {
+        if (currentMonth === 11) {
+            setCurrentMonth(0);
+            setCurrentYear(currentYear + 1);
+        } else {
+            setCurrentMonth(currentMonth + 1);
+        }
+    };
+
+    // Check if we can go to previous month (not before current month)
+    const canGoPrevious = currentYear > today.getFullYear() || 
+        (currentYear === today.getFullYear() && currentMonth > today.getMonth());
 
     // Filter slots by mode
     const filteredSlots = useMemo(() => {
@@ -21,7 +46,6 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
     const availableDates = useMemo(() => {
         const dates = new Set();
         filteredSlots.forEach(slot => {
-            const dateStr = new Date(slot.startsAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
             const d = new Date(slot.startsAt);
             const str = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             dates.add(str);
@@ -30,8 +54,8 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
     }, [filteredSlots]);
 
     const getCalendarDays = () => {
-        const year = today.getFullYear();
-        const month = today.getMonth();
+        const year = currentYear;
+        const month = currentMonth;
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
 
@@ -51,10 +75,15 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
         for (let i = 1; i <= lastDay.getDate(); i++) {
             const dateObj = new Date(year, month, i);
             const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            // Check if date is in the past
+            const isPast = dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            
             daysInMonth.push({
                 day: i,
                 month: 'current',
-                active: availableDates.has(dateStr),
+                active: !isPast && availableDates.has(dateStr),
+                isPast,
                 fullDate: dateStr
             });
         }
@@ -91,10 +120,21 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
             <div className="flex items-center justify-between mb-8">
                 <h2 className="text-xl font-bold text-slate-900">{currentMonthLabel}</h2>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                    <Button 
+                        variant="outline" 
+                        size="icon" 
+                        className="h-8 w-8 rounded-full border-border"
+                        onClick={goToPreviousMonth}
+                        disabled={!canGoPrevious}
+                    >
                         <ChevronLeft className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                    <Button 
+                        variant="outline" 
+                        size="icon" 
+                        className="h-8 w-8 rounded-full border-border"
+                        onClick={goToNextMonth}
+                    >
                         <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     </Button>
                 </div>
@@ -114,12 +154,15 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                         {calendarDays.map((d, i) => (
                             <div key={i} className="flex justify-center">
                                 <button
-                                    disabled={d.month === 'prev' || !d.active}
-                                    onClick={() => d.active && onDateSelect(d.fullDate)}
+                                    disabled={d.month === 'prev' || d.isPast || !d.active}
+                                    onClick={() => d.active && !d.isPast && onDateSelect(d.fullDate)}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all
-                                    ${d.month === 'prev' ? 'text-slate-200' : (d.active ? 'text-slate-700 hover:bg-slate-50 cursor-pointer' : 'text-slate-300 cursor-not-allowed')}
+                                    ${d.month === 'prev' ? 'text-slate-200' : ''}
+                                    ${d.month === 'current' && d.isPast ? 'text-slate-300 cursor-not-allowed' : ''}
+                                    ${d.month === 'current' && !d.isPast && d.active ? 'text-slate-700 hover:bg-slate-50 cursor-pointer' : ''}
+                                    ${d.month === 'current' && !d.isPast && !d.active ? 'text-slate-300 cursor-not-allowed' : ''}
                                     ${selectedDate === d.fullDate ? '!bg-veri5-teal !text-white shadow-md' : ''}
-                                    ${d.active && selectedDate !== d.fullDate ? 'bg-emerald-50 text-emerald-700 font-bold' : ''}
+                                    ${d.active && !d.isPast && selectedDate !== d.fullDate ? 'bg-emerald-50 text-emerald-700 font-bold' : ''}
                                 `}
                                 >
                                     {d.day}

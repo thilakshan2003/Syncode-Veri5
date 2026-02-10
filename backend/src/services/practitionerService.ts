@@ -178,11 +178,19 @@ export const getPractitionerById = async (id: string | number) => {
         ...practitioner,
         id: practitioner.id.toString(),
         appointmentSlots: practitioner.appointmentSlots.map(slot => ({
-            ...slot,
             id: slot.id.toString(),
             practitionerId: slot.practitionerId.toString(),
             clinicId: slot.clinicId?.toString(),
-            priceCents: slot.priceCents
+            mode: slot.mode,
+            startsAt: slot.startsAt.toISOString(),
+            endsAt: slot.endsAt.toISOString(),
+            priceCents: slot.priceCents,
+            isAvailable: slot.isAvailable,
+            clinic: slot.clinic ? {
+                id: slot.clinic.id.toString(),
+                name: slot.clinic.name,
+                address: slot.clinic.address
+            } : null
         }))
     };
 };

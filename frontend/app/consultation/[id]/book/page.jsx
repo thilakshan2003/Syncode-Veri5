@@ -23,19 +23,32 @@ export default function BookingPage(props) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Placeholder images for healthcare consultants
+    const placeholderImages = [
+        "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&h=200&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=face",
+    ];
+
     useEffect(() => {
         const fetchDoctor = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/practitioners/${params.id}`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/practitioners/${params.id}`);
                 if (!response.ok) throw new Error('Failed to fetch doctor details');
                 const data = await response.json();
+
+                // Generate a consistent placeholder image based on practitioner ID
+                const placeholderIndex = parseInt(data.id) % placeholderImages.length;
 
                 // Transform data for UI
                 setDoctor({
                     id: data.id,
                     name: data.name,
                     role: data.specialization,
-                    image: data.imageUrl || "",
+                    image: data.imageUrl || placeholderImages[placeholderIndex],
                     defaultCost: "3,600", // Fallback or derived
                     appointmentSlots: data.appointmentSlots || []
                 });

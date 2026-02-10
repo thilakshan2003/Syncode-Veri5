@@ -3,6 +3,14 @@ import { Button } from '@/components/ui/button';
 
 export default function BookingSummary({ doctor, selectedDate, selectedTime, cost, mode = "Online", onBook, appointmentId, onCancel }) {
     const isExistingAppointment = !!appointmentId;
+    const formatDate = (dateValue) => {
+        if (!dateValue) return "Select a date";
+        if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+            const d = new Date(`${dateValue}T00:00:00`);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        return dateValue;
+    };
 
     return (
         <div className="bg-card rounded-3xl p-6 border border-border hover:border-primary shadow-xl shadow-background/50 transition-all sticky top-24">
@@ -32,7 +40,7 @@ export default function BookingSummary({ doctor, selectedDate, selectedTime, cos
             <div className="space-y-4 mb-8">
                 <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Date</span>
-                    <span className="font-bold text-foreground">{selectedDate || "Select a date"}</span>
+                    <span className="font-bold text-foreground">{formatDate(selectedDate)}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Time</span>

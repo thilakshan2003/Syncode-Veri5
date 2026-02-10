@@ -23,6 +23,13 @@ export default function BookingPage(props) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const toDateKey = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     useEffect(() => {
         const fetchDoctor = async () => {
             try {
@@ -110,7 +117,7 @@ export default function BookingPage(props) {
                                 mode={mode}
                                 cost={selectedTime ? doctor.appointmentSlots.find(s => {
                                     const d = new Date(s.startsAt);
-                                    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                    const dateStr = toDateKey(d);
                                     const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                                     return dateStr === selectedDate && timeStr === selectedTime && s.mode === mode.toLowerCase();
                                 })?.priceCents / 100 : "—"}
@@ -122,7 +129,7 @@ export default function BookingPage(props) {
 
                                     const slot = doctor.appointmentSlots.find(s => {
                                         const d = new Date(s.startsAt);
-                                        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                        const dateStr = toDateKey(d);
                                         const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                                         return dateStr === selectedDate && timeStr === selectedTime && s.mode === mode.toLowerCase();
                                     });

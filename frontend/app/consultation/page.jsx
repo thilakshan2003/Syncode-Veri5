@@ -104,9 +104,9 @@ function ConsultationContent() {
 
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
                     <div className="flex items-center gap-3">
-                        <label className="text-sm font-semibold text-slate-700">Filter by clinic</label>
+                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Filter by clinic</label>
                         <select
-                            className="h-10 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
+                            className="h-10 rounded-full border border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-800/80 px-5 text-sm font-semibold text-slate-700 dark:text-slate-100 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 backdrop-blur"
                             value={selectedClinicId}
                             onChange={(event) => setSelectedClinicId(event.target.value)}
                         >
@@ -119,9 +119,9 @@ function ConsultationContent() {
                         </select>
                     </div>
                     <div className="flex items-center gap-3">
-                        <label className="text-sm font-semibold text-slate-700">Filter By Role</label>
+                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Filter By Role</label>
                         <select
-                            className="h-10 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
+                            className="h-10 rounded-full border border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-800/80 px-5 text-sm font-semibold text-slate-700 dark:text-slate-100 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 backdrop-blur"
                             value={filterRole}
                             onChange={(e) => setFilterRole(e.target.value)}
                         >
@@ -133,9 +133,9 @@ function ConsultationContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <label className="text-sm font-semibold text-slate-700">Availability</label>
+                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Availability</label>
                         <select
-                            className="h-10 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
+                            className="h-10 rounded-full border border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-800/80 px-5 text-sm font-semibold text-slate-700 dark:text-slate-100 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 backdrop-blur"
                             value={filterAvailability}
                             onChange={(e) => setFilterAvailability(e.target.value)}
                         >

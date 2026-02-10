@@ -185,6 +185,11 @@ As you integrate these practices into your daily life, reflect on how your envir
     }
     console.log('🏥 5 Clinical Locations & 10 Staff Members established.');
 
+    // Special NHS Clinic
+    const nhsClinic = await prisma.clinics.create({
+        data: { name: 'National Hospital Sri Lanka (NHS)', slug: 'nhs-colombo', address: 'Colombo 10', availableTime: '24/7' }
+    });
+
     // --- PATIENTS (50 Unique Users) ---
     const users = [];
     for (let i = 1; i <= 50; i++) {
@@ -254,6 +259,53 @@ As you integrate these practices into your daily life, reflect on how your envir
         practitioners.push(dr);
     }
 
+    // --- GENERATE SLOTS (Next 14 days) ---
+    const [drSandamali, drChanidu, drAjay] = practitioners;
+    const clinic1 = clinics[0];
+    const today = new Date();
+
+    for (let i = 0; i < 14; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+        const dayOfWeek = d.getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+        const start = new Date(d); start.setHours(9, 0, 0, 0);
+        const end = new Date(d); end.setHours(17, 0, 0, 0);
+
+        // Dr. Sandamali: Weekdays Online, Weekends Physical
+        if (!isWeekend) {
+            await prisma.appointment_slots.create({
+                data: { practitionerId: drSandamali.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 250000, isAvailable: true }
+            });
+        } else {
+            await prisma.appointment_slots.create({
+                data: { practitionerId: drSandamali.id, clinicId: clinic1.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 300000, isAvailable: true }
+            });
+        }
+
+        // Dr. Chanidu: Weekends Online, Free at NHS (Anytime/Mixed)
+        if (isWeekend) {
+            await prisma.appointment_slots.create({
+                data: { practitionerId: drChanidu.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 200000, isAvailable: true }
+            });
+        }
+
+        // Add some free NHS slots on random days (including weekdays)
+        if (i % 2 === 0) {
+            await prisma.appointment_slots.create({
+                data: { practitionerId: drChanidu.id, clinicId: nhsClinic.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 0, isAvailable: true }
+            });
+        }
+
+        // Dr. Ajay: Daily Online
+        await prisma.appointment_slots.create({
+            data: { practitionerId: drAjay.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 400000, isAvailable: true }
+        });
+    }
+
+    console.log('Detailed slots created.');
+
     for (let i = 20; i < 40; i++) {
         const user = users[i];
         const dr = practitioners[i % practitioners.length];
@@ -312,11 +364,7 @@ As you integrate these practices into your daily life, reflect on how your envir
         }
     }
 
-    // Special NHS Clinic & Alice Data (Retained)
-    await prisma.clinics.create({
-        data: { name: 'National Hospital Sri Lanka (NHS)', slug: 'nhs-colombo', address: 'Colombo 10', availableTime: '24/7' }
-    });
-
+    // Alice Data (Retained)
     await prisma.users.create({
         data: {
             username: 'alice_w',

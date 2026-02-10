@@ -14,6 +14,7 @@ export const metadata = {
 };
 
 import { AuthProvider } from "@/context/AuthContext";
+import AuthGate from "@/components/AuthGate";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import ChatBot from "@/components/ChatBot";
 import { SessionProvider } from "next-auth/react";
@@ -32,7 +33,7 @@ export default function RootLayout({ children }) {
         >
           <AuthProvider>
             <SessionProvider>
-              {children}
+              <AuthGate>{children}</AuthGate>
               <Footer />
               <ChatBot />
             </SessionProvider>

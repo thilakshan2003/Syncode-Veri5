@@ -16,13 +16,18 @@ const categories = [
 async function getResources(category) {
     try {
         const query = category ? `?category=${encodeURIComponent(category)}` : '';
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        // Use backend URL for server-side fetch
+        const baseUrl = 'http://localhost:5000';
         const response = await fetch(`${baseUrl}/api/resources${query}`, { 
-            cache: 'no-store' 
+            cache: 'no-store',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
         
         if (!response.ok) {
-            throw new Error('Failed to fetch resources');
+            console.error('Response not OK:', response.status, response.statusText);
+            throw new Error(`Failed to fetch resources: ${response.status}`);
         }
         
         const data = await response.json();

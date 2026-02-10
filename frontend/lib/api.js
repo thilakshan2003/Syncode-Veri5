@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
     withCredentials: true, // Required for HTTP-only cookies
     headers: {
         'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export const dashboardApi = {
 export const clinicApi = {
     /**
      * Get all clinics or search by name
-     * @param {string} search - Optional search query for clinic name
+     * @param {string} search - Optional search term
      * @returns {Promise} Response with clinics array
      */
     getClinics: async (search = '') => {
@@ -130,34 +130,12 @@ export const clinicApi = {
     },
 
     /**
-     * Get practitioners for a clinic
+     * Get practitioners for a specific clinic
      * @param {number|string} id - Clinic ID
      * @returns {Promise} Response with practitioners array
      */
     getClinicPractitioners: async (id) => {
         const response = await api.get(`/clinics/${id}/practitioners`);
-        return response.data;
-    }
-};
-
-// Test Kit API functions
-export const testKitApi = {
-    /**
-     * Get all active test kits
-     * @returns {Promise} Response with test kits array
-     */
-    getTestKits: async () => {
-        const response = await api.get('/test-kits');
-        return response.data;
-    },
-
-    /**
-     * Get a specific test kit by ID
-     * @param {number|string} id - Test kit ID
-     * @returns {Promise} Response with test kit data
-     */
-    getTestKitById: async (id) => {
-        const response = await api.get(`/test-kits/${id}`);
         return response.data;
     }
 };
@@ -171,44 +149,32 @@ export const practitionerApi = {
     getPractitioners: async () => {
         const response = await api.get('/practitioners');
         return response.data;
-    }
-};
+    },
 
-// Order API functions
-export const orderApi = {
     /**
-     * Create a new order
-     * @param {Object} orderData - Order data
-     * @param {string} orderData.deliveryAddress - Delivery address
-     * @param {Array} orderData.items - Array of order items [{testKitId, qty, unitPriceCents}]
-     * @returns {Promise} Response with created order
+     * Get a specific practitioner by ID
+     * @param {number|string} id - Practitioner ID
+     * @returns {Promise} Response with practitioner data
      */
-    createOrder: async (orderData) => {
-        const response = await api.post('/api/orders', orderData);
+    getPractitionerById: async (id) => {
+        const response = await api.get(`/practitioners/${id}`);
         return response.data;
     },
 
     /**
-     * Get all orders for the authenticated user
-     * @returns {Promise} Response with orders array
+     * Get available appointment slots for a practitioner
+     * @param {number|string} practitionerId - Practitioner ID
+     * @param {string} date - Optional date filter (ISO format)
+     * @returns {Promise} Response with available slots array
      */
-    getOrders: async () => {
-        const response = await api.get('/api/orders');
-        return response.data;
-    },
-
-    /**
-     * Get a specific order by ID
-     * @param {number|string} id - Order ID
-     * @returns {Promise} Response with order data
-     */
-    getOrderById: async (id) => {
-        const response = await api.get(`/api/orders/${id}`);
+    getAvailableSlots: async (practitionerId, date = '') => {
+        const query = date ? `?date=${encodeURIComponent(date)}` : '';
+        const response = await api.get(`/practitioners/${practitionerId}/slots${query}`);
         return response.data;
     }
 };
 
-// Resource API functions
+export default api;// Resource API functions
 export const resourceApi = {
     /**
      * Get all resources or filter by category
@@ -232,4 +198,3 @@ export const resourceApi = {
     }
 };
 
-export default api;

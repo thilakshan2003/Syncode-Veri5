@@ -38,6 +38,7 @@ model users {
 model clinics {
   id               BigInt                 @id @default(autoincrement())
   name             String                 @db.VarChar
+  slug             String                 @unique @db.VarChar
   address          String
   lat              Decimal?               @db.Decimal
   lng              Decimal?               @db.Decimal
@@ -307,6 +308,17 @@ model resources {
   @@map("resources")
 }
 
+model audit_logs {
+  id             BigInt   @id @default(autoincrement())
+  verificationId BigInt   @map("verification_id")
+  userId         BigInt   @map("user_id")
+  oldStatus      String?  @map("old_status")
+  newStatus      String   @map("new_status")
+  timestamp      DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
 enum UserStatus {
   Verified
   Not_Verified
@@ -332,6 +344,7 @@ enum AppointmentStatus {
 enum VerificationStatus {
   verified
   unverified
+  processing
 }
 
 enum PartnerStatus {

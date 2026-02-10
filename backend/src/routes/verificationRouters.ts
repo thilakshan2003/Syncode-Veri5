@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyTestKit } from "../controllers/verificationController.js";
+import { verifyTestKit, updateStatus } from "../controllers/verificationController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 
 const router = Router();
@@ -24,5 +24,17 @@ router.post(
   verifyTestKit
 );
 
-export default router;
+/**
+ * Update Verification Status (Staff Action)
+ * 
+ * Logic:
+ * - Updates the status of a verification record
+ * - Creates an audit log entry for the status change
+ */
+router.patch(
+  "/:id/status",
+  authenticate,
+  updateStatus
+);
 
+export default router;

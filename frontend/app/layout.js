@@ -16,6 +16,7 @@ export const metadata = {
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import ChatBot from "@/components/ChatBot";
+import { SessionProvider } from "next-auth/react";
 
 export default function RootLayout({ children }) {
   return (
@@ -30,9 +31,11 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
-            <Footer />
-            <ChatBot />
+            <SessionProvider>
+              {children}
+              <Footer />
+              <ChatBot />
+            </SessionProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

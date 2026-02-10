@@ -29,9 +29,9 @@ export const signup = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
     try {
-        const { accessToken, refreshToken } = await authService.login(req.body);
+        const { accessToken, refreshToken, user } = await authService.login(req.body);
         setCookies(res, accessToken, refreshToken);
-        res.status(200).json({ message: 'Login successful' });
+        res.status(200).json({ message: 'Login successful', user });
     } catch (error: any) {
         res.status(401).json({ error: error.message });
     }

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { verifyTestKitService } from "../services/verificationService.js";
+import { verifyTestKitService, updateVerificationStatus } from "../services/verificationService.js";
 
 /**
  * Verify Test Kit Controller
@@ -9,27 +9,28 @@ import { verifyTestKitService } from "../services/verificationService.js";
  * - NO image data received from frontend
  * - AI inference already completed on frontend
  * - Backend validates confidence threshold only
+ * - Backend updates verification result
  */
 export const verifyTestKit = async (req: Request, res: Response) => {
   try {
     // @ts-ignore - req.user is set by authenticate middleware
     const userId = req.user.id;
-    
+
     // Extract data from request body
     const { serial, aiConfidence, testTypeId } = req.body;
 
     // Validation
     if (!serial || aiConfidence === undefined || !testTypeId) {
-      return res.status(400).json({ 
-        error: "Missing required fields: serial, aiConfidence, or testTypeId" 
+      return res.status(400).json({
+        error: "Missing required fields: serial, aiConfidence, or testTypeId"
       });
     }
 
     // Convert aiConfidence to number
     const confidence = parseFloat(aiConfidence);
     if (isNaN(confidence)) {
-      return res.status(400).json({ 
-        error: "Invalid aiConfidence value" 
+      return res.status(400).json({
+        error: "Invalid aiConfidence value"
       });
     }
 
@@ -41,12 +42,37 @@ export const verifyTestKit = async (req: Request, res: Response) => {
       testTypeId: BigInt(testTypeId),
     });
 
-    res.json({ 
-      success: true, 
-      ...result 
+    res.json({
+      success: true,
+      ...result
     });
   } catch (err: any) {
     console.error('Verification error:', err);
+    res.status(400).json({ error: err.message });
+  }
+};
+
+export const updateStatus = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore - req.user is set by authenticate middleware
+    const userId = req.user.id;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+    const { status } = req.body;
+
+    if (!id || !status) {
+      return res.status(400).json({ error: "Missing required fields: id or status" });
+    }
+
+    const result = await updateVerificationStatus(
+      BigInt(id),
+      status,
+      userId
+    );
+
+    res.json({ success: true, verification: result });
+  } catch (err: any) {
+    console.error('Update status error:', err);
     res.status(400).json({ error: err.message });
   }
 };

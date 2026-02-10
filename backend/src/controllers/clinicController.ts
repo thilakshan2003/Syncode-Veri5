@@ -43,3 +43,24 @@ export const getClinicPractitioners = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch clinic practitioners' });
   }
 };
+
+export const getStaffDashboard = async (req: Request, res: Response) => {
+  try {
+    const rawSlug = req.params.slug;
+    const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
+
+    if (!slug) return res.status(400).json({ error: 'Clinic slug is required' });
+
+    const clinic = await clinicService.getClinicBySlug(slug);
+    if (!clinic) return res.status(404).json({ error: 'Clinic not found' });
+
+    const data = await clinicService.getStaffDashboardData(clinic.id);
+    res.json({
+      clinicName: clinic.name,
+      ...data
+    });
+  } catch (error) {
+    console.error('Error fetching staff dashboard:', error);
+    res.status(500).json({ error: 'Failed to fetch staff dashboard' });
+  }
+};

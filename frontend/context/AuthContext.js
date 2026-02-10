@@ -37,7 +37,12 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (credentials) => {
         try {
-            await api.post('/api/auth/login', credentials);
+            // Backend expects 'identifier' (username or email) and 'password'
+            const payload = {
+                identifier: credentials.email || credentials.username,
+                password: credentials.password
+            };
+            await api.post('/api/auth/login', payload);
             await fetchMe();
             router.push('/dashboard');
         } catch (err) {

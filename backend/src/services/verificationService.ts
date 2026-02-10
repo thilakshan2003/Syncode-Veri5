@@ -182,3 +182,39 @@ export const verifyTestKitService = async ({
     verifiedAt: new Date(),
   };
 };
+
+export const updateVerificationStatus = async (
+  verificationId: bigint,
+  newStatus: string,
+  verifiedByUserId: bigint
+) => {
+  return await prisma.$transaction(async (tx: any) => {
+    const oldVerification = await tx.user_verifications.findUnique({
+      where: { id: verificationId },
+    });
+
+    if (!oldVerification) throw new Error("Verification record not found");
+
+    // Update the record
+    const updated = await tx.user_verifications.update({
+      where: { id: verificationId },
+      data: {
+        status: newStatus,
+        verifiedByUserId: verifiedByUserId,
+        verifiedAt: newStatus === "verified" ? new Date() : null,
+      },
+    });
+
+    // Create audit log
+    await tx.audit_logs.create({
+      data: {
+        verificationId,
+        userId: verifiedByUserId,
+        oldStatus: oldVerification.status,
+        newStatus: newStatus,
+      },
+    });
+
+    return updated;
+  });
+};

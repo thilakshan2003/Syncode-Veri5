@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Install deps first (better caching)
 COPY backend/package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 # Copy backend source
 COPY backend/ ./

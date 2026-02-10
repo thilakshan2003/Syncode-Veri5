@@ -1,26 +1,22 @@
 services:
-  # Database Service
   postgres:
     image: postgres:15-alpine
     container_name: syncode_postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-syncode}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-syncodepassword}
       POSTGRES_DB: ${POSTGRES_DB:-syncode}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     networks:
       - syncode-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-syncode} -d ${POSTGRES_DB:-syncode}"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
 
-  # Backend Service
   backend:
     build:
       context: ./backend
@@ -37,32 +33,56 @@ services:
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-https://veri5.dpdns.org}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
-    ports:
-      - "5000:5000"
     networks:
       - syncode-network
+    expose:
+      - "5000"
     command: sh -c "npx prisma migrate deploy && node dist/src/index.js"
 
-  # Frontend Service
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5000}
+        # IMPORTANT: in production, frontend should call same domain:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://veri5.dpdns.org/api}
     container_name: syncode_frontend
     restart: unless-stopped
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5000}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://veri5.dpdns.org/api}
       WATCHPACK_POLLING: "true"
-    ports:
-      - "3000:3000"
     networks:
       - syncode-network
+    expose:
+      - "3000"
+
+  nginx:
+    image: nginx:alpine
+    container_name: syncode_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /srv/app/config/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - /srv/app/data/certbot/www:/var/www/certbot
+      - /srv/app/data/certbot/conf:/etc/letsencrypt
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - syncode-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: syncode_certbot
+    volumes:
+      - /srv/app/data/certbot/www:/var/www/certbot
+      - /srv/app/data/certbot/conf:/etc/letsencrypt
 
 volumes:
   postgres_data:

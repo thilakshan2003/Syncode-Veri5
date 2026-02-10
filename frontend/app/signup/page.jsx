@@ -74,27 +74,27 @@ export default function SignupPage() {
     if (!mounted) return null;
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center p-4 bg-white">
+        <main className="min-h-screen flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-950">
             {/* Header */}
             <div className="text-center mb-10 space-y-3">
                 <div className="flex items-center justify-center gap-2 mb-6">
-                    <ShieldCheck className="w-8 h-8 text-veri5-teal" />
-                    <span className="text-2xl font-bold tracking-tight text-veri5-navy">Veri5</span>
+                    <ShieldCheck className="w-8 h-8 text-veri5-teal dark:text-emerald-400" />
+                    <span className="text-2xl font-bold tracking-tight text-veri5-navy dark:text-white">Veri5</span>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl font-bold text-veri5-navy tracking-tight">
+                <h1 className="text-4xl md:text-5xl font-bold text-veri5-navy dark:text-white tracking-tight">
                     Create Your Veri5 Account.
                 </h1>
-                <p className="text-gray-500 text-lg">
+                <p className="text-gray-500 dark:text-slate-400 text-lg">
                     Join the privacy-first network.{" "}
-                    <span className="text-veri5-teal font-medium">Secure & verified.</span>
+                    <span className="text-veri5-teal dark:text-emerald-400 font-medium">Secure & verified.</span>
                 </p>
             </div>
 
             {/* Signup Card */}
-            <div className="w-full max-w-[480px] bg-white rounded-[2rem] border border-veri5-teal/30 p-8 md:p-12 shadow-[0_0_40px_-10px_rgba(40,169,158,0.1)]">
+            <div className="w-full max-w-[480px] bg-white dark:bg-slate-900 rounded-[2rem] border border-veri5-teal/30 dark:border-emerald-500/30 p-8 md:p-12 shadow-[0_0_40px_-10px_rgba(40,169,158,0.1)] dark:shadow-[0_0_40px_-10px_rgba(52,211,153,0.2)]">
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-sm">
+                    <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-2xl text-sm">
                         {error}
                     </div>
                 )}
@@ -105,16 +105,16 @@ export default function SignupPage() {
                             Username
                         </label>
                         <div className="relative group">
-                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-veri5-teal transition-colors" />
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500 group-focus-within:text-veri5-teal dark:group-focus-within:text-emerald-400 transition-colors" />
                             <input
                                 {...register("username")}
                                 type="text"
                                 placeholder="Choose a username"
-                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
+                                className="w-full bg-gray-100 dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-700 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 dark:focus:ring-emerald-400/10 transition-all placeholder:text-gray-500 dark:placeholder:text-slate-600 text-gray-800 dark:text-white"
                             />
                         </div>
                         {errors.username && (
-                            <p className="text-red-500 text-sm ml-1">{errors.username.message}</p>
+                            <p className="text-red-500 dark:text-red-400 text-sm ml-1">{errors.username.message}</p>
                         )}
                     </div>
 
@@ -124,16 +124,16 @@ export default function SignupPage() {
                             Email Address
                         </label>
                         <div className="relative group">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-veri5-teal transition-colors" />
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500 group-focus-within:text-veri5-teal dark:group-focus-within:text-emerald-400 transition-colors" />
                             <input
                                 {...register("email")}
                                 type="email"
                                 placeholder="Enter your email"
-                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
+                                className="w-full bg-gray-100 dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-700 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 dark:focus:ring-emerald-400/10 transition-all placeholder:text-gray-500 dark:placeholder:text-slate-600 text-gray-800 dark:text-white"
                             />
                         </div>
                         {errors.email && (
-                            <p className="text-red-500 text-sm ml-1">{errors.email.message}</p>
+                            <p className="text-red-500 dark:text-red-400 text-sm ml-1">{errors.email.message}</p>
                         )}
                     </div>
 
@@ -143,16 +143,16 @@ export default function SignupPage() {
                             Password
                         </label>
                         <div className="relative group">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-veri5-teal transition-colors" />
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500 group-focus-within:text-veri5-teal dark:group-focus-within:text-emerald-400 transition-colors" />
                             <input
                                 {...register("password")}
                                 type="password"
                                 placeholder="Create a password"
-                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
+                                className="w-full bg-gray-100 dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-700 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 dark:focus:ring-emerald-400/10 transition-all placeholder:text-gray-500 dark:placeholder:text-slate-600 text-gray-800 dark:text-white"
                             />
                         </div>
                         {errors.password && (
-                            <p className="text-red-500 text-sm ml-1">{errors.password.message}</p>
+                            <p className="text-red-500 dark:text-red-400 text-sm ml-1">{errors.password.message}</p>
                         )}
                     </div>
 
@@ -162,16 +162,16 @@ export default function SignupPage() {
                             Confirm Password
                         </label>
                         <div className="relative group">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-veri5-teal transition-colors" />
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500 group-focus-within:text-veri5-teal dark:group-focus-within:text-emerald-400 transition-colors" />
                             <input
                                 {...register("confirmPassword")}
                                 type="password"
                                 placeholder="Confirm your password"
-                                className="w-full bg-red-50/30 border-2 border-gray-200 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-gray-300 text-gray-700"
+                                className="w-full bg-gray-100 dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-700 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 dark:focus:ring-emerald-400/10 transition-all placeholder:text-gray-500 dark:placeholder:text-slate-600 text-gray-800 dark:text-white"
                             />
                         </div>
                         {errors.confirmPassword && (
-                            <p className="text-red-500 text-sm ml-1">{errors.confirmPassword.message}</p>
+                            <p className="text-red-500 dark:text-red-400 text-sm ml-1">{errors.confirmPassword.message}</p>
                         )}
                     </div>
 
@@ -208,7 +208,7 @@ export default function SignupPage() {
                     <button
                         type="button"
                         onClick={() => triggerGoogleLogin()}
-                        className="w-full bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium py-3.5 rounded-full transition-all flex items-center justify-center gap-3"
+                        className="w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 active:scale-[0.98] text-gray-700 dark:text-white font-medium py-3.5 rounded-full transition-all flex items-center justify-center gap-3"
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
@@ -236,47 +236,47 @@ export default function SignupPage() {
             {/* Footer Trust Indicators */}
             <div className="mt-20 grid grid-cols-3 gap-8 md:gap-16 text-center max-w-2xl mx-auto">
                 <div className="flex flex-col items-center gap-2 group">
-                    <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <LockKeyhole className="w-6 h-6 text-veri5-teal" />
+                    <div className="w-12 h-12 rounded-full bg-teal-50 dark:bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <LockKeyhole className="w-6 h-6 text-veri5-teal dark:text-emerald-400" />
                     </div>
                     <div>
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">
                             Encrypted
                         </h3>
-                        <p className="text-[10px] text-gray-400">AES-256 standard</p>
+                        <p className="text-[10px] text-gray-400 dark:text-slate-500">AES-256 standard</p>
                     </div>
                 </div>
 
                 <div className="flex flex-col items-center gap-2 group">
-                    <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <EyeOff className="w-6 h-6 text-veri5-teal" />
+                    <div className="w-12 h-12 rounded-full bg-teal-50 dark:bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <EyeOff className="w-6 h-6 text-veri5-teal dark:text-emerald-400" />
                     </div>
                     <div>
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">
                             Anonymous
                         </h3>
-                        <p className="text-[10px] text-gray-400">Zero-knowledge</p>
+                        <p className="text-[10px] text-gray-400 dark:text-slate-500">Zero-knowledge</p>
                     </div>
                 </div>
 
                 <div className="flex flex-col items-center gap-2 group">
-                    <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <ShieldCheck className="w-6 h-6 text-veri5-teal" />
+                    <div className="w-12 h-12 rounded-full bg-teal-50 dark:bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <ShieldCheck className="w-6 h-6 text-veri5-teal dark:text-emerald-400" />
                     </div>
                     <div>
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-800">
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white">
                             Verified
                         </h3>
-                        <p className="text-[10px] text-gray-400">Trust-anchored</p>
+                        <p className="text-[10px] text-gray-400 dark:text-slate-500">Trust-anchored</p>
                     </div>
                 </div>
             </div>
 
             {/* Footer Consent */}
-            <div className="mt-16 text-center text-xs text-gray-400 max-w-sm mx-auto leading-relaxed">
+            <div className="mt-16 text-center text-xs text-gray-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
                 <p>
                     By creating an account, you agree to our{" "}
-                    <Link href="/privacy" className="text-veri5-teal hover:underline">
+                    <Link href="/privacy" className="text-veri5-teal dark:text-emerald-400 hover:underline">
                         Privacy Charter
                     </Link>
                 </p>

@@ -146,4 +146,21 @@
     background-image: radial-gradient(at top left, var(--bg-gradient-start) 0%, transparent 50%), radial-gradient(at bottom right, var(--bg-gradient-end) 0%, transparent 50%);
     background-attachment: fixed;
   }
+
+  /* Override browser autocomplete yellow background */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(243 244 246) inset !important;
+    -webkit-text-fill-color: rgb(31 41 55) !important;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(30 41 59) inset !important;
+    -webkit-text-fill-color: rgb(255 255 255) !important;
+  }
 }

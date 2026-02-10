@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000',
     withCredentials: true, // Required for HTTP-only cookies
     headers: {
         'Content-Type': 'application/json',
@@ -239,7 +239,7 @@ export const testKitApi = {
      * @returns {Promise} Response with test kits array
      */
     getTestKits: async () => {
-        const response = await api.get('/test-kits');
+        const response = await api.get('/api/test-kits');
         return response.data;
     },
 
@@ -249,7 +249,31 @@ export const testKitApi = {
      * @returns {Promise} Response with test kit data
      */
     getTestKitById: async (id) => {
-        const response = await api.get(`/test-kits/${id}`);
+        const response = await api.get(`/api/test-kits/${id}`);
+        return response.data;
+    }
+};
+
+// Appointment API functions
+export const appointmentApi = {
+    /**
+     * Create a new appointment
+     * @param {Object} appointmentData - Appointment data
+     * @param {string|number} appointmentData.slotId - Slot ID
+     * @returns {Promise} Response with created appointment
+     */
+    createAppointment: async (appointmentData) => {
+        const response = await api.post('/api/appointments', appointmentData);
+        return response.data;
+    },
+
+    /**
+     * Cancel an appointment
+     * @param {string|number} appointmentId - Appointment ID
+     * @returns {Promise} Response with cancellation confirmation
+     */
+    cancelAppointment: async (appointmentId) => {
+        const response = await api.delete(`/api/appointments/${appointmentId}`);
         return response.data;
     }
 };

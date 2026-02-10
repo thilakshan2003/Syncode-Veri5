@@ -1,10 +1,14 @@
-import { ShieldCheck, Video, Calendar, Clock, Lock, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Video, Calendar, Clock, Lock, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function BookingSummary({ doctor, selectedDate, selectedTime, cost, mode = "Online", onBook }) {
+export default function BookingSummary({ doctor, selectedDate, selectedTime, cost, mode = "Online", onBook, appointmentId, onCancel }) {
+    const isExistingAppointment = !!appointmentId;
+
     return (
         <div className="bg-card rounded-3xl p-6 border border-border hover:border-primary shadow-xl shadow-background/50 transition-all sticky top-24">
-            <h2 className="text-xl font-bold text-foreground mb-6">Booking Summary</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">
+                {isExistingAppointment ? "Appointment Details" : "Booking Summary"}
+            </h2>
 
             {/* Doctor Info */}
             <div className="flex items-center gap-4 mb-8">
@@ -52,19 +56,35 @@ export default function BookingSummary({ doctor, selectedDate, selectedTime, cos
                 <span className="font-extrabold text-2xl text-foreground">Rs. {cost}</span>
             </div>
 
-            {/* Action Button */}
-            <Button
-                className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-14 rounded-xl shadow-lg shadow-primary/30 mb-4 text-base"
-                disabled={!selectedDate || !selectedTime}
-                onClick={onBook}
-            >
-                <Lock className="w-4 h-4 mr-2" /> Book Private Session
-            </Button>
-
-            <p className="text-[10px] text-center text-muted-foreground leading-relaxed px-4">
-                No charges until the session starts. <br />
-                Cancel up to 24 hours before for a full refund.
-            </p>
+            {/* Action Buttons */}
+            {isExistingAppointment ? (
+                <>
+                    <Button
+                        className="w-full bg-red-500 hover:bg-red-600 text-white font-bold h-14 rounded-xl shadow-lg shadow-red-500/30 mb-4 text-base"
+                        onClick={onCancel}
+                    >
+                        <XCircle className="w-4 h-4 mr-2" /> Cancel Appointment
+                    </Button>
+                    <p className="text-[10px] text-center text-muted-foreground leading-relaxed px-4">
+                        Cancel up to 24 hours before for a full refund. <br />
+                        Cancellations are processed immediately.
+                    </p>
+                </>
+            ) : (
+                <>
+                    <Button
+                        className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-14 rounded-xl shadow-lg shadow-primary/30 mb-4 text-base"
+                        disabled={!selectedDate || !selectedTime}
+                        onClick={onBook}
+                    >
+                        <Lock className="w-4 h-4 mr-2" /> Book Private Session
+                    </Button>
+                    <p className="text-[10px] text-center text-muted-foreground leading-relaxed px-4">
+                        No charges until the session starts. <br />
+                        Cancel up to 24 hours before for a full refund.
+                    </p>
+                </>
+            )}
         </div>
     );
 }

@@ -38,3 +38,49 @@ export const createAppointment = async (userId: string | number, slotId: string 
         return appointment;
     });
 };
+
+export const cancelAppointment = async (userId: string | number, appointmentId: string | number) => {
+    const uId = BigInt(userId);
+    const aId = BigInt(appointmentId);
+
+    // Start a transaction to ensure data consistency
+    return await prisma.$transaction(async (tx) => {
+        // 1. Fetch the appointment
+        const appointment = await tx.appointment.findUnique({
+            where: { id: aId },
+            include: { slot: true }
+        });
+
+        if (!appointment) {
+            throw new Error("Appointment not found");
+        }
+
+        // 2. Verify the appointment belongs to the user
+        if (appointment.userId !== uId) {
+            throw new Error("Unauthorized: This appointment doesn't belong to you");
+        }
+
+        // 3. Check if appointment is already cancelled or completed
+        if (appointment.status === AppointmentStatus.cancelled) {
+            throw new Error("Appointment is already cancelled");
+        }
+
+        if (appointment.status === AppointmentStatus.completed) {
+            throw new Error("Cannot cancel a completed appointment");
+        }
+
+        // 4. Update appointment status to cancelled
+        const cancelledAppointment = await tx.appointment.update({
+            where: { id: aId },
+            data: { status: AppointmentStatus.cancelled }
+        });
+
+        // 5. Make the slot available again
+        await tx.appointmentSlot.update({
+            where: { id: appointment.slotId },
+            data: { isAvailable: true }
+        });
+
+        return cancelledAppointment;
+    });
+};

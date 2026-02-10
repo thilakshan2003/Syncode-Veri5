@@ -272,9 +272,10 @@ export default function Dashboard() {
                                     {appointments.slice(0, 3).map((appointment) => {
                                         const statusBadge = getAppointmentStatusBadge(appointment.status);
                                         return (
-                                            <div
+                                            <Link
                                                 key={appointment.id}
-                                                className="bg-card dark:bg-card/40 rounded-2xl p-5 border border-border dark:border-white/5 shadow-sm hover:shadow-md transition-shadow"
+                                                href={`/consultation/appointment/${appointment.id}`}
+                                                className="block bg-card dark:bg-card/40 rounded-2xl p-5 border border-border dark:border-white/5 shadow-sm hover:shadow-md hover:border-veri5-teal/50 dark:hover:border-emerald-500/50 transition-all cursor-pointer"
                                             >
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div className="flex-1">
@@ -314,8 +315,9 @@ export default function Dashboard() {
                                                             )}
                                                         </div>
                                                     </div>
+                                                    <ChevronRight className="w-5 h-5 text-muted-foreground/40 flex-shrink-0 mt-1" />
                                                 </div>
-                                            </div>
+                                            </Link>
                                         );
                                     })}
                                     {appointments.length > 3 && (

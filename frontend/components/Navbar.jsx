@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ShieldCheck } from 'lucide-react';
 import Button from './Button';
 import { useAuth } from '@/context/AuthContext';
@@ -9,12 +10,18 @@ import { ThemeToggle } from './ThemeToggle';
 
 export default function Navbar() {
     const { user, logout } = useAuth();
+    const pathname = usePathname();
+    
     const navLinks = [
         { name: 'Health Dashboard', href: '/dashboard' },
         { name: 'Testing', href: '/testing' },
         { name: 'Consultation', href: '/consultation' },
         { name: 'Resources', href: '/resources' },
     ];
+
+    const isActive = (href) => {
+        return pathname === href || pathname.startsWith(href + '/');
+    };
 
     return (
         <nav className="w-full bg-background/90 dark:bg-[#0B1120]/95 backdrop-blur-md border-b border-border dark:border-white/5 sticky top-0 z-50 py-6 shadow-sm">
@@ -33,7 +40,11 @@ export default function Navbar() {
                         <Link
                             key={link.name}
                             href={link.href}
-                            className="text-sm font-medium text-muted-foreground hover:text-emerald-400 dark:hover:text-emerald-400 dark:hover:drop-shadow-[0_0_8px_rgba(52,211,153,0.5)] transition-all duration-300"
+                            className={`text-sm font-medium transition-all duration-300 ${
+                                isActive(link.href)
+                                    ? 'text-emerald-500 dark:text-emerald-400 font-bold'
+                                    : 'text-muted-foreground hover:text-emerald-400 dark:hover:text-emerald-400 dark:hover:drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]'
+                            }`}
                         >
                             {link.name}
                         </Link>

@@ -289,11 +289,13 @@ export const getUserAppointments = async (userId: string) => {
       id: appointment.id.toString(),
       status: appointment.status,
       practitionerName: appointment.slot?.practitioner?.user?.username || 'Unknown',
+      specialization: appointment.slot?.practitioner?.specialization || '',
       clinicName: appointment.slot?.clinic?.name || 'Not specified',
       clinicAddress: appointment.slot?.clinic?.address || '',
       mode: appointment.slot?.mode || 'physical',
       appointmentDate: appointment.slot?.startsAt || null,
       appointmentEndTime: appointment.slot?.endsAt || null,
+      priceCents: appointment.slot?.priceCents || 0,
       createdAt: appointment.createdAt
     }));
 

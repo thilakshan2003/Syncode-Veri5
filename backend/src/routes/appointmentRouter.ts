@@ -8,5 +8,6 @@ const router = express.Router();
 router.use(authenticate);
 
 router.post('/', appointmentController.createAppointment);
+router.delete('/:appointmentId', appointmentController.cancelAppointment);
 
 export default router;

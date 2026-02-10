@@ -32,8 +32,8 @@ function ConsultationContent() {
         const fetchFilters = async () => {
             try {
                 const [clinicsRes, specsRes] = await Promise.all([
-                    fetch('http://localhost:5000/api/clinics'),
-                    fetch('http://localhost:5000/api/practitioners/specializations')
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/clinics`),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/practitioners/specializations`)
                 ]);
                 const clinicsData = await clinicsRes.json();
                 const specsData = await specsRes.json();
@@ -55,7 +55,7 @@ function ConsultationContent() {
                 if (filterRole !== 'all') params.append('role', filterRole);
                 if (filterAvailability !== 'all') params.append('availability', filterAvailability);
 
-                const response = await fetch(`http://localhost:5000/api/practitioners?${params.toString()}`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/practitioners?${params.toString()}`);
                 const data = await response.json();
                 console.log("Fetched practitioners:", data);
 

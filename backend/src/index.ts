@@ -12,6 +12,7 @@ import authRoutes from './routes/authRoutes.js';
 
 
 import appointmentRouter from './routes/appointmentRouter.js';
+import chatRouter from './routes/chatRouter.js';
 import { serializeBigInt } from './utils/serialization.js';
 import fs from 'fs';
 
@@ -50,6 +51,8 @@ app.use('/api/dashboard', dashboardRouter);
 app.use('/api/practitioners', practitionerRouter);
 app.use('/api/appointments', appointmentRouter);
 
+app.use('/practitioners', practitionerRouter);
+app.use('/api/chat', chatRouter);
 app.get('/health', (req: Request, res: Response) => {
     res.status(200).json({ status: 'ok', message: 'Backend is running' });
 });

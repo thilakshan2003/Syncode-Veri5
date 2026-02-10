@@ -16,7 +16,7 @@ export const ResourceService = {
             where.category = category as ResourceCategory;
         }
 
-        const resources = await prisma.resource.findMany({
+        const resources = await prisma.resources.findMany({
             where,
             orderBy: { createdAt: 'desc' }
         });
@@ -31,7 +31,7 @@ export const ResourceService = {
      * @returns A promise that resolves to the serialized resource or null if not found.
      */
     async getResourceById(id: string) {
-        const resource = await prisma.resource.findUnique({
+        const resource = await prisma.resources.findUnique({
             where: { id }
         });
 

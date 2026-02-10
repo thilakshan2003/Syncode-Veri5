@@ -7,96 +7,96 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id                     BigInt             @id @default(autoincrement())
-  username               String             @unique @db.VarChar(50)
-  email                  String?            @unique @db.VarChar(255)
-  passwordHash           String             @map("password_hash") @db.VarChar(255)
-  status                 UserStatus         @default(Not_Verified)
-  gender                 String?            @db.VarChar
-  ageRange               String?            @map("age_range") @db.VarChar
-  preferredPartnerGender String?            @map("preferred_partner_gender") @db.VarChar
+model users {
+  id                     BigInt               @id @default(autoincrement())
+  username               String               @unique @db.VarChar(50)
+  email                  String?              @unique @db.VarChar(255)
+  passwordHash           String               @map("password_hash") @db.VarChar(255)
+  status                 UserStatus           @default(Not_Verified)
+  gender                 String?              @db.VarChar
+  ageRange               String?              @map("age_range") @db.VarChar
+  preferredPartnerGender String?              @map("preferred_partner_gender") @db.VarChar
   address                String?
-  createdAt              DateTime           @default(now()) @map("created_at")
-  updatedAt              DateTime           @updatedAt @map("updated_at")
-  appointments           Appointment[]
-  clinicStaff            ClinicStaff[]
-  orders                 Order[]
-  partnerReceipts        Partner[]          @relation("PartnerReceivedBy")
-  partnerShares          Partner[]          @relation("PartnerSharedBy")
-  practitioner           Practitioner?
-  statusSharesTo         StatusShare[]      @relation("StatusShareRecipient")
-  statusSharesSent       StatusShare[]      @relation("StatusShareSender")
-  currentStatus          UserCurrentStatus?
-  verifications          UserVerification[] @relation("UserVerifications")
-  verifiedBy             UserVerification[] @relation("VerifiedByUser")
-  testKitInstances       test_kit_instances[]
+  createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @updatedAt @map("updated_at")
+  appointments           appointments[]
+  clinicStaff            clinic_staff[]
+  orders                 orders[]
+  partnerReceipts        partners[]           @relation("PartnerReceivedBy")
+  partnerShares          partners[]           @relation("PartnerSharedBy")
+  practitioner           practitioners?
+  statusSharesTo         status_shares[]      @relation("StatusShareRecipient")
+  statusSharesSent       status_shares[]      @relation("StatusShareSender")
+  currentStatus          user_current_status?
+  verifications          user_verifications[] @relation("UserVerifications")
+  verifiedBy             user_verifications[] @relation("VerifiedByUser")
+  test_kit_instances     test_kit_instances[]
 
   @@map("users")
 }
 
-model Clinic {
-  id               BigInt               @id @default(autoincrement())
-  name             String               @db.VarChar
+model clinics {
+  id               BigInt                 @id @default(autoincrement())
+  name             String                 @db.VarChar
   address          String
-  lat              Decimal?             @db.Decimal
-  lng              Decimal?             @db.Decimal
-  availableTime    String?              @map("available_time")
-  createdAt        DateTime             @default(now()) @map("created_at")
-  appointmentSlots AppointmentSlot[]
-  staff            ClinicStaff[]
-  practitioners    PractitionerClinic[]
-  verifications    UserVerification[]
+  lat              Decimal?               @db.Decimal
+  lng              Decimal?               @db.Decimal
+  availableTime    String?                @map("available_time")
+  createdAt        DateTime               @default(now()) @map("created_at")
+  appointmentSlots appointment_slots[]
+  staff            clinic_staff[]
+  practitioners    practitioner_clinics[]
+  verifications    user_verifications[]
 
   @@index([name])
   @@map("clinics")
 }
 
-model ClinicStaff {
+model clinic_staff {
   id        BigInt          @id @default(autoincrement())
   clinicId  BigInt          @map("clinic_id")
   userId    BigInt          @map("user_id")
   role      ClinicStaffRole
   createdAt DateTime        @default(now()) @map("created_at")
-  clinic    Clinic          @relation(fields: [clinicId], references: [id], onDelete: Cascade)
-  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clinic    clinics         @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  user      users           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([clinicId, userId])
   @@index([userId])
   @@map("clinic_staff")
 }
 
-model Practitioner {
-  id               BigInt               @id @default(autoincrement())
-  userId           BigInt               @unique @map("user_id")
-  name             String               @db.VarChar
-  specialization   String               @db.VarChar
-  regNo            String?              @map("reg_no") @db.VarChar
-  rating           Float?               @default(0)
-  experience       Int?                 @default(0)
-  imageUrl         String?              @map("image_url")
-  createdAt        DateTime             @default(now()) @map("created_at")
-  appointmentSlots AppointmentSlot[]
-  clinics          PractitionerClinic[]
-  user             User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+model practitioners {
+  id               BigInt                 @id @default(autoincrement())
+  userId           BigInt                 @unique @map("user_id")
+  name             String                 @db.VarChar
+  specialization   String                 @db.VarChar
+  regNo            String?                @map("reg_no") @db.VarChar
+  rating           Float?                 @default(0)
+  experience       Int?                   @default(0)
+  imageUrl         String?                @map("image_url")
+  createdAt        DateTime               @default(now()) @map("created_at")
+  appointmentSlots appointment_slots[]
+  clinics          practitioner_clinics[]
+  user             users                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([specialization])
   @@map("practitioners")
 }
 
-model PractitionerClinic {
-  id             BigInt       @id @default(autoincrement())
-  practitionerId BigInt       @map("practitioner_id")
-  clinicId       BigInt       @map("clinic_id")
-  clinic         Clinic       @relation(fields: [clinicId], references: [id], onDelete: Cascade)
-  practitioner   Practitioner @relation(fields: [practitionerId], references: [id], onDelete: Cascade)
+model practitioner_clinics {
+  id             BigInt        @id @default(autoincrement())
+  practitionerId BigInt        @map("practitioner_id")
+  clinicId       BigInt        @map("clinic_id")
+  clinic         clinics       @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  practitioner   practitioners @relation(fields: [practitionerId], references: [id], onDelete: Cascade)
 
   @@unique([practitionerId, clinicId])
   @@index([clinicId])
   @@map("practitioner_clinics")
 }
 
-model AppointmentSlot {
+model appointment_slots {
   id             BigInt              @id @default(autoincrement())
   practitionerId BigInt              @map("practitioner_id")
   clinicId       BigInt?             @map("clinic_id")
@@ -106,55 +106,44 @@ model AppointmentSlot {
   priceCents     Int                 @map("price_cents")
   isAvailable    Boolean             @default(true) @map("is_available")
   createdAt      DateTime            @default(now()) @map("created_at")
-  clinic         Clinic?             @relation(fields: [clinicId], references: [id])
-  practitioner   Practitioner        @relation(fields: [practitionerId], references: [id], onDelete: Cascade)
-  appointments   Appointment[]
+  clinic         clinics?            @relation(fields: [clinicId], references: [id])
+  practitioner   practitioners       @relation(fields: [practitionerId], references: [id], onDelete: Cascade)
+  appointments   appointments[]
 
   @@index([practitionerId, startsAt])
   @@index([clinicId, startsAt])
   @@map("appointment_slots")
 }
 
-model Appointment {
+model appointments {
   id        BigInt            @id @default(autoincrement())
   userId    BigInt            @map("user_id")
   slotId    BigInt            @map("slot_id")
   status    AppointmentStatus @default(booked)
   createdAt DateTime          @default(now()) @map("created_at")
-  slot      AppointmentSlot   @relation(fields: [slotId], references: [id])
-  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  payments  Payment[]
+  slot      appointment_slots @relation(fields: [slotId], references: [id])
+  user      users             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments  payments[]
 
   @@index([userId, createdAt])
   @@index([slotId])
   @@map("appointments")
 }
 
-model TestType {
-  id            BigInt             @id @default(autoincrement())
-  name          String             @unique @db.VarChar
-  category      String?            @db.VarChar
-  active        Boolean            @default(true)
-  verifications UserVerification[]
-
-  @@index([category])
-  @@map("test_types")
-}
-
-model UserVerification {
+model user_verifications {
   id               BigInt             @id @default(autoincrement())
   userId           BigInt             @map("user_id")
-  testTypeId       BigInt             @map("test_type_id")
+  testKitId        BigInt             @map("test_kit_id")
   clinicId         BigInt?            @map("clinic_id")
   verifiedByUserId BigInt?            @map("verified_by_user_id")
   status           VerificationStatus
   testedAt         DateTime?          @map("tested_at") @db.Date
   verifiedAt       DateTime?          @map("verified_at")
   createdAt        DateTime           @default(now()) @map("created_at")
-  clinic           Clinic?            @relation(fields: [clinicId], references: [id])
-  testType         TestType           @relation(fields: [testTypeId], references: [id])
-  user             User               @relation("UserVerifications", fields: [userId], references: [id], onDelete: Cascade)
-  verifiedByUser   User?              @relation("VerifiedByUser", fields: [verifiedByUserId], references: [id])
+  clinic           clinics?           @relation(fields: [clinicId], references: [id])
+  testKit          test_kits          @relation(fields: [testKitId], references: [id])
+  user             users              @relation("UserVerifications", fields: [userId], references: [id], onDelete: Cascade)
+  verifiedByUser   users?             @relation("VerifiedByUser", fields: [verifiedByUserId], references: [id])
 
   @@index([userId, createdAt])
   @@index([userId, status])
@@ -162,27 +151,27 @@ model UserVerification {
   @@map("user_verifications")
 }
 
-model UserCurrentStatus {
+model user_current_status {
   userId         BigInt             @id @map("user_id")
   status         VerificationStatus @default(unverified)
   lastVerifiedAt DateTime?          @map("last_verified_at")
   updatedAt      DateTime           @updatedAt @map("updated_at")
-  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           users              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_current_status")
 }
 
-model Partner {
+model partners {
   id               BigInt        @id @default(autoincrement())
   sharedByUserId   BigInt        @map("shared_by_user_id")
   receivedByUserId BigInt        @map("received_by_user_id")
   status           PartnerStatus @default(pending)
   createdAt        DateTime      @default(now()) @map("created_at")
   acceptedAt       DateTime?     @map("accepted_at")
-  userLow          BigInt?        @map("user_low")
-  userHigh         BigInt?        @map("user_high")
-  receivedByUser   User          @relation("PartnerReceivedBy", fields: [receivedByUserId], references: [id], onDelete: Cascade)
-  sharedByUser     User          @relation("PartnerSharedBy", fields: [sharedByUserId], references: [id], onDelete: Cascade)
+  userLow          BigInt?       @default(dbgenerated()) @map("user_low")
+  userHigh         BigInt?       @default(dbgenerated()) @map("user_high")
+  receivedByUser   users         @relation("PartnerReceivedBy", fields: [receivedByUserId], references: [id], onDelete: Cascade)
+  sharedByUser     users         @relation("PartnerSharedBy", fields: [sharedByUserId], references: [id], onDelete: Cascade)
 
   @@unique([userLow, userHigh])
   @@index([sharedByUserId])
@@ -190,7 +179,7 @@ model Partner {
   @@map("partners")
 }
 
-model StatusShare {
+model status_shares {
   id                        BigInt    @id @default(autoincrement())
   senderUserId              BigInt    @map("sender_user_id")
   recipientUserId           BigInt?   @map("recipient_user_id")
@@ -202,56 +191,59 @@ model StatusShare {
   revokedAt                 DateTime? @map("revoked_at")
   maxViews                  Int       @default(1) @map("max_views")
   viewCount                 Int       @default(0) @map("view_count")
-  recipient                 User?     @relation("StatusShareRecipient", fields: [recipientUserId], references: [id])
-  sender                    User      @relation("StatusShareSender", fields: [senderUserId], references: [id], onDelete: Cascade)
+  recipient                 users?    @relation("StatusShareRecipient", fields: [recipientUserId], references: [id])
+  sender                    users     @relation("StatusShareSender", fields: [senderUserId], references: [id], onDelete: Cascade)
 
   @@index([senderUserId, createdAt])
   @@index([recipientUserId, createdAt])
   @@map("status_shares")
 }
 
-model TestKit {
-  id          BigInt      @id @default(autoincrement())
-  name        String      @db.VarChar
-  priceCents  Int         @map("price_cents")
-  description String?
-  active      Boolean     @default(true)
-  orderItems  OrderItem[]
-  testKitInstances test_kit_instances[]
+model test_kits {
+  id            BigInt               @id @default(autoincrement())
+  name          String               @db.VarChar
+  category      String?              @db.VarChar
+  priceCents    Int                  @map("price_cents")
+  description   String?
+  active        Boolean              @default(true)
+  orderItems    order_items[]
+  instances     test_kit_instances[]
+  verifications user_verifications[]
 
+  @@index([category])
   @@map("test_kits")
 }
 
-model Order {
-  id              BigInt      @id @default(autoincrement())
-  userId          BigInt      @map("user_id")
-  deliveryAddress String      @map("delivery_address")
-  status          OrderStatus @default(created)
-  createdAt       DateTime    @default(now()) @map("created_at")
-  items           OrderItem[]
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  payments        Payment[]
-  shipments       Shipment[]
-  testKitInstances test_kit_instances[]
+model orders {
+  id                 BigInt               @id @default(autoincrement())
+  userId             BigInt               @map("user_id")
+  deliveryAddress    String               @map("delivery_address")
+  status             OrderStatus          @default(created)
+  createdAt          DateTime             @default(now()) @map("created_at")
+  items              order_items[]
+  user               users                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments           payments[]
+  shipments          shipments[]
+  test_kit_instances test_kit_instances[]
 
   @@index([userId, createdAt])
   @@map("orders")
 }
 
-model OrderItem {
-  id             BigInt  @id @default(autoincrement())
-  orderId        BigInt  @map("order_id")
-  testKitId      BigInt  @map("test_kit_id")
+model order_items {
+  id             BigInt    @id @default(autoincrement())
+  orderId        BigInt    @map("order_id")
+  testKitId      BigInt    @map("test_kit_id")
   qty            Int
-  unitPriceCents Int     @map("unit_price_cents")
-  order          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  testKit        TestKit @relation(fields: [testKitId], references: [id])
+  unitPriceCents Int       @map("unit_price_cents")
+  order          orders    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  testKit        test_kits @relation(fields: [testKitId], references: [id])
 
   @@index([orderId])
   @@map("order_items")
 }
 
-model Payment {
+model payments {
   id               BigInt        @id @default(autoincrement())
   orderId          BigInt?       @map("order_id")
   appointmentId    BigInt?       @map("appointment_id")
@@ -259,15 +251,15 @@ model Payment {
   amountCents      Int           @map("amount_cents")
   status           PaymentStatus
   createdAt        DateTime      @default(now()) @map("created_at")
-  appointment      Appointment?  @relation(fields: [appointmentId], references: [id])
-  order            Order?        @relation(fields: [orderId], references: [id])
+  appointment      appointments? @relation(fields: [appointmentId], references: [id])
+  order            orders?       @relation(fields: [orderId], references: [id])
 
   @@index([orderId])
   @@index([appointmentId])
   @@map("payments")
 }
 
-model Shipment {
+model shipments {
   id             BigInt         @id @default(autoincrement())
   orderId        BigInt         @map("order_id")
   carrier        String?        @db.VarChar
@@ -275,13 +267,32 @@ model Shipment {
   status         ShipmentStatus @default(packed)
   shippedAt      DateTime?      @map("shipped_at")
   deliveredAt    DateTime?      @map("delivered_at")
-  order          Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order          orders         @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@map("shipments")
 }
 
-model Resource {
+model test_kit_instances {
+  id            BigInt    @id @default(autoincrement())
+  serial_number String    @unique @db.VarChar(100)
+  test_kit_id   BigInt
+  order_id      BigInt
+  user_id       BigInt
+  used_at       DateTime?
+  verified_at   DateTime?
+  created_at    DateTime  @default(now())
+
+  test_kits test_kits @relation(fields: [test_kit_id], references: [id])
+  orders    orders    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([serial_number])
+  @@map("test_kit_instances")
+}
+
+model resources {
   id          String           @id @default(cuid())
   category    ResourceCategory
   title       String
@@ -293,6 +304,7 @@ model Resource {
   updatedAt   DateTime         @updatedAt
 
   @@index([category])
+  @@map("resources")
 }
 
 enum UserStatus {
@@ -355,22 +367,4 @@ enum ResourceCategory {
   CONSENT
   MENTAL_HEALTH
   SEXUAL_WELLBEING
-}
-
-model test_kit_instances {
-  id             BigInt     @id @default(autoincrement())
-  serial_number  String     @unique @db.VarChar(100)
-  test_kit_id    BigInt
-  order_id       BigInt
-  user_id        BigInt
-  used_at        DateTime?
-  verified_at    DateTime?
-  created_at     DateTime   @default(now())
-
-  test_kit       TestKit    @relation(fields: [test_kit_id], references: [id])
-  order          Order      @relation(fields: [order_id], references: [id], onDelete: Cascade)
-  user           User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id])
-  @@index([serial_number])
 }

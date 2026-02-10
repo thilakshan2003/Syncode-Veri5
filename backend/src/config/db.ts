@@ -16,12 +16,12 @@ export const prisma = new PrismaClient({ adapter });
 async function main() {
     console.log('Attempting to connect to the database...');
     try {
-        const userCount = await prisma.user.count();
+        const userCount = await prisma.users.count();
         console.log(`✅ Connection successful!`);
         console.log(`Current user count: ${userCount}`);
 
         // Fetch first user just to be sure
-        const firstUser = await prisma.user.findFirst();
+        const firstUser = await prisma.users.findFirst();
         if (firstUser) {
             console.log('First user found:', firstUser.username);
         } else {

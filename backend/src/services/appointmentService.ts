@@ -8,7 +8,7 @@ export const createAppointment = async (userId: string | number, slotId: string 
     // Start a transaction to ensure data consistency
     return await prisma.$transaction(async (tx) => {
         // 1. Fetch the slot
-        const slot = await tx.appointmentSlot.findUnique({
+        const slot = await tx.appointment_slots.findUnique({
             where: { id: sId },
         });
 
@@ -21,7 +21,7 @@ export const createAppointment = async (userId: string | number, slotId: string 
         }
 
         // 2. Create the appointment
-        const appointment = await tx.appointment.create({
+        const appointment = await tx.appointments.create({
             data: {
                 userId: uId,
                 slotId: sId,
@@ -30,7 +30,7 @@ export const createAppointment = async (userId: string | number, slotId: string 
         });
 
         // 3. Mark the slot as unavailable
-        await tx.appointmentSlot.update({
+        await tx.appointment_slots.update({
             where: { id: sId },
             data: { isAvailable: false },
         });

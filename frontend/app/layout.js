@@ -15,6 +15,7 @@ export const metadata = {
 
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import ChatBot from "@/components/ChatBot";
 
 export default function RootLayout({ children }) {
   return (
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             {children}
             <Footer />
+            <ChatBot />
           </AuthProvider>
         </ThemeProvider>
       </body>

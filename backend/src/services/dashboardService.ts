@@ -7,7 +7,7 @@ import crypto from 'crypto';
  */
 export const getUserStatus = async (userId: string) => {
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.users.findUnique({
       where: {
         id: BigInt(userId)
       },
@@ -34,7 +34,7 @@ export const getUserStatus = async (userId: string) => {
  */
 export const getUserTestCount = async (userId: string) => {
   try {
-    const count = await prisma.userVerification.count({
+    const count = await prisma.user_verifications.count({
       where: {
         userId: BigInt(userId)
       }
@@ -55,7 +55,7 @@ export const getUserTestCount = async (userId: string) => {
 export const getNextTestDate = async (userId: string) => {
   try {
     // Get the most recent test date
-    const mostRecentTest = await prisma.userVerification.findFirst({
+    const mostRecentTest = await prisma.user_verifications.findFirst({
       where: {
         userId: BigInt(userId),
         testedAt: {
@@ -108,7 +108,7 @@ export const createStatusShare = async (
   // If recipient username is provided, find the recipient user
   let recipientUserId: bigint | null = null;
   if (recipientUsername) {
-    const recipient = await prisma.user.findUnique({
+    const recipient = await prisma.users.findUnique({
       where: { username: recipientUsername },
       select: { id: true }
     });
@@ -130,7 +130,7 @@ export const createStatusShare = async (
   expiresAt.setTime(expiresAt.getTime() + expiryMilliseconds);
 
   // Create status share record
-  const statusShare = await prisma.statusShare.create({
+  const statusShare = await prisma.status_shares.create({
     data: {
       senderUserId: senderBigIntId,
       recipientUserId: recipientUserId,
@@ -156,7 +156,7 @@ export const createStatusShare = async (
 export const getReceivedStatusShares = async (userId: string) => {
   const bigIntId = BigInt(userId);
 
-  const shares = await prisma.statusShare.findMany({
+  const shares = await prisma.status_shares.findMany({
     where: {
       recipientUserId: bigIntId,
       revokedAt: null
@@ -193,7 +193,7 @@ export const getReceivedStatusShares = async (userId: string) => {
 export const viewStatusShare = async (token: string) => {
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-  const statusShare = await prisma.statusShare.findUnique({
+  const statusShare = await prisma.status_shares.findUnique({
     where: { tokenHash },
     include: {
       sender: {
@@ -230,7 +230,7 @@ export const viewStatusShare = async (token: string) => {
   }
 
   // Update view count and viewed at timestamp
-  await prisma.statusShare.update({
+  await prisma.status_shares.update({
     where: { id: statusShare.id },
     data: {
       viewCount: { increment: 1 },
@@ -253,7 +253,7 @@ export const viewStatusShare = async (token: string) => {
  */
 export const getUserAppointments = async (userId: string) => {
   try {
-    const appointments = await prisma.appointment.findMany({
+    const appointments = await prisma.appointments.findMany({
       where: {
         userId: BigInt(userId)
       },
@@ -316,7 +316,7 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
     const activities: any[] = [];
 
     // Fetch recent appointments
-    const appointments = await prisma.appointment.findMany({
+    const appointments = await prisma.appointments.findMany({
       where: { userId: userBigIntId },
       include: {
         slot: {
@@ -348,10 +348,10 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
     });
 
     // Fetch recent test verifications
-    const verifications = await prisma.userVerification.findMany({
+    const verifications = await prisma.user_verifications.findMany({
       where: { userId: userBigIntId },
       include: {
-        testType: { select: { name: true } },
+        testKit: { select: { name: true } },
         clinic: { select: { name: true } },
         verifiedByUser: { select: { username: true } }
       },
@@ -363,12 +363,12 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
       activities.push({
         id: `ver-${ver.id}`,
         type: 'verification',
-        title: `${ver.testType.name} Test ${ver.status === 'verified' ? 'Verified' : 'Recorded'}`,
+        title: `${ver.testKit.name} Test ${ver.status === 'verified' ? 'Verified' : 'Recorded'}`,
         description: ver.clinic?.name || 'Test verification',
         status: ver.status,
         timestamp: ver.verifiedAt || ver.createdAt,
         metadata: {
-          testType: ver.testType.name,
+          testType: ver.testKit.name,
           clinicName: ver.clinic?.name,
           verifiedBy: ver.verifiedByUser?.username,
           testedAt: ver.testedAt
@@ -377,7 +377,7 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
     });
 
     // Fetch recent status shares (sent by user)
-    const statusSharesSent = await prisma.statusShare.findMany({
+    const statusSharesSent = await prisma.status_shares.findMany({
       where: { senderUserId: userBigIntId },
       include: {
         recipient: { select: { username: true } }
@@ -405,7 +405,7 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
     });
 
     // Fetch recent status shares (received by user)
-    const statusSharesReceived = await prisma.statusShare.findMany({
+    const statusSharesReceived = await prisma.status_shares.findMany({
       where: { recipientUserId: userBigIntId },
       include: {
         sender: { select: { username: true } }
@@ -431,7 +431,7 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
     });
 
     // Fetch recent orders
-    const orders = await prisma.order.findMany({
+    const orders = await prisma.orders.findMany({
       where: { userId: userBigIntId },
       include: {
         items: {
@@ -452,7 +452,7 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
     orders.forEach(order => {
       const itemNames = order.items.map(item => item.testKit.name).join(', ');
       const totalAmount = order.items.reduce((sum, item) => sum + (item.unitPriceCents * item.qty), 0);
-      
+
       activities.push({
         id: `order-${order.id}`,
         type: 'order',
@@ -499,7 +499,7 @@ export const getUserActivityLog = async (userId: string, limit: number = 20) => 
  */
 function getTimeAgo(date: Date): string {
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-  
+
   const intervals = {
     year: 31536000,
     month: 2592000,

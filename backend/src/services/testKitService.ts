@@ -1,7 +1,7 @@
 import { prisma } from '../config/db.js';
 
 export const getAllTestKits = async () => {
-  return prisma.testKit.findMany({
+  return prisma.test_kits.findMany({
     where: {
       active: true,
     },
@@ -12,7 +12,7 @@ export const getAllTestKits = async () => {
 };
 
 export const getTestKitById = async (id: bigint) => {
-  return prisma.testKit.findUnique({
+  return prisma.test_kits.findUnique({
     where: { id },
   });
 };

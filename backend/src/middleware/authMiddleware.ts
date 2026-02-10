@@ -19,7 +19,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         // The math involved here is pretty cool, me likey - Thilakshan
         // Yes im actually going through all the code 
         const decoded = jwt.verify(token, config.jwt.accessSecret) as { userId: string };
-        const user = await prisma.user.findUnique({
+        const user = await prisma.users.findUnique({
             where: { id: BigInt(decoded.userId) },
             select: {
                 id: true,

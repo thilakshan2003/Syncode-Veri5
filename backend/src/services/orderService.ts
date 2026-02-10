@@ -19,7 +19,7 @@ export const createOrder = async (data: CreateOrderData) => {
   // Use a transaction to ensure both order and order items are created together
   const result = await prisma.$transaction(async (tx) => {
     // 1. Create the order
-    const order = await tx.order.create({
+    const order = await tx.orders.create({
       data: {
         userId: data.userId,
         deliveryAddress: data.deliveryAddress,
@@ -30,7 +30,7 @@ export const createOrder = async (data: CreateOrderData) => {
     // 2. Create the order items
     const orderItems = await Promise.all(
       data.items.map((item) =>
-        tx.orderItem.create({
+        tx.order_items.create({
           data: {
             orderId: order.id,
             testKitId: item.testKitId,
@@ -55,7 +55,7 @@ export const createOrder = async (data: CreateOrderData) => {
  * Get orders for a specific user
  */
 export const getOrdersByUserId = async (userId: bigint) => {
-  return prisma.order.findMany({
+  return prisma.orders.findMany({
     where: { userId },
     include: {
       items: {
@@ -74,7 +74,7 @@ export const getOrdersByUserId = async (userId: bigint) => {
  * Get a specific order by ID
  */
 export const getOrderById = async (orderId: bigint, userId: bigint) => {
-  return prisma.order.findFirst({
+  return prisma.orders.findFirst({
     where: {
       id: orderId,
       userId, // Ensure user can only access their own orders

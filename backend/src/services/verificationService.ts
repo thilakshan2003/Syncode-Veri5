@@ -85,17 +85,17 @@ const validateTestKitSerial = async (
  */
 const runAiValidation = async (imageBuffer: Buffer): Promise<number> => {
   console.log('🤖 Running AI validation on image...');
-  
+
   // TODO: Implement AI validation
   // Options:
   // 1. TensorFlow.js for on-device processing
   // 2. Call external API (OpenAI Vision, Google Cloud Vision)
   // 3. Custom trained model
-  
+
   // For now, return mock confidence
   const mockConfidence = 0.90;
   console.log('✅ AI confidence score:', mockConfidence);
-  
+
   return mockConfidence;
 };
 
@@ -155,7 +155,7 @@ export const verifyTestKitService = async ({
     await tx.user_verifications.create({
       data: {
         user_id: userId,
-        test_type_id: testTypeId,
+        test_kit_id: testTypeId, // testTypeId is the variable name from arguments, which we keep for compatibility
         status: "verified",
         tested_at: new Date(),
         verified_at: new Date(),

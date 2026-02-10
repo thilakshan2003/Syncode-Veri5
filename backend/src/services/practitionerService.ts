@@ -26,7 +26,7 @@ export const getAllPractitioners = async (filters: PractitionerFilters = {}) => 
             }
         };
     }
-    const practitioners = await prisma.practitioner.findMany({
+    const practitioners = await prisma.practitioners.findMany({
         where: where,
         include: {
             user: true,
@@ -133,20 +133,20 @@ export const getAllPractitioners = async (filters: PractitionerFilters = {}) => 
 };
 
 export const getSpecializations = async () => {
-    const result = await prisma.practitioner.groupBy({
+    const result = await prisma.practitioners.groupBy({
         by: ['specialization'],
         _count: {
             specialization: true
         }
     });
-    return result.map(r => r.specialization);
+    return (result as any[]).map(r => r.specialization);
 };
 
 export const getPractitionerById = async (id: string | number) => {
     // Convert to BigInt safely
     const practitionerId = BigInt(id);
 
-    const practitioner = await prisma.practitioner.findUnique({
+    const practitioner = await prisma.practitioners.findUnique({
         where: { id: practitionerId },
         include: {
             user: true,
@@ -188,7 +188,7 @@ export const getPractitionerById = async (id: string | number) => {
 };
 
 export const getPractitionersByClinic = async (clinicId: bigint) => {
-    return prisma.practitionerClinic.findMany({
+    return prisma.practitioner_clinics.findMany({
         where: { clinicId },
         include: { practitioner: true },
     });

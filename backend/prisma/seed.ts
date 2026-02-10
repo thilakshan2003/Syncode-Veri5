@@ -15,24 +15,24 @@ async function main() {
     console.log('Start seeding ...');
 
     // --- CLEANUP ---
-    await prisma.shipment.deleteMany();
-    await prisma.payment.deleteMany();
-    await prisma.orderItem.deleteMany();
-    await prisma.order.deleteMany();
-    await prisma.appointment.deleteMany();
-    await prisma.appointmentSlot.deleteMany();
-    await prisma.practitionerClinic.deleteMany();
-    await prisma.practitioner.deleteMany();
-    await prisma.clinicStaff.deleteMany();
-    await prisma.userVerification.deleteMany();
-    await prisma.userCurrentStatus.deleteMany();
-    await prisma.partner.deleteMany();
-    await prisma.statusShare.deleteMany();
-    await prisma.clinic.deleteMany();
-    await prisma.testKit.deleteMany();
-    await prisma.testType.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.resource.deleteMany();
+    await prisma.shipments.deleteMany();
+    await prisma.payments.deleteMany();
+    await prisma.order_items.deleteMany();
+    await prisma.test_kit_instances.deleteMany();
+    await prisma.orders.deleteMany();
+    await prisma.appointments.deleteMany();
+    await prisma.appointment_slots.deleteMany();
+    await prisma.practitioner_clinics.deleteMany();
+    await prisma.practitioners.deleteMany();
+    await prisma.clinic_staff.deleteMany();
+    await prisma.user_verifications.deleteMany();
+    await prisma.user_current_status.deleteMany();
+    await prisma.partners.deleteMany();
+    await prisma.status_shares.deleteMany();
+    await prisma.clinics.deleteMany();
+    await prisma.test_kits.deleteMany();
+    await prisma.users.deleteMany();
+    await prisma.resources.deleteMany();
 
     console.log('Database cleaned.');
 
@@ -335,45 +335,28 @@ async function main() {
         }
     ];
 
-    await prisma.resource.createMany({
+    await prisma.resources.createMany({
         data: resourceData
     });
 
     console.log('Resources created.');
 
-    // --- TEST TYPES ---
-    const hivTest = await prisma.testType.create({
-        data: {
-            name: 'HIV 1/2 Ab/Ag',
-            category: 'STD',
-            active: true
-        }
-    });
-
-    const syphilisTest = await prisma.testType.create({
-        data: {
-            name: 'Syphilis Antibody',
-            category: 'STD',
-            active: true
-        }
-    });
-
-    console.log('Test Types created.');
-
-    // --- TEST KITS ---
-    const standardKit = await prisma.testKit.create({
+    // --- TEST KITS (Incorporating former Test Types) ---
+    const standardKit = await prisma.test_kits.create({
         data: {
             name: 'Standard Screen',
-            priceCents: 250000, // 2500.00
+            category: 'STD',
+            priceCents: 250000,
             description: 'Basic screening for common conditions.',
             active: true,
         },
     });
 
-    const fullKit = await prisma.testKit.create({
+    const fullKit = await prisma.test_kits.create({
         data: {
             name: 'Full Panel',
-            priceCents: 550000, // 5500.00
+            category: 'STD',
+            priceCents: 550000,
             description: 'Comprehensive health checkup.',
             active: true,
         },
@@ -382,7 +365,7 @@ async function main() {
     console.log('Test Kits created.');
 
     // --- CLINICS ---
-    const clinic1 = await prisma.clinic.create({
+    const clinic1 = await prisma.clinics.create({
         data: {
             name: 'City Health Center',
             address: '101 Main St, Colombo',
@@ -390,7 +373,7 @@ async function main() {
         },
     });
 
-    const clinic2 = await prisma.clinic.create({
+    const clinic2 = await prisma.clinics.create({
         data: {
             name: 'LifePlus Wellness',
             address: '55 Lake Rd, Kandy',
@@ -401,7 +384,7 @@ async function main() {
     console.log('Clinics created.');
 
     // --- USERS: PATIENT ALICE ---
-    const alice = await prisma.user.create({
+    const alice = await prisma.users.create({
         data: {
             username: 'alice_w',
             email: 'alice@example.com',
@@ -416,14 +399,11 @@ async function main() {
     console.log('Alice created.');
 
     // --- LANDING PAGE PRACTITIONERS ---
-
-    // 1. Dr. Sandamali Jayasinghe (Sexual Health Specialist)
-    // Needs: Weekdays Online, Weekends Clinic (Physical)
-    const drSandamaliUser = await prisma.user.create({
+    const drSandamaliUser = await prisma.users.create({
         data: { username: 'dr_sandamali', email: 'sandamali@example.com', passwordHash: 'hash', status: UserStatus.Verified }
     });
 
-    const drSandamali = await prisma.practitioner.create({
+    const drSandamali = await prisma.practitioners.create({
         data: {
             userId: drSandamaliUser.id,
             name: "Dr. Sandamali Jayasinghe",
@@ -434,17 +414,15 @@ async function main() {
         }
     });
 
-    // 2. Dr. Chanidu Wijepala (Venereologist)
-    // Needs: Weekends Online, Free consultations at NHS (Price 0)
-    const nhsClinic = await prisma.clinic.create({
+    const nhsClinic = await prisma.clinics.create({
         data: { name: 'National Hospital Sri Lanka (NHS)', address: 'Colombo 10', availableTime: '24/7' }
     });
 
-    const drChaniduUser = await prisma.user.create({
+    const drChaniduUser = await prisma.users.create({
         data: { username: 'dr_chanidu', email: 'chanidu@example.com', passwordHash: 'hash', status: UserStatus.Verified }
     });
 
-    const drChanidu = await prisma.practitioner.create({
+    const drChanidu = await prisma.practitioners.create({
         data: {
             userId: drChaniduUser.id,
             name: "Dr. Chanidu Wijepala",
@@ -455,13 +433,11 @@ async function main() {
         }
     });
 
-    // 3. Dr. Ajay Rasiah (Venereologist)
-    // Needs: Daily Online Channeling
-    const drAjayUser = await prisma.user.create({
+    const drAjayUser = await prisma.users.create({
         data: { username: 'dr_ajay', email: 'ajay@example.com', passwordHash: 'hash', status: UserStatus.Verified }
     });
 
-    const drAjay = await prisma.practitioner.create({
+    const drAjay = await prisma.practitioners.create({
         data: {
             userId: drAjayUser.id,
             name: "Dr. Ajay Rasiah",
@@ -474,50 +450,69 @@ async function main() {
 
     console.log('Practitioners created.');
 
+    // --- ORDERS & INSTANCES ---
+    const aliceOrder = await prisma.orders.create({
+        data: {
+            userId: alice.id,
+            deliveryAddress: alice.address || 'Colombo',
+            status: OrderStatus.paid,
+            items: {
+                create: [
+                    { testKitId: standardKit.id, qty: 1, unitPriceCents: standardKit.priceCents }
+                ]
+            }
+        }
+    });
+
+    await prisma.test_kit_instances.create({
+        data: {
+            serial_number: "VERI5-TEST-001",
+            test_kit_id: standardKit.id,
+            order_id: aliceOrder.id,
+            user_id: alice.id,
+        }
+    });
+
+    console.log('Order and Test Kit Instance created.');
+
     // --- GENERATE SLOTS ---
     const today = new Date();
-    // Generate slots for next 14 days
     for (let i = 0; i < 14; i++) {
         const d = new Date(today);
         d.setDate(today.getDate() + i);
-        const dayOfWeek = d.getDay(); // 0=Sun, 6=Sat
+        const dayOfWeek = d.getDay();
         const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
         const start = new Date(d); start.setHours(9, 0, 0, 0);
         const end = new Date(d); end.setHours(17, 0, 0, 0);
 
-        // Dr. Sandamali: Weekdays Online, Weekends Physical
         if (!isWeekend) {
-            await prisma.appointmentSlot.create({
+            await prisma.appointment_slots.create({
                 data: { practitionerId: drSandamali.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 250000, isAvailable: true }
             });
         } else {
-            await prisma.appointmentSlot.create({
+            await prisma.appointment_slots.create({
                 data: { practitionerId: drSandamali.id, clinicId: clinic1.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 300000, isAvailable: true }
             });
         }
 
-        // Dr. Chanidu: Weekends Online, Free at NHS (Anytime/Mixed)
         if (isWeekend) {
-            await prisma.appointmentSlot.create({
+            await prisma.appointment_slots.create({
                 data: { practitionerId: drChanidu.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 200000, isAvailable: true }
             });
         }
-        // Add some free NHS slots on random days (including weekdays)
         if (i % 2 === 0) {
-            await prisma.appointmentSlot.create({
+            await prisma.appointment_slots.create({
                 data: { practitionerId: drChanidu.id, clinicId: nhsClinic.id, mode: AppointmentSlotMode.physical, startsAt: start, endsAt: end, priceCents: 0, isAvailable: true }
             });
         }
 
-        // Dr. Ajay: Daily Online
-        await prisma.appointmentSlot.create({
+        await prisma.appointment_slots.create({
             data: { practitionerId: drAjay.id, mode: AppointmentSlotMode.online, startsAt: start, endsAt: end, priceCents: 400000, isAvailable: true }
         });
     }
 
     console.log('Detailed slots created.');
-
     console.log('Seeding finished.');
 }
 

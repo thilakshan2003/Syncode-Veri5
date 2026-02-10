@@ -115,7 +115,7 @@ export const getOrders = async (req: Request, res: Response) => {
           qty: item.qty,
           unitPriceCents: item.unitPriceCents,
         })),
-        testKitInstances: order.testKitInstances?.map(instance => ({
+        testKitInstances: order.test_kit_instances?.map(instance => ({
           id: instance.id.toString(),
           serialNumber: instance.serial_number,
           testKitId: instance.test_kit_id.toString(),
@@ -173,7 +173,7 @@ export const getOrder = async (req: Request, res: Response) => {
           qty: item.qty,
           unitPriceCents: item.unitPriceCents,
         })),
-        testKitInstances: order.testKitInstances?.map(instance => ({
+        test_kit_instances: order.test_kit_instances?.map(instance => ({
           id: instance.id.toString(),
           serialNumber: instance.serial_number,
           testKitId: instance.test_kit_id.toString(),

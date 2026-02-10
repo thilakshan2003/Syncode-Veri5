@@ -88,70 +88,148 @@ function ConsultationContent() {
     }
 
     return (
-        <main className="min-h-screen bg-background pb-20">
+        <main className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20">
             <Navbar />
 
-            <div className="container mx-auto px-4 md:px-6 py-12">
+            <div className="container mx-auto px-4 md:px-8 py-12 max-w-7xl">
 
-                <div className="text-center max-w-2xl mx-auto mb-12">
-                    <h1 className="text-4xl font-extrabold text-foreground dark:text-emerald-500 mb-4">Expert & Private Consultations</h1>
-                    <p className="text-muted-foreground text-lg">
-                        Book a consultation at a clinic or online channeling with certified specialists.
+                {/* Hero Header Section */}
+                <div className="text-center max-w-3xl mx-auto mb-12">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 mb-6">
+                        <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">SLMC Certified Specialists</span>
+                    </div>
+                    
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 leading-tight">
+                        Expert & Private <span className="text-emerald-600 dark:text-emerald-500">Consultations</span>
+                    </h1>
+                    <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
+                        Book a consultation at a clinic or online channeling with certified specialists. 
+                        <br className="hidden sm:block" />
+                        Your privacy and health are our top priority.
                     </p>
                 </div>
 
-                <PrivacyBanner />
+                {/* Privacy Banner */}
+                <div className="mb-10">
+                    <PrivacyBanner />
+                </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-                    <div className="flex items-center gap-3">
-                        <label className="text-sm font-semibold text-slate-700">Filter by clinic</label>
-                        <select
-                            className="h-10 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
-                            value={selectedClinicId}
-                            onChange={(event) => setSelectedClinicId(event.target.value)}
-                        >
-                            <option value="">All clinics</option>
-                            {clinics.map((clinic) => (
-                                <option key={clinic.id} value={clinic.id}>
-                                    {clinic.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <label className="text-sm font-semibold text-slate-700">Filter By Role</label>
-                        <select
-                            className="h-10 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
-                            value={filterRole}
-                            onChange={(e) => setFilterRole(e.target.value)}
-                        >
-                            <option value="all">All Roles</option>
-                            {specializations.map((role, idx) => (
-                                <option key={idx} value={role}>{role}</option>
-                            ))}
-                        </select>
-                    </div>
+                {/* Filters Section - Redesigned */}
+                <div className="bg-emerald-50/50 dark:bg-slate-900 rounded-2xl shadow-sm border border-emerald-200 dark:border-slate-800 p-6 mb-10">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
+                        Filter Specialists
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Filter by clinic */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">
+                                Filter by Clinic
+                            </label>
+                            <div className="relative">
+                                <select
+                                    className="w-full h-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-4 pr-10 text-sm font-medium text-slate-700 dark:text-slate-200 shadow-sm focus:border-emerald-500 dark:focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 appearance-none cursor-pointer transition-colors"
+                                    value={selectedClinicId}
+                                    onChange={(event) => setSelectedClinicId(event.target.value)}
+                                >
+                                    <option value="">All clinics</option>
+                                    {clinics.map((clinic) => (
+                                        <option key={clinic.id} value={clinic.id}>
+                                            {clinic.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-emerald-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
 
-                    <div className="flex items-center gap-3">
-                        <label className="text-sm font-semibold text-slate-700">Availability</label>
-                        <select
-                            className="h-10 rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
-                            value={filterAvailability}
-                            onChange={(e) => setFilterAvailability(e.target.value)}
-                        >
-                            <option value="all">Any Availability</option>
-                            <option value="weekdays">Weekdays</option>
-                            <option value="weekends">Weekends</option>
-                            <option value="online">Online Only</option>
-                        </select>
+                        {/* Filter By Role */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">
+                                Filter by Specialization
+                            </label>
+                            <div className="relative">
+                                <select
+                                    className="w-full h-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-4 pr-10 text-sm font-medium text-slate-700 dark:text-slate-200 shadow-sm focus:border-emerald-500 dark:focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 appearance-none cursor-pointer transition-colors"
+                                    value={filterRole}
+                                    onChange={(e) => setFilterRole(e.target.value)}
+                                >
+                                    <option value="all">All Roles</option>
+                                    {specializations.map((role, idx) => (
+                                        <option key={idx} value={role}>{role}</option>
+                                    ))}
+                                </select>
+                                <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-emerald-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        {/* Availability */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">
+                                Availability
+                            </label>
+                            <div className="relative">
+                                <select
+                                    className="w-full h-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-4 pr-10 text-sm font-medium text-slate-700 dark:text-slate-200 shadow-sm focus:border-emerald-500 dark:focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 appearance-none cursor-pointer transition-colors"
+                                    value={filterAvailability}
+                                    onChange={(e) => setFilterAvailability(e.target.value)}
+                                >
+                                    <option value="all">Any Availability</option>
+                                    <option value="weekdays">Weekdays</option>
+                                    <option value="weekends">Weekends</option>
+                                    <option value="online">Online Only</option>
+                                </select>
+                                <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-emerald-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Specialists Grid with Section Header */}
+                <div className="mb-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                            Available Specialists
+                            <span className="ml-3 text-sm font-normal text-slate-500 dark:text-slate-400">
+                                ({specialists.length} {specialists.length === 1 ? 'specialist' : 'specialists'})
+                            </span>
+                        </h2>
+                    </div>
+                </div>
+
+                {/* Specialists Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {specialists.map((specialist) => (
                         <SpecialistCard key={specialist.id} {...specialist} />
                     ))}
                 </div>
+
+                {/* Empty State */}
+                {specialists.length === 0 && !loading && (
+                    <div className="text-center py-16">
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                            <svg className="w-10 h-10 text-slate-400 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No specialists found</h3>
+                        <p className="text-slate-600 dark:text-slate-400 mb-6">
+                            Try adjusting your filters to see more results
+                        </p>
+                    </div>
+                )}
             </div>
         </main>
     );

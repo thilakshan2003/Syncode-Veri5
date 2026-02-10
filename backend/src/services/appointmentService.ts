@@ -46,7 +46,7 @@ export const cancelAppointment = async (userId: string | number, appointmentId: 
     // Start a transaction to ensure data consistency
     return await prisma.$transaction(async (tx) => {
         // 1. Fetch the appointment
-        const appointment = await tx.appointment.findUnique({
+        const appointment = await tx.appointments.findUnique({
             where: { id: aId },
             include: { slot: true }
         });
@@ -70,13 +70,13 @@ export const cancelAppointment = async (userId: string | number, appointmentId: 
         }
 
         // 4. Update appointment status to cancelled
-        const cancelledAppointment = await tx.appointment.update({
+        const cancelledAppointment = await tx.appointments.update({
             where: { id: aId },
             data: { status: AppointmentStatus.cancelled }
         });
 
         // 5. Make the slot available again
-        await tx.appointmentSlot.update({
+        await tx.appointment_slots.update({
             where: { id: appointment.slotId },
             data: { isAvailable: true }
         });

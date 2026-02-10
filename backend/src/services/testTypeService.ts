@@ -5,7 +5,7 @@ import { prisma } from '../config/db.js';
  * @returns Array of active test types
  */
 export const getAllTestTypes = async () => {
-    const testTypes = await prisma.testKit.findMany({
+    const testTypes = await prisma.test_kits.findMany({
         where: {
             active: true,
         },

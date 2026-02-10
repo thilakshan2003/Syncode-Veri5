@@ -9,7 +9,7 @@ import ShareStatusModal from '@/components/ShareStatusModal';
 import ResultUploadModal from '@/components/ResultUploadModal';
 import ActivityLog from '@/components/ActivityLog';
 import StatusWatchCard from '@/components/StatusWatchCard';
-import { Share2, FileUp, ClipboardList, ShieldCheck, ChevronRight, Menu, X, Calendar, MapPin, Video, Clock } from 'lucide-react';
+import { Share2, FileUp, ClipboardList, ShieldCheck, ChevronRight, Calendar, MapPin, Video, Clock, RefreshCw, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { dashboardApi } from '@/lib/api';
@@ -18,7 +18,6 @@ export default function Dashboard() {
     const searchParams = useSearchParams();
     const [shareModalOpen, setShareModalOpen] = useState(false);
     const [uploadModalOpen, setUploadModalOpen] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [userStatus, setUserStatus] = useState(null);
     const [testCount, setTestCount] = useState(0);
     const [nextTestDate, setNextTestDate] = useState(null);
@@ -186,55 +185,70 @@ export default function Dashboard() {
     const statusDisplay = getStatusDisplay();
 
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
             <Navbar />
 
-            {/* Floating Toggle Button for Sidebar */}
-            <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="hidden lg:flex fixed right-6 top-24 z-50 bg-veri5-navy text-white p-3 rounded-full shadow-lg hover:bg-veri5-navy/90 transition-all items-center justify-center"
-                aria-label="Toggle Activity Sidebar"
-            >
-                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+            {/* Main Content */}
+            <div className="px-4 md:px-6 py-10">
+                <div className="max-w-6xl mx-auto">
+                    {/* Status Header */}
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-foreground mb-6">Health Dashboard</h1>
 
-            {/* Main Content with Sidebar Layout */}
-            <div className="flex relative">
-                {/* Main Content Area */}
-                <div className={`flex-1 px-4 md:px-6 py-10 transition-all duration-300 ${sidebarOpen ? 'lg:pr-0' : 'lg:pr-6'}`}>
-                    <div className="max-w-6xl mx-auto">
-                        {/* Status Header */}
-                        <div className="mb-10">
-                            <h1 className="text-3xl font-bold text-foreground mb-6">Health Dashboard</h1>
+                        <div className={`rounded-2xl p-8 md:p-10 text-white shadow-lg relative overflow-hidden ${
+                            userStatus === 'Verified'
+                                ? 'bg-gradient-to-br from-emerald-600 to-teal-700 dark:from-emerald-800 dark:to-teal-900 border border-emerald-700/30 dark:border-emerald-500/20'
+                                : 'bg-gradient-to-br from-yellow-500 to-amber-500 dark:from-yellow-600 dark:to-amber-700 border border-yellow-600/30 dark:border-yellow-500/20'
+                        }`}>
+                            {/* Background Pattern */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
-                            <div className="bg-veri5-navy dark:bg-emerald-900/40 rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-navy-900/10 border border-white/5 dark:border-emerald-500/20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 transition-colors duration-500">
-                                {/* Background Pattern */}
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 dark:bg-emerald-400/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-
-                                <div className="flex items-center gap-6 z-10">
-                                    <div className={`w-20 h-20 ${statusDisplay.color} rounded-full flex items-center justify-center shadow-lg shadow-emerald-900/20 animate-pulse-slow`}>
-                                        <ShieldCheck className="w-10 h-10 text-white" strokeWidth={2.5} />
+                            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-16 h-16 bg-white/95 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                                        <svg className={`w-9 h-9 ${
+                                            userStatus === 'Verified' ? 'text-emerald-600' : 'text-yellow-600'
+                                        }`} fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                        </svg>
                                     </div>
                                     <div>
-                                        <div className="flex items-center gap-3 mb-1">
-                                            <h2 className="text-2xl md:text-3xl font-bold">Status: {statusDisplay.label}</h2>
-                                            <span className={`${statusDisplay.color}/20 ${statusDisplay.textColor} text-xs font-bold px-2 py-1 rounded border ${statusDisplay.color}/30 uppercase tracking-widest`}>
-                                                {statusDisplay.badgeText}
-                                            </span>
-                                        </div>
+                                        <p className={`text-xs font-medium mb-1 flex items-center gap-1 ${
+                                            userStatus === 'Verified'
+                                                ? 'text-emerald-100 dark:text-emerald-200'
+                                                : 'text-yellow-100 dark:text-yellow-200'
+                                        }`}>
+                                            <span className={`w-2 h-2 rounded-full ${
+                                                userStatus === 'Verified' ? 'bg-emerald-400' : 'bg-yellow-300'
+                                            }`}></span>
+                                            Current Profile Status
+                                        </p>
+                                        <h2 className="text-2xl md:text-3xl font-bold mb-1">Status: {statusDisplay.label}</h2>
+                                        <p className={`text-xs flex items-center gap-1.5 ${
+                                            userStatus === 'Verified'
+                                                ? 'text-emerald-50/80 dark:text-emerald-100/70'
+                                                : 'text-yellow-50/80 dark:text-yellow-100/70'
+                                        }`}>
+                                            <Calendar className="w-3.5 h-3.5" />
+                                            Last medical update: Oct 24, 2025
+                                        </p>
                                     </div>
                                 </div>
 
-                                <div className="z-10 w-full md:w-auto">
-                                    <button
-                                        onClick={() => setShareModalOpen(true)}
-                                        className="w-full md:w-auto bg-white text-veri5-navy hover:bg-slate-100 font-bold px-8 py-3.5 rounded-xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <Share2 className="w-4 h-4" /> Share My Status
-                                    </button>
-                                </div>
+                                <button
+                                    onClick={() => setShareModalOpen(true)}
+                                    className={`text-white font-semibold px-5 py-2.5 rounded-lg shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 text-sm ${
+                                        userStatus === 'Verified'
+                                            ? 'bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700 border border-emerald-400/30'
+                                            : 'bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-600 dark:hover:bg-yellow-700 border border-yellow-300/30'
+                                    }`}
+                                >
+                                    <Share2 className="w-4 h-4" />
+                                    Share Status
+                                </button>
                             </div>
                         </div>
+                    </div>
 
                         {/* Stats Row */}
                         <div className="grid grid-cols-2 gap-4 mb-10">
@@ -334,7 +348,7 @@ export default function Dashboard() {
                         {/* Quick Actions */}
                         <div className="mb-10">
                             <h3 className="text-lg font-bold text-foreground mb-4">Quick Actions</h3>
-                            <div className="grid sm:grid-cols-2 gap-4">
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div onClick={() => setUploadModalOpen(true)} className="cursor-pointer">
                                     <QuickActionCard
                                         icon={FileUp}
@@ -347,11 +361,20 @@ export default function Dashboard() {
                                 </div>
 
                                 <QuickActionCard
-                                    icon={ClipboardList}
-                                    title="Order Test Kit"
-                                    description="Get a discreet home test kit delivered to your door."
-                                    actionText="Browse Kits"
-                                    href="/testing/kits"
+                                    icon={Calendar}
+                                    title="Book Appointment"
+                                    description="Schedule a consultation with a specialist at your convenience."
+                                    actionText="Book Now"
+                                    href="/consultation"
+                                    color="emerald"
+                                />
+
+                                <QuickActionCard
+                                    icon={Activity}
+                                    title="View Activity"
+                                    description="Check your recent test results, appointments, and health updates."
+                                    actionText="View All"
+                                    href="/dashboard/activity"
                                     color="blue"
                                 />
                             </div>
@@ -363,48 +386,6 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-
-                {/* Activity Log Sidebar - Hidden by default, slides in from right */}
-                <aside
-                    className={`hidden lg:block fixed right-0 top-0 h-screen w-96 bg-card dark:bg-[#0F172A] border-l border-border dark:border-white/5 shadow-2xl transform transition-transform duration-300 ease-in-out z-40 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'
-                        }`}
-                >
-                    <div className="h-full overflow-y-auto pt-20">
-                        <div className="p-6">
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-lg font-bold text-foreground">Recent Activity</h3>
-                                <Button variant="link" asChild className="text-veri5-teal font-bold p-0 h-auto hover:no-underline text-xs">
-                                    <Link href="/dashboard/activity">View All <ChevronRight className="w-3 h-3 ml-1" /></Link>
-                                </Button>
-                            </div>
-                            <ActivityLog />
-                        </div>
-                    </div>
-                </aside>
-
-                {/* Overlay when sidebar is open */}
-                {sidebarOpen && (
-                    <div
-                        className="hidden lg:block fixed inset-0 bg-black/20 z-30"
-                        onClick={() => setSidebarOpen(false)}
-                    />
-                )}
-
-                {/* Mobile Activity Log - Show at bottom on mobile */}
-                <div className="lg:hidden px-4 md:px-6 pb-10">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="bg-card dark:bg-card/40 rounded-3xl p-6 border border-border dark:border-white/5 shadow-sm">
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-lg font-bold text-foreground">Recent Activity</h3>
-                                <Button variant="link" asChild className="text-veri5-teal font-bold p-0 h-auto hover:no-underline">
-                                    <Link href="/dashboard/activity">View All <ChevronRight className="w-4 h-4 ml-1" /></Link>
-                                </Button>
-                            </div>
-                            <ActivityLog limit={5} />
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             {/* Modals */}
             <ShareStatusModal open={shareModalOpen} onOpenChange={setShareModalOpen} />

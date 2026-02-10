@@ -25,13 +25,13 @@ const generateTokens = (userId: bigint) => {
 export class AuthService {
     async signup(data: z.infer<typeof signupSchema>) {
         // check if user already exists
-        const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
+        const existingUser = await prisma.users.findUnique({ where: { email: data.email } });
         if (existingUser) {
             throw new Error('User already exists');
         }
 
         // check if username is taken
-        const existingUsername = await prisma.user.findUnique({ where: { username: data.username } });
+        const existingUsername = await prisma.users.findUnique({ where: { username: data.username } });
         if (existingUsername) {
             throw new Error('Username already taken');
         }
@@ -39,7 +39,7 @@ export class AuthService {
         const passwordHash = await bcrypt.hash(data.password, 10);
 
         // create new user
-        const newUser = await prisma.user.create({
+        const newUser = await prisma.users.create({
             data: {
                 username: data.username,
                 email: data.email,
@@ -56,7 +56,7 @@ export class AuthService {
     }
 
     async login(data: z.infer<typeof loginSchema>) {
-        const user = await prisma.user.findUnique({ where: { email: data.email } });
+        const user = await prisma.users.findUnique({ where: { email: data.email } });
         if (!user || !user.passwordHash) {
             throw new Error('Invalid credentials');
         }
@@ -92,7 +92,7 @@ export class AuthService {
             console.log('🔵 [AuthService] User email from Google:', payload.email);
 
             // Check if user exists in our database
-            let user = await prisma.user.findUnique({ where: { email: payload.email } });
+            let user = await prisma.users.findUnique({ where: { email: payload.email } });
 
             if (!user) {
                 console.log('🔵 [AuthService] User not found, creating new user');
@@ -101,7 +101,7 @@ export class AuthService {
                 const baseUsername = payload.email.split('@')[0];
                 const username = `${baseUsername}_${Math.floor(Math.random() * 10000)}`;
 
-                user = await prisma.user.create({
+                user = await prisma.users.create({
                     data: {
                         username,
                         email: payload.email,

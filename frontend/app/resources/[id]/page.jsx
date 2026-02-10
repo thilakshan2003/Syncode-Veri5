@@ -53,7 +53,7 @@ export default async function ArticlePage({ params }) {
     };
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-background pb-20 transition-colors duration-300">
             <Navbar />
 
             {/* Back Button & Actions */}
@@ -67,10 +67,10 @@ export default async function ArticlePage({ params }) {
                         Back to Resources
                     </Link>
                     <div className="flex items-center gap-3">
-                        <button className="p-2.5 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 transition-colors">
+                        <button className="p-2.5 rounded-full bg-card text-muted-foreground hover:bg-muted transition-colors">
                             <Share2 className="w-4 h-4" />
                         </button>
-                        <button className="p-2.5 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 transition-colors">
+                        <button className="p-2.5 rounded-full bg-card text-muted-foreground hover:bg-muted transition-colors">
                             <Bookmark className="w-4 h-4" />
                         </button>
                     </div>
@@ -83,22 +83,22 @@ export default async function ArticlePage({ params }) {
                             <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest ${categoryColors[article.category]}`}>
                                 {categoryLabels[article.category] || article.category}
                             </span>
-                            <div className="flex items-center text-slate-400 text-xs font-medium">
+                            <div className="flex items-center text-muted-foreground text-xs font-medium">
                                 <Clock className="w-3.5 h-3.5 mr-1.5" />
                                 {article.readTime}
                             </div>
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl font-black text-veri5-navy mb-8 leading-tight">
+                        <h1 className="text-4xl md:text-5xl font-black text-foreground mb-8 leading-tight">
                             {article.title}
                         </h1>
 
-                        <p className="text-xl text-slate-500 leading-relaxed font-medium mb-10 max-w-3xl">
+                        <p className="text-xl text-muted-foreground leading-relaxed font-medium mb-10 max-w-3xl">
                             {article.description}
                         </p>
 
                         {article.imageUrl && (
-                            <div className="rounded-4xl overflow-hidden shadow-2xl border border-slate-100 aspect-video md:aspect-[21/9]">
+                            <div className="rounded-4xl overflow-hidden shadow-2xl border border-border aspect-video md:aspect-[21/9]">
                                 <img
                                     src={article.imageUrl}
                                     alt={article.title}
@@ -109,20 +109,20 @@ export default async function ArticlePage({ params }) {
                     </div>
 
                     {/* Content Section */}
-                    <div className="max-w-3xl mx-auto prose prose-slate prose-lg lg:prose-xl prose-headings:text-veri5-navy prose-headings:font-black prose-p:text-slate-600 prose-p:leading-relaxed prose-strong:text-veri5-navy prose-a:text-veri5-teal prose-img:rounded-3xl">
+                    <div className="max-w-3xl mx-auto prose prose-slate dark:prose-invert prose-lg lg:prose-xl prose-headings:text-foreground prose-headings:font-black prose-p:text-foreground/80 prose-p:leading-relaxed prose-strong:text-foreground prose-a:text-veri5-teal prose-img:rounded-3xl">
                         {/* Split content by newlines and wrap in paragraphs if it doesn't look like HTML */}
                         {article.content.split('\n').filter(p => p.trim()).map((para, index) => (
                             <p key={index}>{para}</p>
                         ))}
                     </div>
 
-                    <hr className="my-20 border-slate-100" />
+                    <hr className="my-20 border-border" />
 
                     {/* Related Resources */}
                     {relatedArticles.length > 0 && (
                         <div>
                             <div className="flex items-center justify-between mb-8">
-                                <h2 className="text-2xl font-black text-veri5-navy">Related Guides</h2>
+                                <h2 className="text-2xl font-black text-foreground">Related Guides</h2>
                                 <Link href={`/resources?category=${article.category}`} className="text-veri5-teal font-bold text-sm hover:underline uppercase tracking-wider">
                                     View All
                                 </Link>

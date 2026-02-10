@@ -19,7 +19,7 @@ export default function ResourceCard({ id, title, description, category, readTim
     };
 
     return (
-        <div className="bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-veri5-teal shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col h-full hover:scale-[1.02]">
+        <div className="bg-card rounded-3xl overflow-hidden border border-border hover:border-veri5-teal shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col h-full hover:scale-[1.02]">
             {/* Image Section */}
             <div className="h-48 bg-slate-100 relative overflow-hidden">
                 <Link href={`/resources/${id}`}>
@@ -49,15 +49,15 @@ export default function ResourceCard({ id, title, description, category, readTim
                     </div>
                 </div>
 
-                <h3 className="text-lg font-bold text-veri5-navy mb-2 leading-tight group-hover:text-veri5-teal transition-colors">
+                <h3 className="text-lg font-bold text-foreground mb-2 leading-tight group-hover:text-veri5-teal transition-colors">
                     <Link href={`/resources/${id}`}>{title}</Link>
                 </h3>
 
-                <p className="text-slate-500 text-sm leading-relaxed mb-4 line-clamp-2 flex-grow">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2 flex-grow">
                     {description}
                 </p>
 
-                <div className="pt-4 border-t border-slate-50">
+                <div className="pt-4 border-t border-border">
                     <Link href={`/resources/${id}`} className="text-veri5-teal text-xs font-bold hover:underline flex items-center">
                         Read Article
                         <svg className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

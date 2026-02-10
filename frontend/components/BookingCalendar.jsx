@@ -1,45 +1,101 @@
 "use client";
 
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
-// Mock calendar data for Jan 2026 (starting from screenshot context)
-const dates = [
-    { day: 29, month: 'prev' }, { day: 30, month: 'prev' }, { day: 31, month: 'prev' },
-    { day: 1, month: 'current' }, { day: 2, month: 'current' }, { day: 3, month: 'current' }, { day: 4, month: 'current' },
-    { day: 5, month: 'current', active: true }, { day: 6, month: 'current' }, { day: 7, month: 'current' }, { day: 8, month: 'current' },
-    { day: 9, month: 'current' }, { day: 10, month: 'current' }, { day: 11, month: 'current' },
-    { day: 12, month: 'current' }, { day: 13, month: 'current' }, { day: 14, month: 'current' },
-    { day: 15, month: 'current' }, { day: 16, month: 'current' }, { day: 17, month: 'current' },
-    { day: 18, month: 'current' }, { day: 19, month: 'current' }, { day: 20, month: 'current' },
-    { day: 21, month: 'current' }, { day: 22, month: 'current' }, { day: 23, month: 'current' }, { day: 24, month: 'current' }
-];
+export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDate, selectedTime, availableSlots = [], mode = 'Online' }) {
+    const today = new Date();
+    const currentMonthLabel = today.toLocaleString('default', { month: 'long', year: 'numeric' });
 
-const timeSlots = [
-    "09:00 AM", "10:30 AM",
-    "01:00 PM", "02:30 PM",
-    "04:00 PM", "05:30 PM"
-];
+    // Filter slots by mode
+    const filteredSlots = useMemo(() => {
+        return availableSlots.filter(slot =>
+            mode === 'Online' ? slot.mode === 'online' : slot.mode === 'physical'
+        );
+    }, [availableSlots, mode]);
 
-export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDate, selectedTime }) {
-    // In a real app, this would handle month navigation logic
-    const currentMonth = "January 2026";
+    // Get unique dates with availability
+    const availableDates = useMemo(() => {
+        const dates = new Set();
+        filteredSlots.forEach(slot => {
+            const dateStr = new Date(slot.startsAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+            const d = new Date(slot.startsAt);
+            const str = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            dates.add(str);
+        });
+        return dates;
+    }, [filteredSlots]);
+
+    const getCalendarDays = () => {
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const daysInMonth = [];
+
+        // Padding for start of month (Mon=1, Sun=0, adjusted to Mon=0)
+        let startDay = firstDay.getDay() - 1;
+        if (startDay === -1) startDay = 6;
+
+        // Previous month padding
+        const prevMonthLastDay = new Date(year, month, 0).getDate();
+        for (let i = 0; i < startDay; i++) {
+            daysInMonth.push({ day: prevMonthLastDay - startDay + 1 + i, month: 'prev' });
+        }
+
+        // Current month days
+        for (let i = 1; i <= lastDay.getDate(); i++) {
+            const dateObj = new Date(year, month, i);
+            const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            daysInMonth.push({
+                day: i,
+                month: 'current',
+                active: availableDates.has(dateStr),
+                fullDate: dateStr
+            });
+        }
+
+        return daysInMonth;
+    };
+
+    const calendarDays = getCalendarDays();
+
+    // Get times for selected date
+    const availableTimes = useMemo(() => {
+        if (!selectedDate) return [];
+
+        return filteredSlots
+            .filter(slot => {
+                const d = new Date(slot.startsAt);
+                const str = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                return str === selectedDate;
+            })
+            .map(slot => ({
+                id: slot.id,
+                label: new Date(slot.startsAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                value: new Date(slot.startsAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                // Using formatted time string as value to match parent state expectation
+            }))
+            .sort((a, b) => new Date('1970/01/01 ' + a.label) - new Date('1970/01/01 ' + b.label)); // Simple time sort
+    }, [selectedDate, filteredSlots]);
+
 
     return (
-        <div className="bg-white rounded-3xl p-8 border border-slate-300 hover:border-emerald-500 shadow-lg transition-all">
+        <div className="bg-card rounded-3xl p-8 border border-border hover:border-primary shadow-lg transition-all">
 
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-bold text-slate-900">{currentMonth}</h2>
+                <h2 className="text-xl font-bold text-slate-900">{currentMonthLabel}</h2>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-slate-200">
-                        <ChevronLeft className="w-4 h-4 text-slate-400" />
+                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                        <ChevronLeft className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-slate-200">
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
+                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full border-border">
+                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     </Button>
                 </div>
             </div>
@@ -49,20 +105,21 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
                 <div>
                     <div className="grid grid-cols-7 mb-4">
                         {days.map(d => (
-                            <div key={d} className="text-center text-[10px] font-bold text-slate-400 tracking-wider">
+                            <div key={d} className="text-center text-[10px] font-bold text-muted-foreground tracking-wider">
                                 {d}
                             </div>
                         ))}
                     </div>
                     <div className="grid grid-cols-7 gap-y-4">
-                        {dates.map((d, i) => (
+                        {calendarDays.map((d, i) => (
                             <div key={i} className="flex justify-center">
                                 <button
-                                    disabled={d.month === 'prev'} // Just for visual placeholder logic
-                                    onClick={() => onDateSelect(`Jan ${d.day}, 2026`)}
+                                    disabled={d.month === 'prev' || !d.active}
+                                    onClick={() => d.active && onDateSelect(d.fullDate)}
                                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all
-                                    ${d.month === 'prev' ? 'text-slate-200' : 'text-slate-700 hover:bg-slate-50'}
-                                    ${selectedDate === `Jan ${d.day}, 2026` || (d.active && !selectedDate) ? 'bg-veri5-teal text-white shadow-md hover:bg-veri5-teal' : ''}
+                                    ${d.month === 'prev' ? 'text-slate-200' : (d.active ? 'text-slate-700 hover:bg-slate-50 cursor-pointer' : 'text-slate-300 cursor-not-allowed')}
+                                    ${selectedDate === d.fullDate ? '!bg-veri5-teal !text-white shadow-md' : ''}
+                                    ${d.active && selectedDate !== d.fullDate ? 'bg-emerald-50 text-emerald-700 font-bold' : ''}
                                 `}
                                 >
                                     {d.day}
@@ -74,26 +131,33 @@ export default function BookingCalendar({ onDateSelect, onTimeSelect, selectedDa
 
                 {/* Time Slots */}
                 <div className="border-t lg:border-t-0 lg:border-l border-slate-100 pt-8 lg:pt-0 lg:pl-12">
-                    <h3 className="text-sm font-bold text-slate-900 mb-6">Available Times (IST)</h3>
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                        {timeSlots.map(time => (
-                            <button
-                                key={time}
-                                onClick={() => onTimeSelect(time)}
-                                className={`py-3 rounded-xl text-sm font-bold border transition-all
-                                ${selectedTime === time
-                                        ? 'bg-emerald-50 border-emerald-500 text-emerald-700 ring-2 ring-emerald-500/20'
-                                        : 'bg-slate-50 border-transparent text-slate-600 hover:bg-slate-100 hover:border-slate-200'}`
-                                }
-                            >
-                                {time}
-                            </button>
-                        ))}
-                    </div>
+                    <h3 className="text-sm font-bold text-slate-900 mb-6">Available Times (Local)</h3>
 
-                    <div className="flex items-start gap-3 bg-slate-50 p-4 rounded-xl">
-                        <Info className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
-                        <p className="text-xs text-slate-500 leading-relaxed">
+                    {availableTimes.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-4 mb-8">
+                            {availableTimes.map(timeObj => (
+                                <button
+                                    key={timeObj.id}
+                                    onClick={() => onTimeSelect(timeObj.value)}
+                                    className={`py-3 rounded-xl text-sm font-bold border transition-all
+                                    ${selectedTime === timeObj.value
+                                            ? 'bg-emerald-50 border-emerald-500 text-emerald-700 ring-2 ring-emerald-500/20'
+                                            : 'bg-slate-50 border-transparent text-slate-600 hover:bg-slate-100 hover:border-slate-200'}`
+                                    }
+                                >
+                                    {timeObj.label}
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="mb-8 text-sm text-slate-400 italic">
+                            {selectedDate ? "No times available for this date." : "Select a date to view times."}
+                        </div>
+                    )}
+
+                    <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-xl">
+                        <Info className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <p className="text-xs text-muted-foreground leading-relaxed">
                             Sessions are typically 30 minutes of dedicated private time.
                         </p>
                     </div>

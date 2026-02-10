@@ -3,27 +3,27 @@ import { Shield, CheckCircle } from 'lucide-react';
 export default function PrivacyBanner() {
     return (
         <div className="grid md:grid-cols-3 gap-6 mb-10">
-            <div className="md:col-span-2 bg-slate-50 rounded-2xl p-6 flex gap-4 border border-slate-100">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm text-emerald-600">
+            <div className="md:col-span-2 bg-muted/30 rounded-2xl p-6 flex gap-4 border border-border">
+                <div className="w-12 h-12 bg-background rounded-full flex items-center justify-center shrink-0 shadow-sm text-primary">
                     <Shield className="w-6 h-6" />
                 </div>
                 <div>
                     <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-bold text-slate-900">Privacy Guarantee</h3>
-                        <a href="#" className="text-xs font-bold text-emerald-600 hover:underline flex items-center">
+                        <h3 className="font-bold text-foreground">Privacy Guarantee</h3>
+                        <a href="/security" className="text-xs font-bold text-primary hover:underline flex items-center">
                             Security Protocol <ArrowRight className="w-3 h-3 ml-1" />
                         </a>
                     </div>
-                    <p className="text-sm text-slate-500 leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                         Medical records will be retained only by the specialist. No data is stored on our servers.
                         End-to-end encrypted consultations.
                     </p>
                 </div>
             </div>
 
-            <div className="bg-emerald-50 rounded-2xl p-6 flex items-center justify-center gap-3 border border-emerald-100">
-                <CheckCircle className="w-8 h-8 text-emerald-500" />
-                <span className="font-bold text-emerald-800 text-lg">SLMC Certified Specialists</span>
+            <div className="bg-primary/5 rounded-2xl p-6 flex items-center justify-center gap-3 border border-primary/20">
+                <CheckCircle className="w-8 h-8 text-primary" />
+                <span className="font-bold text-primary text-lg">SLMC Certified Specialists</span>
             </div>
         </div>
     );

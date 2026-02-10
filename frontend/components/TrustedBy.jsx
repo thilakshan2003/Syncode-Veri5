@@ -9,7 +9,7 @@ const partners = [
 
 export default function TrustedBy() {
     return (
-        <section className="w-full bg-[#f8fafc] pb-24 pt-0">
+        <section className="w-full bg-background pb-24 pt-0">
             <div className="container mx-auto px-4 text-center">
                 <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-10">Trusted by leading health institutions</p>
 

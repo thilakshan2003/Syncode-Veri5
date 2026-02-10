@@ -1,10 +1,17 @@
 "use client";
 
+<<<<<<< HEAD
 import { useEffect, useMemo, useState } from 'react';
+=======
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+>>>>>>> main
 import Navbar from '@/components/Navbar';
 import ClinicSearch from '@/components/ClinicSearch';
 import ClinicMap from '@/components/ClinicMap';
 import { Button } from '@/components/ui/button';
+<<<<<<< HEAD
 import api from '@/lib/api';
 import { MapPin, Clock } from 'lucide-react';
 
@@ -181,25 +188,91 @@ export default function ClinicsPage() {
             };
         });
     }, [clinics, userLocation]);
+=======
+import { MapPin, Clock, Loader2, Navigation } from 'lucide-react';
+import { clinicApi } from '@/lib/api';
+
+// Dynamically import ClinicMap to avoid SSR issues with Leaflet
+const ClinicMap = dynamic(() => import('@/components/ClinicMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-full flex items-center justify-center bg-slate-100 rounded-3xl min-h-[500px]">
+            <Loader2 className="w-8 h-8 animate-spin text-veri5-teal" />
+        </div>
+    )
+});
+
+export default function ClinicsPage() {
+    const router = useRouter();
+    const [clinics, setClinics] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedClinic, setSelectedClinic] = useState(null);
+
+    useEffect(() => {
+        fetchClinics();
+    }, []);
+
+    const fetchClinics = async (search = '') => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await clinicApi.getClinics(search);
+            setClinics(data);
+        } catch (err) {
+            console.error('Error fetching clinics:', err);
+            setError('Failed to load clinics. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        fetchClinics(query);
+    };
+
+    // Helper to get clinic hours display text
+    const getClinicHours = (availableTime) => {
+        if (!availableTime) return 'Hours not available';
+        return availableTime;
+    };
+
+    // Open Google Maps for directions
+    const openGoogleMapsDirections = (clinic) => {
+        if (clinic.lat && clinic.lng) {
+            const url = `https://www.google.com/maps/dir/?api=1&destination=${clinic.lat},${clinic.lng}`;
+            window.open(url, '_blank');
+        } else {
+            const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(clinic.address)}`;
+            window.open(url, '_blank');
+        }
+    };
+>>>>>>> main
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-background pb-20">
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6 py-12">
-
                 <div className="mb-12">
+<<<<<<< HEAD
                     <ClinicSearch
                         onToggleView={setViewMode}
                         viewMode={viewMode}
                         value={searchTerm}
                         onChange={setSearchTerm}
                     />
+=======
+                    <ClinicSearch onSearch={handleSearch} />
+>>>>>>> main
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Left: List functionality/Sidebar */}
                     <div className="w-full lg:w-1/3 space-y-4">
+<<<<<<< HEAD
                         {loading && (
                             <div className="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm text-sm text-slate-500">
                                 Loading clinics...
@@ -237,8 +310,66 @@ export default function ClinicsPage() {
                                 <div className="flex items-center text-xs text-slate-500 mb-4 space-x-2">
                                     <Clock className="w-4 h-4" />
                                     <span>{clinic.availability.label}</span>
-                                </div>
+=======
+                        <div className="bg-card dark:bg-card/50 border border-border dark:border-white/5 p-4 rounded-xl flex items-center justify-between mb-6">
+                            <div className="flex items-center text-sm font-medium text-foreground">
+                                <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
+                                <span className="dark:text-emerald-400">Wellawatte, Colombo</span>
+                            </div>
+                            <Button variant="ghost" size="sm" className="text-xs text-veri5-teal hover:bg-veri5-teal/10">Change</Button>
+                        </div>
 
+                        <div className="space-y-4 h-[calc(100vh-400px)] overflow-y-auto pr-2">
+                            {loading ? (
+                                <div className="flex items-center justify-center py-12">
+                                    <Loader2 className="w-8 h-8 animate-spin text-veri5-teal" />
+>>>>>>> main
+                                </div>
+                            ) : error ? (
+                                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 p-6 rounded-2xl text-center">
+                                    <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="mt-4 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20"
+                                        onClick={() => fetchClinics(searchQuery)}
+                                    >
+                                        Try Again
+                                    </Button>
+                                </div>
+                            ) : clinics.length === 0 ? (
+                                <div className="bg-card dark:bg-card/40 border border-border dark:border-white/5 p-8 rounded-2xl text-center">
+                                    <p className="text-muted-foreground">No clinics found matching your search.</p>
+                                    <Button
+                                        variant="link"
+                                        className="mt-2 text-veri5-teal"
+                                        onClick={() => handleSearch('')}
+                                    >
+                                        Clear search
+                                    </Button>
+                                </div>
+                            ) : (
+                                clinics.map((clinic) => {
+                                    const hours = getClinicHours(clinic.availableTime);
+                                    return (
+                                        <div
+                                            key={clinic.id}
+                                            className={`bg-card dark:bg-card/40 border p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group cursor-pointer ${selectedClinic?.id === clinic.id ? 'ring-2 ring-veri5-teal border-transparent' : 'border-border dark:border-white/5 hover:border-veri5-teal/50'}`}
+                                            onClick={() => setSelectedClinic(clinic)}
+                                        >
+                                            <h3 className="font-bold text-foreground mb-1 group-hover:text-veri5-teal transition-colors">{clinic.name}</h3>
+                                            <div className="flex items-start text-xs text-muted-foreground mb-2">
+                                                <MapPin className="w-3 h-3 mr-1 mt-0.5 flex-shrink-0" />
+                                                <span>{clinic.address}</span>
+                                            </div>
+                                            <div className="flex items-center text-xs text-muted-foreground mb-4 space-x-3">
+                                                <span className="flex items-center">
+                                                    <Clock className="w-3 h-3 mr-1" />
+                                                    <span className="text-muted-foreground">{hours}</span>
+                                                </span>
+                                            </div>
+
+<<<<<<< HEAD
                                 <div className="flex items-center justify-between mt-4">
                                     <div className="flex gap-2">
                                         <span className="bg-cyan-50 text-veri5-teal text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
@@ -254,6 +385,46 @@ export default function ClinicsPage() {
                     {/* Right: Map Placeholder */}
                     <div className="w-full lg:w-2/3 h-[500px] bg-slate-100 rounded-3xl relative overflow-hidden border border-slate-200">
                         <ClinicMap clinics={clinicsWithMeta} />
+=======
+                                            <div className="flex items-center justify-between mt-4">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="text-xs h-9 px-4 rounded-full border-border dark:border-white/10 hover:bg-muted"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        openGoogleMapsDirections(clinic);
+                                                    }}
+                                                >
+                                                    <Navigation className="w-3.5 h-3.5 mr-1.5" />
+                                                    Directions
+                                                </Button>
+                                                <Button
+                                                    variant="default"
+                                                    className="bg-veri5-teal hover:bg-veri5-teal/90 text-white font-semibold rounded-full h-9 px-5 text-xs shadow-sm"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/consultation?clinicId=${clinic.id}`);
+                                                    }}
+                                                >
+                                                    Book Now
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Right: Interactive Map */}
+                    <div className="w-full lg:w-2/3 min-h-[500px] lg:h-[calc(100vh-250px)] bg-card border border-border dark:border-white/5 rounded-3xl relative overflow-hidden shadow-inner">
+                        <ClinicMap
+                            clinics={clinics}
+                            selectedClinic={selectedClinic}
+                            onSelectClinic={setSelectedClinic}
+                        />
+>>>>>>> main
                     </div>
                 </div>
             </div>

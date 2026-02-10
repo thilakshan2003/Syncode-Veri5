@@ -14,17 +14,27 @@ export const metadata = {
 };
 
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import ChatBot from "@/components/ChatBot";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} antialiased`}
+        className={`${inter.variable} ${inter.className} antialiased`}
       >
-        <AuthProvider>
-          {children}
-          <Footer />
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            {children}
+            <Footer />
+            <ChatBot />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -2,7 +2,7 @@ name: Build and Deploy to EC2
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -25,16 +25,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Backend image
       - name: Build & push backend
-      - uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6
         with:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/syncode-veri5-backend:latest
+          tags: ghcr.io/thilakshan2003/syncode-veri5-backend:latest
 
-      # Frontend image
       - name: Build & push frontend
         uses: docker/build-push-action@v6
         with:
@@ -43,7 +41,7 @@ jobs:
           push: true
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-          tags: ghcr.io/${{ github.repository_owner }}/syncode-veri5-frontend:latest
+          tags: ghcr.io/thilakshan2003/syncode-veri5-frontend:latest
 
   deploy:
     runs-on: ubuntu-latest

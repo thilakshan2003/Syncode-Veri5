@@ -289,7 +289,7 @@ export default function Dashboard() {
                                             <Link
                                                 key={appointment.id}
                                                 href={`/consultation/appointment/${appointment.id}`}
-                                                className="block bg-card dark:bg-card/40 rounded-2xl p-5 border border-border dark:border-white/5 shadow-sm hover:shadow-md hover:border-veri5-teal/50 dark:hover:border-emerald-500/50 transition-all cursor-pointer"
+                                                className="group block bg-card dark:bg-card/40 rounded-2xl p-5 border border-border dark:border-white/5 shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary hover:scale-[1.01] hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
                                             >
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div className="flex-1">

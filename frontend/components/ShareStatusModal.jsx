@@ -19,28 +19,45 @@ export default function ShareStatusModal({ open, onOpenChange }) {
         e.preventDefault();
         if (!searchTerm) return;
 
+        console.log('Starting status share creation...'); // Debug
         setStep('verifying');
         setError(null);
         setLoading(true);
 
         try {
             // Create status share
+            console.log('Calling API with:', { recipientUsername: searchTerm, expiryHours, maxViews: 1 }); // Debug
+            
             const response = await dashboardApi.createStatusShare({
                 recipientUsername: searchTerm,
                 expiryHours: expiryHours,
                 maxViews: 1
             });
 
-            if (response.success) {
+            console.log('API Response:', response); // Debug
+            console.log('Response success:', response.success); // Debug
+            console.log('Response data:', response.data); // Debug
+            console.log('Token:', response.data?.token); // Debug
+
+            if (response.success && response.data && response.data.token) {
                 // Generate the share link with token
                 const baseUrl = window.location.origin;
                 const link = `${baseUrl}/status-view/${response.data.token}`;
+                console.log('Generated link:', link); // Debug
                 setShareLink(link);
                 setStep('ready');
+            } else {
+                console.error('Response missing token or success flag:', response); // Debug
+                throw new Error('Invalid response from server');
             }
         } catch (err) {
             console.error('Error creating status share:', err);
-            setError(err.response?.data?.error || 'Failed to create status share');
+            console.error('Error details:', {
+                message: err.message,
+                response: err.response,
+                data: err.response?.data
+            }); // Debug
+            setError(err.response?.data?.error || err.message || 'Failed to create status share');
             setStep('search');
         } finally {
             setLoading(false);

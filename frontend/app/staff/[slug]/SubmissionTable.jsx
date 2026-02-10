@@ -51,7 +51,7 @@ export default function SubmissionTable({ initialSubmissions }) {
                             <th className="px-6 py-4">Patient UUID</th>
                             <th className="px-6 py-4">Test Type</th>
                             <th className="px-6 py-4">Submission Date</th>
-                            <th className="px-6 py-4">Current Status</th>
+                            <th className="px-6 py-4">Test Result</th>
                             <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -87,7 +87,7 @@ export default function SubmissionTable({ initialSubmissions }) {
                                         className="inline-flex items-center gap-2 bg-[#10B981]/10 text-[#10B981] hover:bg-[#10B981] hover:text-[#0F172A] px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 focus:ring-2 focus:ring-[#10B981]/50"
                                     >
                                         <Upload className="w-3.5 h-3.5" />
-                                        Upload Result
+                                        Update Result
                                     </button>
                                 </td>
                             </tr>

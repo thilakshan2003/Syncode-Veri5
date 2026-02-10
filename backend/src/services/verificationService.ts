@@ -153,13 +153,13 @@ export const verifyTestKitService = async ({
     if (imageMetadata.size > 10 * 1024 * 1024) {
       throw new Error('Image file size exceeds 10MB limit');
     }
-    
+
     // Check format
     const allowedFormats = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
     if (!allowedFormats.includes(imageMetadata.format)) {
       throw new Error('Invalid file format. Only JPG, PNG, and PDF are allowed');
     }
-    
+
     console.log('✅ Image metadata validated');
   }
 
@@ -182,11 +182,11 @@ export const verifyTestKitService = async ({
     });
 
     // Create verification record with test result
-    const verification = await tx.UserVerification.create({
+    const verification = await tx.user_verifications.create({
       data: {
         userId: userId,
         testTypeId: testTypeId,
-        status: testResult === 'negative' ? "verified" : "verified",
+        status: "verified",
         testedAt: new Date(),
         verifiedAt: new Date(),
       },
@@ -194,7 +194,7 @@ export const verifyTestKitService = async ({
 
     // Update user current status only if test is negative (clean)
     if (testResult === 'negative') {
-      await tx.User.update({
+      await tx.users.update({
         where: { id: userId },
         data: {
           status: "Verified",
@@ -221,38 +221,71 @@ export const verifyTestKitService = async ({
   };
 };
 
+import fs from 'fs';
+
+// ... existing code ...
+
+const log = (msg: string) => fs.appendFileSync('DEBUG.log', `${new Date().toISOString()} - ${msg}\n`);
+
 export const updateVerificationStatus = async (
   verificationId: bigint,
   newStatus: string,
   verifiedByUserId: bigint
 ) => {
+  log(`[Service] Updating status for verification ${verificationId} to ${newStatus} by user ${verifiedByUserId}`);
+
   return await prisma.$transaction(async (tx: any) => {
-    const oldVerification = await tx.user_verifications.findUnique({
-      where: { id: verificationId },
-    });
+    try {
+      const oldVerification = await tx.user_verifications.findUnique({
+        where: { id: verificationId },
+      });
 
-    if (!oldVerification) throw new Error("Verification record not found");
+      if (!oldVerification) {
+        log(`[Service] Verification record not found: ${verificationId}`);
+        throw new Error("Verification record not found");
+      }
 
-    // Update the record
-    const updated = await tx.user_verifications.update({
-      where: { id: verificationId },
-      data: {
-        status: newStatus,
-        verifiedByUserId: verifiedByUserId,
-        verifiedAt: newStatus === "verified" ? new Date() : null,
-      },
-    });
+      log(`[Service] Old status: ${oldVerification.status}`);
 
-    // Create audit log
-    await tx.audit_logs.create({
-      data: {
-        verificationId,
-        userId: verifiedByUserId,
-        oldStatus: oldVerification.status,
-        newStatus: newStatus,
-      },
-    });
+      // Update the record
+      const updated = await tx.user_verifications.update({
+        where: { id: verificationId },
+        data: {
+          status: newStatus,
+          verifiedByUserId: verifiedByUserId,
+          verifiedAt: newStatus === "verified" ? new Date() : null,
+        },
+      });
 
-    return updated;
+      // Create audit log
+      await tx.audit_logs.create({
+        data: {
+          verificationId,
+          userId: verifiedByUserId,
+          oldStatus: oldVerification.status,
+          newStatus: newStatus,
+        },
+      });
+
+      log(`[Service] Audit log created`);
+
+      // Update user status if verification is "verified"
+      if (newStatus === "verified") {
+        log(`[Service] Updating user ${oldVerification.userId} to Verified status`);
+        await tx.users.update({
+          where: { id: oldVerification.userId },
+          data: {
+            status: "Verified",
+            // updatedAt is automatically handled by @updatedAt, but we can update it explicitly if we want to change the timestamp even if status didn't change (e.g. re-verification)
+          },
+        });
+        log(`[Service] User ${oldVerification.userId} updated`);
+      }
+
+      return updated;
+    } catch (e: any) {
+      log(`[Service] Error in transaction: ${e.message}`);
+      throw e;
+    }
   });
 };

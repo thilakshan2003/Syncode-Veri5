@@ -28,6 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                     if (response.status === 200 && response.data.user) {
                         const userData = response.data.user;
+                        const accessToken = response.data.accessToken;
 
                         // Check if user has staff info (as this is the staff login provider)
                         if (userData.staffInfo) {
@@ -38,6 +39,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                                 clinicId: userData.staffInfo.clinicId,
                                 clinicSlug: userData.staffInfo.clinicSlug,
                                 staffRole: userData.staffInfo.role,
+                                accessToken: accessToken, // Important: Pass accessToken to callbacks
                             };
                         }
                     }

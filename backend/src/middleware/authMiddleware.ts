@@ -5,7 +5,7 @@ import { config } from '../config/env.js';
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
     // Extract token from Authorization header or cookies
-    const token = req.cookies?.accessToken;
+    const token = req.cookies?.accessToken || req.headers.authorization?.split(' ')[1];
 
     // If no token, respond with 401
     if (!token) {

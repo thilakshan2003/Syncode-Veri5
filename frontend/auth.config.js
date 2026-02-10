@@ -9,6 +9,7 @@ export const authConfig = {
                 token.clinicId = user.clinicId;
                 token.clinicSlug = user.clinicSlug;
                 token.staffRole = user.staffRole;
+                token.accessToken = user.accessToken; // Persist accessToken
             }
             return token;
         },
@@ -17,6 +18,7 @@ export const authConfig = {
                 session.user.clinicId = token.clinicId;
                 session.user.clinicSlug = token.clinicSlug;
                 session.user.staffRole = token.staffRole;
+                session.accessToken = token.accessToken; // Expose to session
             }
             return session;
         },

@@ -26,6 +26,10 @@ export async function updateTestStatus(verificationId, newStatus) {
     try {
         await axios.patch(`${API_URL}/api/verifications/${verificationId}/status`, {
             status: newStatus,
+        }, {
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+            },
         });
 
         revalidatePath(`/staff/${session.user.clinicSlug}`);

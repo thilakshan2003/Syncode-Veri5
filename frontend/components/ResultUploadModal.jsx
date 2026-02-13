@@ -178,7 +178,7 @@ export default function ResultUploadModal({ open, onOpenChange }) {
             // Extract image metadata if file is uploaded
             let imageMetadata = null;
             let aiConfidence = 0.85; // Default confidence (will be updated by AI validation if image is provided)
-            
+
             if (selectedFile) {
                 imageMetadata = {
                     size: selectedFile.size,
@@ -198,8 +198,12 @@ export default function ResultUploadModal({ open, onOpenChange }) {
                     setIsSubmitting(false);
                     return;
                 }
+            } else {
+                // No photo uploaded
+                setSubmitError("Please upload a photo of your test result.");
+                setIsSubmitting(false);
+                return;
             }
-            // Image upload is optional - allow submission without image
 
             const requestData = {
                 serial: data.veri5Id,
@@ -240,7 +244,7 @@ export default function ResultUploadModal({ open, onOpenChange }) {
             console.error('Error response data:', error.response?.data);
             console.error('Error response status:', error.response?.status);
             console.error('Error message:', error.message);
-            
+
             // Extract error message from response
             const errorMessage = error.response?.data?.error || error.message || 'Failed to verify test result';
             console.error('Extracted error message:', errorMessage);
@@ -275,11 +279,8 @@ export default function ResultUploadModal({ open, onOpenChange }) {
                         </div>
                         
                         <div className="text-center relative z-10">
-                            <h4 className="font-bold text-foreground text-lg mb-1">Standard Screen</h4>
-                            <p className="text-sm text-muted-foreground mb-2">Checks for 7 common infections</p>
-                            <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
-                                <span className="text-primary font-bold text-xl">Rs. 2,800</span>
-                            </div>
+                            <h4 className="font-bold text-foreground text-lg mb-1">Test Result Submission</h4>
+                            <p className="text-sm text-muted-foreground mb-2">Submit your test result for a general health check. All information is kept confidential.</p>
                         </div>
 
                         {/* Trust Indicators */}

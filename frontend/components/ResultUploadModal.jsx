@@ -15,13 +15,13 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 
-// Updated Schema Validation to match TK-UUID format
+// Updated Schema Validation to match VERI5-31-1577 format
 const formSchema = z.object({
     veri5Id: z.string()
         .min(1, 'Serial number is required')
         .regex(
-            /^TK-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-            "Format must be TK-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            /^VERI5-\d{2}-\d{4}$/,
+            "Format must be VERI5-XX-YYYY (e.g., VERI5-31-1577)"
         ),
     date: z.string().min(1, "Date is required"),
     testType: z.string().min(1, "Please select a test type"),
@@ -30,6 +30,13 @@ const formSchema = z.object({
     }),
     file: z.instanceof(FileList).optional()
 });
+
+// Serial number generator for VERI5-XX-YYYY format
+function generateSerialNumber() {
+    const part1 = Math.floor(Math.random() * 90 + 10); // 2 digits
+    const part2 = Math.floor(Math.random() * 9000 + 1000); // 4 digits
+    return `VERI5-${part1}-${part2}`;
+}
 
 /**
  * Basic Image Quality Validation
@@ -334,7 +341,7 @@ export default function ResultUploadModal({ open, onOpenChange }) {
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-primary uppercase tracking-wider">Serial Number</label>
                                     <input
-                                        placeholder="TK-550e8400-e29b..."
+                                        placeholder="VERI5-31-1577"
                                         {...register("veri5Id")}
                                         className="w-full h-12 px-4 rounded-xl bg-background border-2 border-border hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-sm font-medium text-foreground placeholder:text-muted-foreground/40"
                                     />

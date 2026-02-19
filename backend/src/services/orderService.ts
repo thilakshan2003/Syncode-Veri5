@@ -47,8 +47,10 @@ export const createOrder = async (data: CreateOrderData) => {
     const testKitInstances: any[] = [];
     for (const item of data.items) {
       for (let i = 0; i < item.qty; i++) {
-        // Generate unique serial number using UUID format
-        const serialNumber = `TK-${randomUUID()}`;
+  // Generate unique serial number using VERI5-XX-YYYY format
+  const part1 = Math.floor(Math.random() * 90 + 10); // 2 digits
+  const part2 = Math.floor(Math.random() * 9000 + 1000); // 4 digits
+  const serialNumber = `VERI5-${part1}-${part2}`;
         testKitInstances.push({
           serial_number: serialNumber,
           test_kit_id: item.testKitId,

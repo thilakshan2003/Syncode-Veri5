@@ -146,6 +146,15 @@ export const verifyTestKitService = async ({
   const kit = await validateTestKitSerial(serial, userId);
   console.log('Serial number validated');
 
+  // Test type validation - Check test type matches ordered kit
+  if (kit.test_kit_id !== testTypeId) {
+    console.error('❌ Test type does not match ordered kit:', {
+      expected: kit.test_kit_id,
+      received: testTypeId,
+    });
+    throw new Error('Test type does not match the ordered test kit for this serial number.');
+  }
+
   // Image metadata validation
 
   if (imageMetadata) {

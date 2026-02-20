@@ -78,6 +78,88 @@ const validateTestKitSerial = async (
 };
 
 /**
+ * Compute a backend-only score for a user based on verified negative tests.
+ * - Clinical negative test: large number of points
+ * - Self-test negative: smaller number of points
+ * - Points start to decay daily after 30 days from testedAt
+ *
+ * This function does NOT expose the score to the frontend; it's used only to decide verification status.
+ */
+export const computeUserScore = async (userId: bigint) => {
+  // Scoring constants (tunable)
+  const CLINICAL_POINTS = 50;
+  const SELF_POINTS = 10;
+  const DECAY_START_DAYS = 30;
+  const DECAY_PER_DAY = 1; // points removed per day after DECAY_START_DAYS
+  const SCORE_THRESHOLD = 100; // ensure same threshold here for quick reference
+
+  // Fetch verified verifications for the user
+  // We don't store a dedicated `result` column in the current Prisma schema.
+  // Instead we look for audit log entries where staff or the system recorded a 'negative' result
+  // and then map those audit logs back to verification records.
+  const negativeLogs = await prisma.audit_logs.findMany({
+    where: {
+      userId: userId,
+      newStatus: 'negative',
+    },
+    select: { verificationId: true },
+  });
+
+  const verificationIds = negativeLogs.map((l) => l.verificationId).filter(Boolean) as bigint[];
+
+  if (verificationIds.length === 0) return 0;
+
+  // Any clinical negative verification (clinicId not null) should maximize the score
+  const clinicalNegativeCount = await prisma.user_verifications.count({
+    where: {
+      id: { in: verificationIds },
+      userId: userId,
+      status: 'verified',
+      clinicId: { not: null },
+    },
+  });
+
+  if (clinicalNegativeCount > 0) {
+    return SCORE_THRESHOLD;
+  }
+
+  const verifications = await prisma.user_verifications.findMany({
+    where: {
+      id: { in: verificationIds },
+      userId: userId,
+      status: 'verified',
+      testedAt: { not: null },
+    },
+    select: {
+      testedAt: true,
+      clinicId: true,
+    },
+  });
+
+  let score = 0;
+  const now = new Date();
+
+  for (const v of verifications) {
+    if (!v.testedAt) continue;
+    const basePoints = v.clinicId ? CLINICAL_POINTS : SELF_POINTS;
+
+    // Days since test
+    const days = Math.floor((now.getTime() - new Date(v.testedAt).getTime()) / (1000 * 60 * 60 * 24));
+
+    if (days <= DECAY_START_DAYS) {
+      score += basePoints;
+    } else {
+      const decayDays = days - DECAY_START_DAYS;
+      const decay = decayDays * DECAY_PER_DAY;
+      const contribution = Math.max(0, basePoints - decay);
+      score += contribution;
+    }
+  }
+
+  return Math.max(0, Math.round(score));
+};
+
+/**
  * Run AI Validation
  * Uses machine learning to detect if test result is valid
  * @param imageBuffer - Image data in memory (NOT saved anywhere)
@@ -146,6 +228,20 @@ export const verifyTestKitService = async ({
   const kit = await validateTestKitSerial(serial, userId);
   console.log('Serial number validated');
 
+  // Enforce self-test limit: maximum 2 self-test verifications per user
+  // We treat a self-test as a verification without a clinic (clinicId === null)
+  const existingSelfTests = await prisma.user_verifications.count({
+    where: {
+      userId: userId,
+      clinicId: null,
+      status: 'verified'
+    }
+  });
+
+  if (existingSelfTests >= 2) {
+    throw new Error('You have reached the maximum number of self-test submissions (2). Please visit a clinic for further testing.');
+  }
+
   // Test type validation - Check test type matches ordered kit
   if (kit.test_kit_id !== testTypeId) {
     console.error('❌ Test type does not match ordered kit:', {
@@ -195,14 +291,25 @@ export const verifyTestKitService = async ({
       },
     });
 
-    // Create verification record with test result
+    // Create verification record (we do not persist a dedicated `result` column in the current schema)
     const verification = await tx.user_verifications.create({
-      data: {
+      data: ({
         userId: userId,
         testKitId: kit.test_kit_id, // Link to the test_kits table via the kit instance
+        // For self-submitted kit verification we mark initial status as verified when accepted
         status: "verified",
         testedAt: new Date(),
         verifiedAt: new Date(),
+      } as any),
+    });
+
+    // Record the test result in an audit log entry so we can compute scores without changing the Prisma schema
+    await tx.audit_logs.create({
+      data: {
+        verificationId: verification.id,
+        userId: userId,
+        oldStatus: null,
+        newStatus: testResult, // 'positive' or 'negative'
       },
     });
 
@@ -234,6 +341,22 @@ export const verifyTestKitService = async ({
   console.log('Verification complete!');
   console.log('Used at timestamp:', result.kit.used_at);
 
+  // --- Scoring (backend-only) ---
+  try {
+    const score = await computeUserScore(userId);
+    console.log('Computed score for user', userId.toString(), score);
+
+    // Threshold logic: if score exceeds threshold, mark user as Verified
+    const SCORE_THRESHOLD = 100; // configurable threshold
+    if (score >= SCORE_THRESHOLD) {
+      await prisma.users.update({ where: { id: userId }, data: { status: 'Verified' } });
+      console.log('User status set to Verified due to score threshold');
+    }
+    // Special rule: if user has any clinical negative test, maximize score (handled inside computeUserScore)
+  } catch (e) {
+    console.error('Error computing/applying score:', e);
+  }
+
   return {
     status: "verified",
     testResult: testResult,
@@ -252,7 +375,8 @@ const log = (msg: string) => fs.appendFileSync('DEBUG.log', `${new Date().toISOS
 export const updateVerificationStatus = async (
   verificationId: bigint,
   newStatus: string,
-  verifiedByUserId: bigint
+  verifiedByUserId: bigint,
+  testResult?: string
 ) => {
   log(`[Service] Updating status for verification ${verificationId} to ${newStatus} by user ${verifiedByUserId}`);
 
@@ -276,10 +400,12 @@ export const updateVerificationStatus = async (
           status: newStatus,
           verifiedByUserId: verifiedByUserId,
           verifiedAt: newStatus === "verified" ? new Date() : null,
+          // Note: we do not persist a `result` field in the current Prisma schema.
+          // If staff provided a testResult, we will record it in an audit log below.
         },
       });
 
-      // Create audit log
+      // Create audit log for the status change
       await tx.audit_logs.create({
         data: {
           verificationId,
@@ -288,6 +414,19 @@ export const updateVerificationStatus = async (
           newStatus: newStatus,
         },
       });
+
+      // If staff provided an explicit testResult (positive/negative), save that as an audit entry
+      if (testResult) {
+        await tx.audit_logs.create({
+          data: {
+            verificationId,
+            userId: verifiedByUserId,
+            oldStatus: null,
+            newStatus: testResult,
+          },
+        });
+        log(`[Service] Result audit log created for verification ${verificationId}`);
+      }
 
       log(`[Service] Audit log created`);
 
@@ -298,10 +437,22 @@ export const updateVerificationStatus = async (
           where: { id: oldVerification.userId },
           data: {
             status: "Verified",
-            // updatedAt is automatically handled by @updatedAt, but we can update it explicitly if we want to change the timestamp even if status didn't change (e.g. re-verification)
           },
         });
         log(`[Service] User ${oldVerification.userId} updated`);
+
+        // Recompute backend-only score and apply threshold logic
+        try {
+          const score = await computeUserScore(oldVerification.userId);
+          log(`[Service] Recomputed score for user ${oldVerification.userId}: ${score}`);
+          const SCORE_THRESHOLD = 100;
+          if (score >= SCORE_THRESHOLD) {
+            await tx.users.update({ where: { id: oldVerification.userId }, data: { status: 'Verified' } });
+            log(`[Service] User ${oldVerification.userId} set to Verified by score threshold`);
+          }
+        } catch (e: any) {
+          log(`[Service] Error computing score: ${e.message}`);
+        }
       }
 
       return updated;

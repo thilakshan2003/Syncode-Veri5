@@ -347,6 +347,7 @@ enum VerificationStatus {
   processing
 }
 
+
 enum PartnerStatus {
   pending
   accepted

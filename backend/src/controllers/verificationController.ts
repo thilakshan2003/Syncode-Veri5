@@ -91,7 +91,7 @@ export const updateStatus = async (req: Request, res: Response) => {
     const userId = req.user.id;
     const rawId = req.params.id;
     const id = Array.isArray(rawId) ? rawId[0] : rawId;
-    const { status } = req.body;
+  const { status, testResult } = req.body;
 
     if (!id || !status) {
       return res.status(400).json({ error: "Missing required fields: id or status" });
@@ -100,7 +100,8 @@ export const updateStatus = async (req: Request, res: Response) => {
     const result = await updateVerificationStatus(
       BigInt(id),
       status,
-      userId
+      userId,
+      testResult // optional, may be undefined
     );
 
     console.log('Update result:', result);
